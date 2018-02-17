@@ -31,6 +31,7 @@ public class Cluster {
 		centroid_z=0;
 		size=0;
 		Edep=0;
+		hit_id=new ArrayList();
 		Complete=false;
 	}
 	

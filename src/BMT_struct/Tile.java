@@ -9,7 +9,7 @@ import BMT_struct.Cluster;
 public class Tile {
 	
 	HashMap<Integer, Hit> hitmap;
-	HashMap<Integer, Hit> sorted_hitmap;
+	TreeMap<Integer, Hit> sorted_hitmap;
 	HashMap<Integer, Cluster> clustermap;
 	int layer_id;
 	int sector_id;
@@ -18,7 +18,7 @@ public class Tile {
 		layer_id=0;
 		sector_id=0;
 		hitmap = new HashMap<Integer, Hit>();
-		sorted_hitmap = new HashMap<Integer, Hit>();
+		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
@@ -26,7 +26,7 @@ public class Tile {
 		layer_id=layer;
 		sector_id=sector;
 		hitmap = new HashMap<Integer, Hit>();
-		sorted_hitmap = new HashMap<Integer, Hit>();
+		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
@@ -37,18 +37,16 @@ public class Tile {
 	
 	public void SortHitmap() {
 		sorted_hitmap.clear();
-		hitmap.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> sorted_hitmap.put(x.getKey(), x.getValue()));
+		sorted_hitmap.putAll(hitmap);
 	}
 	
 	public void DoClustering() {
 		SortHitmap();
 		int num_hit=sorted_hitmap.size();
-		System.out.println("New tile");
 		if (num_hit!=0) {
 			for(HashMap.Entry<Integer,Hit> m:sorted_hitmap.entrySet())
 		    	if (clustermap.size()==0) {
 		    		Cluster clus=new Cluster();
-		    		System.out.println(m.getKey());
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    		//clustermap.put(clustermap.size()+1,clus);
 		    	}	

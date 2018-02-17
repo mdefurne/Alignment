@@ -33,7 +33,7 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()||count<2) {
+		while(reader.hasEvent()&&count<2) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    if(event.hasBank("BMT::adc")) BMT.fillBarrel(event.getBank("BMT::adc"));

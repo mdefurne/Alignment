@@ -38,6 +38,7 @@ public class Barrel {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void fillBarrel(DataBank pbank) {
 		clear();
 		for (int row=0;row<pbank.rows();row++){
