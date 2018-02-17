@@ -8,10 +8,12 @@ public class TrackFinder {
 	
 	HashMap<Integer, TrackCandidate> Candidates;
 	float time_match;
+	int cand_newsec;
 	
 	public TrackFinder(Barrel BMT) {
 		Candidates=new HashMap();
 		time_match=40;
+		cand_newsec=0;
 	}
 	
 	public void setTimeMatch(float timing) {
@@ -20,10 +22,11 @@ public class TrackFinder {
 	
 	public void BuildCandidates(Barrel BMT_det) {
 		Tile tiles=new Tile();
-		
+		boolean IsAttributed=true;
 		//We are looking for Straight Track
 		//We analyze each sector separately 
 		for (int sec=0;sec<3;sec++) {
+			cand_newsec=Candidates.size(); //Avoid to mix the sectors between them
 			for (int lay=0;lay<6;lay++) {
 				
 				if (lay==0) {
@@ -36,7 +39,22 @@ public class TrackFinder {
 				}
 				
 				if (lay>0) {
-					//Here we always test if we have a match by time
+					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+						//Here we always test if we have a match by time
+						IsAttributed=false;
+						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
+							//If we have a match in time
+							if (Math.abs(BMT_det.getTile(lay,sec).getClusters().get(clus+1).getT_min()-Candidates.get(num_cand+1).GetTimeLastHit())<time_match) {
+								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								IsAttributed=true;
+							}
+						}
+						if (!IsAttributed) {
+							TrackCandidate cand=new TrackCandidate();
+							cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+							Candidates.put(Candidates.size()+1, cand);
+						}
+					}
 				}	
 			}	
 		}	
