@@ -30,6 +30,10 @@ public class Barrel {
 		}
 	}
 	
+	public Tile getTile(int lay, int sec) {
+		return Tiles[lay][sec];
+	}
+	
 	public void PrintClusters() {
 		int nb_clusters;
 		double rad,phi,z;
