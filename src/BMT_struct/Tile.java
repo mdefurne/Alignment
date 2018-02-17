@@ -43,21 +43,18 @@ public class Tile {
 	public void DoClustering() {
 		SortHitmap();
 		int num_hit=sorted_hitmap.size();
+		System.out.println("New tile");
 		if (num_hit!=0) {
-			Set set = sorted_hitmap.entrySet();
-		    Iterator iterator = set.iterator();
-		    while(iterator.hasNext()) {
-		    	Map.Entry me = (Map.Entry)iterator.next();
+			for(HashMap.Entry<Integer,Hit> m:sorted_hitmap.entrySet())
 		    	if (clustermap.size()==0) {
 		    		Cluster clus=new Cluster();
-		    		System.out.println(me.getKey());
-		    		//Cluster.add(me.getKey(),sorted_hitmap.get(me.getKey()));
-		    		clustermap.put(clustermap.size()+1,clus);
+		    		System.out.println(m.getKey());
+		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
+		    		//clustermap.put(clustermap.size()+1,clus);
 		    	}	
 		    	
 			}
-		}
-		else System.out.println("No Hit recorded in the tile sector "+sector_id+" Layer "+layer_id);
+			//if (num_hit==0) System.out.println("No Hit recorded in the tile sector "+sector_id+" Layer "+layer_id);
 	}
 	
 	public void clear() {

@@ -23,8 +23,8 @@ public class Barrel {
 	}
 	
 	public void clear() {
-		for (int lay=1; lay<7;lay++) {
-			for (int sec=1; sec<4;sec++) {
+		for (int lay=0; lay<6;lay++) {
+			for (int sec=0; sec<3;sec++) {
 				Tiles[lay][sec].clear();
 			}
 		}
@@ -39,7 +39,7 @@ public class Barrel {
 	}
 	
 	public void fillBarrel(DataBank pbank) {
-		
+		clear();
 		for (int row=0;row<pbank.rows();row++){
 			int layer= pbank.getByte("layer",row );
 			int sector= pbank.getByte("sector",row );
