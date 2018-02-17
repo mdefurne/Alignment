@@ -30,7 +30,29 @@ public class Barrel {
 		}
 	}
 	
-	public void MakeCluster() {
+	public void PrintClusters() {
+		int nb_clusters;
+		double rad,phi,z;
+		int Edep,size;
+		float t_min;
+		for (int lay=0; lay<6;lay++) {
+			for (int sec=0; sec<3;sec++) {
+				nb_clusters=Tiles[lay][sec].getClusters().size();
+				System.out.println("Tile Sector "+(sec+1)+" Layer "+(lay+1)+" with "+nb_clusters+" clusters ");
+				for (int clus=0;clus<nb_clusters;clus++) {
+					rad=Tiles[lay][sec].getClusters().get(clus+1).getRadius();
+					phi=Math.toDegrees(Tiles[lay][sec].getClusters().get(clus+1).getPhi());
+					z=Tiles[lay][sec].getClusters().get(clus+1).getZ();
+					Edep=Tiles[lay][sec].getClusters().get(clus+1).getEdep();
+					size=Tiles[lay][sec].getClusters().get(clus+1).getSize();
+					t_min=Tiles[lay][sec].getClusters().get(clus+1).getT_min();
+					System.out.println("     Cluster of size "+size+" with tmin= "+t_min+" ns at phi= "+phi+" deg and z= "+z);
+				}
+			}
+		}
+	}
+	
+	public void MakeClusters() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<3;sec++) {
 				Tiles[lay][sec].DoClustering();
@@ -53,8 +75,8 @@ public class Barrel {
 			if (geo.getZorC(layer)==0) 
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time);
 		}
-		MakeCluster();
-		
+		MakeClusters();
+		PrintClusters();
 	}
 	
 	

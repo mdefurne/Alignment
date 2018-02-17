@@ -16,7 +16,7 @@ public class Cluster {
 	double centroid_z; //info in loc frame, either phi or z.
 	double centroid_r;
 	int size;
-	float Edep;
+	int Edep;
 	ArrayList<Integer> hit_id;
 	boolean Complete;
 	
@@ -108,7 +108,7 @@ public class Cluster {
 		return t_max-t_min;
 	}
 	
-	public float getEdep() {
+	public int getEdep() {
 		return Edep;
 	}
 	
@@ -118,5 +118,9 @@ public class Cluster {
 	
 	public ArrayList<Integer> getHit_id(){
 		return hit_id;
+	}
+	
+	public int getLastEntry(){
+		return hit_id.get(hit_id.size()-1);
 	}
 }

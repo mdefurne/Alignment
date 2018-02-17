@@ -43,15 +43,26 @@ public class Tile {
 	public void DoClustering() {
 		SortHitmap();
 		int num_hit=sorted_hitmap.size();
+		int last_hit=-3;
+		float last_time=-1000;
 		if (num_hit!=0) {
-			for(HashMap.Entry<Integer,Hit> m:sorted_hitmap.entrySet())
-		    	if (clustermap.size()==0) {
+			for(HashMap.Entry<Integer,Hit> m:sorted_hitmap.entrySet()) {
+		    	if (clustermap.size()!=0) {
+		    		last_hit=clustermap.get(clustermap.size()).getLastEntry();
+		    		last_time=hitmap.get(last_hit).getTime();
+		    	}	
+		       	if ((m.getKey()-last_hit>2)||Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)>50) {
+		    		if (clustermap.size()!=0) clustermap.get(clustermap.size()).ComputeProperties();
 		    		Cluster clus=new Cluster();
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
-		    		//clustermap.put(clustermap.size()+1,clus);
-		    	}	
-		    	
+		    		clustermap.put(clustermap.size()+1,clus);
+		    	}
+		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=50) {
+		    		clustermap.get(clustermap.size()).add(m.getKey(),sorted_hitmap.get(m.getKey()));
+		    	}
 			}
+		}
+		if (clustermap.size()!=0) clustermap.get(clustermap.size()).ComputeProperties();
 			//if (num_hit==0) System.out.println("No Hit recorded in the tile sector "+sector_id+" Layer "+layer_id);
 	}
 	
@@ -60,5 +71,10 @@ public class Tile {
 		hitmap.clear();
 		clustermap.clear();
 	}
-
+	
+	public HashMap<Integer, Cluster> getClusters(){
+		return clustermap;
+	}
 }
+
+
