@@ -76,7 +76,7 @@ public class Barrel {
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time);
 		}
 		MakeClusters();
-		PrintClusters();
+		//PrintClusters();
 	}
 	
 	

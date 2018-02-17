@@ -36,12 +36,11 @@ public class Cluster {
 	}
 	
 	public void add(int id_hit, Hit aHit) {
-		hit_id.add(id_hit);
 		if (hit_id.size()==0) {
 			t_min=aHit.getTime();
 			t_max=aHit.getTime();
 		}
-		
+		hit_id.add(id_hit);
 		if (t_min>aHit.getTime()) t_min=aHit.getTime();
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
 		Edep+=aHit.getADC();
