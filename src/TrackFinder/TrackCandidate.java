@@ -5,16 +5,19 @@ import java.util.*;
 
 public class TrackCandidate{
 	ArrayList<Cluster> TrackTest;
-	float mean_time=0;
-	double mean_Theta=0;
+	float mean_time;
+	double mean_Theta;
 	double mean_Phi;
 	double chi2;
+	double Err;
 	boolean is_secondary_track;
 	boolean has_secondary_track;
 	ArrayList<Float> time_hit;
 	ArrayList<Integer> layer_hit;
 	ArrayList<Integer> sector_hit;
 	int cand_prim;
+	int nz;
+	int nc;
 	
 	public TrackCandidate(){
 		TrackTest=new ArrayList();
@@ -26,6 +29,9 @@ public class TrackCandidate{
 		time_hit=new ArrayList();
 		mean_Theta=0;
 		mean_Phi=0;
+		nz=0;
+		nc=0;
+		Err=0.1;
 	}
 	
 	public void add(int layer, int sector, Cluster clus) {
@@ -33,7 +39,10 @@ public class TrackCandidate{
 		sector_hit.add(sector);
 		TrackTest.add(clus);
 		mean_time+=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((double)TrackTest.size());
+		mean_Phi+=(mean_Phi*(TrackTest.size()-1)+clus.getPhi())/((double)TrackTest.size());
 		time_hit.add(clus.getT_min());
+		if (layer==2||layer==3||layer==5) nz++;
+		if (layer==1||layer==4||layer==6) nc++;
 	}
 	
 	public void clear() {
@@ -66,6 +75,16 @@ public class TrackCandidate{
 		int layer=0;
 		if (layer_hit.size()!=0) layer=layer_hit.get(layer_hit.size()-1);
 		return layer;
+	}
+	
+	public boolean IsFittable() {
+		boolean fit=false;
+		if (nz>=2&&nc>=2) fit=true;
+		return fit;
+	}
+	
+	public double GetErr() {
+		return Err;
 	}
 
 }

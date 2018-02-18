@@ -20,6 +20,10 @@ public class TrackFinder {
 		time_match=timing;
 	}
 	
+	public void clear() {
+		Candidates.clear();
+	}
+	
 	public void BuildCandidates(Barrel BMT_det) {
 		Tile tiles=new Tile();
 		boolean IsAttributed=true;
