@@ -4,7 +4,6 @@ import org.freehep.math.minuit.FCNBase;
 import TrackFinder.TrackCandidate;
 import Trajectory.StraightLine;
 
-
 public class FCNChi2 implements FCNBase {
 
 	TrackCandidate ToFit;
@@ -12,13 +11,9 @@ public class FCNChi2 implements FCNBase {
 	public double valueOf(double[] par)
 	   {
 		  StraightLine line=new StraightLine();
-		  	
-	      double tx = par[0];
-	      double ty = par[1];
-	      double tz = par[2];
-	      double px = par[3];
-	      double py = par[4];
-	      double pz = par[5];
+		  line.setSlope_XYZ(par[0], par[1], par[2]);
+		  line.setPoint_XYZ(par[3], par[4], par[5]);
+	     
 	      
 	      double val=0;
 	      

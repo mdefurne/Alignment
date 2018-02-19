@@ -2,51 +2,52 @@ package Trajectory;
 
 import org.freehep.math.minuit.FCNBase;
 import BMT_struct.Cluster;
+import org.jlab.geom.prim.Point3D;
+import org.jlab.geom.prim.Vector3D;
+
 
 public class StraightLine {
-	
-	double tx,ty,tz;
-	double px,py,pz;
+	Vector3D slope;
+	Vector3D point;
 	
 	public StraightLine() {
-		
+		slope.setXYZ(0, 0, 0);
+		point.setXYZ(0, 0, 0);
 	}
 	
-	public void setTxTyTz(double dx, double dy, double dz) {
-		this.setTx(dx);
-		this.setTy(dy);
-		this.setTz(dz);
+	public void setSlope_XYZ(double dx, double dy, double dz) {
+		slope.setXYZ(dx, dy, dz);
 	}
 	
-	public void setTx(double dx) {
-		tx=dx;
+	public void setSlope_X(double dx) {
+		slope.setX(dx);
 	}
 	
-	public void setTy(double dy) {
-		ty=dy;
+	public void setSlope_Y(double dy) {
+		slope.setY(dy);
 	}
 	
-	public void setTz(double dz) {
-		tz=dz;
+	public void setSlope_Z(double dz) {
+		slope.setZ(dz);
 	}
 	
-	public void setPxPyPz(double dx, double dy, double dz) {
-		this.setPx(dx);
-		this.setPy(dy);
-		this.setPz(dz);
+	public void setPoint_XYZ(double dx, double dy, double dz) {
+		point.setXYZ(dx, dy, dz);
 	}
 	
-	public void setPx(double dx) {
-		px=dx;
+	public void setPoint_X(double dx) {
+		point.setX(dx);
 	}
 	
-	public void setPy(double dy) {
-		py=dy;
+	public void setPoint_Y(double dy) {
+		point.setY(dy);
 	}
 	
-	public void setPz(double dz) {
-		pz=dz;
+	public void setPoint_Z(double dz) {
+		point.setZ(dz);
 	}
+	
+	
 	
 	public double getDistance(Cluster clus) {
 		double distance=0;
