@@ -9,8 +9,8 @@ import java.lang.*;
 public class Cluster {
 	float t_min;
 	float t_max;
-	float centroid; //strip info
-	float centroid_phi; //info in loc frame, either phi or z.
+	double centroid; //strip info
+	double centroid_phi; //info in loc frame, either phi or z.
 	double centroid_x; //info in loc frame, either phi or z.
 	double centroid_y; //info in loc frame, either phi or z.
 	double centroid_z; //info in loc frame, either phi or z.
@@ -25,11 +25,11 @@ public class Cluster {
 		t_min=0;
 		t_max=0;
 		centroid=0;
-		centroid_phi=0;
-		centroid_r=0;
-		centroid_x=0;
-		centroid_y=0;
-		centroid_z=0;
+		centroid_phi=Double.NaN;
+		centroid_r=Double.NaN;
+		centroid_x=Double.NaN;
+		centroid_y=Double.NaN;
+		centroid_z=Double.NaN;
 		size=0;
 		Edep=0;
 		hit_id=new ArrayList();
@@ -89,11 +89,11 @@ public class Cluster {
 		return centroid_r;
 	}
 	
-	public float getPhi() {
+	public double getPhi() {
 		return centroid_phi;
 	}
 	
-	public float getCentroid() {
+	public double getCentroid() {
 		return centroid;
 	}
 	

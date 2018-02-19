@@ -51,7 +51,43 @@ public class StraightLine {
 	
 	public double getDistance(Cluster clus) {
 		double distance=0;
+		Vector3D point_inter;
+		point_inter.setXYZ(0,0,0);
 		
+		if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+			//In that case, we just compute the distance between the line and the point in xy-plane
+			//First case: is the slope in x and y are both nul, the line becomes then a point.
+			if (slope.x()==0&&slope.y()==0) distance=Math.sqrt(Math.pow(clus.getX()-point.x(), 2)+Math.pow(clus.getY()-point.y(), 2));
+			else {
+				
+			}
+		}
+		
+		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
+		if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) {
+			  
+		double sx=slope.x(); double sy=slope.y(); 
+		double ix=point.x(); double iy=point.y();
+			  
+		//Find the intersection
+		double a=sx*sx+sy*sy;
+		double b=2*(sx*ix+sy*iy);
+		double c=ix*ix+iy*iy-clus.getRadius()*clus.getRadius();
+			 
+		double delta=b*b-4*a*c;
+		if (delta<0) point_inter.setXYZ(0,0,0);
+		if (delta==0) {
+		    double lambda=-b/2./a;
+		    if (this.IsInTile(line->GetPoint(lambda),layer,sector)) point_inter=line->GetPoint(lambda);
+		  }
+		  if (delta>0) {
+		    double lambda_a=(-b+Math.sqrt(delta))/2./a;
+		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
+		    if (this.IsInTile(line->GetPoint(lambda_a),layer,sector)) point_inter=line->GetPoint(lambda_a);
+		    if (this.IsInTile(line->GetPoint(lambda_b),layer,sector)) point_inter=line->GetPoint(lambda_b);
+		  }
+		  
+		}
 		return distance;
 	}
 
