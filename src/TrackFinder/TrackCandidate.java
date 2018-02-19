@@ -9,7 +9,6 @@ public class TrackCandidate{
 	double mean_Theta;
 	double mean_Phi;
 	double chi2;
-	double Err;
 	boolean is_secondary_track;
 	boolean has_secondary_track;
 	ArrayList<Float> time_hit;
@@ -31,7 +30,6 @@ public class TrackCandidate{
 		mean_Phi=0;
 		nz=0;
 		nc=0;
-		Err=0.1;
 	}
 	
 	public void add(int layer, int sector, Cluster clus) {
@@ -52,6 +50,7 @@ public class TrackCandidate{
 	public int size() {
 		return TrackTest.size();
 	}
+	
 	
 	public void Analyze() {
 		
@@ -83,8 +82,8 @@ public class TrackCandidate{
 		return fit;
 	}
 	
-	public double GetErr() {
-		return Err;
+	public Cluster GetCluster(int i) {
+		return TrackTest.get(i);
 	}
 
 }

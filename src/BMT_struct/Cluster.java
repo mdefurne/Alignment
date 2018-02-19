@@ -19,6 +19,7 @@ public class Cluster {
 	int Edep;
 	ArrayList<Integer> hit_id;
 	boolean Complete;
+	double Err;
 	
 	public Cluster() {
 		t_min=0;
@@ -33,6 +34,7 @@ public class Cluster {
 		Edep=0;
 		hit_id=new ArrayList();
 		Complete=false;
+		Err=0.1;//mm
 	}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -121,5 +123,9 @@ public class Cluster {
 	
 	public int getLastEntry(){
 		return hit_id.get(hit_id.size()-1);
+	}
+	
+	public double getErr(){
+		return Err;
 	}
 }

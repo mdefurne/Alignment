@@ -4,6 +4,7 @@ import Jama.Matrix;
 import BMT_struct.*;
 import java.util.*;
 import TrackFinder.TrackCandidate;
+import org.freehep.math.minuit.FCNBase;
 
 public class Fitter {
 		
