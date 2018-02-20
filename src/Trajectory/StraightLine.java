@@ -27,50 +27,19 @@ public class StraightLine {
 		return isCosmic;
 	}
 	
-	public void setSlope_XYZ(double dx, double dy, double dz) {
-		slope.setXYZ(dx, dy, dz);
-	}
-	
-	public void setSlope_X(double dx) {
-		if (dx!=slope.x()) {
-			slope.setX(dx);
-			this.setPhi(Math.atan2(slope.y(), slope.x()));
-			this.setTheta(Math.acos(slope.z()/slope.mag()));
-		}
-	}
-	
-	public void setSlope_Y(double dy) {
-		slope.setY(dy);
-		this.setPhi(Math.atan2(slope.y(), slope.x()));
-		this.setTheta(Math.acos(slope.z()/slope.mag()));
-	}
-	
-	public void setSlope_Z(double dz) {
-		slope.setZ(dz);
-		this.setTheta(Math.acos(slope.z()/slope.mag()));
-	}
 	
 	public void setPhi(double phi) {
-		double s_perp=Math.sqrt(slope.x()*slope.x()+slope.y()*slope.y());
-		slope.setX(s_perp*Math.cos(phi));
-		slope.setY(s_perp*Math.sin(phi));
+		slope.setX(Math.cos(phi)*Math.sin(Theta));
+		slope.setY(Math.sin(phi)*Math.sin(Theta));
+		slope.setZ(Math.cos(Theta));
 		Phi=phi;
 	}
 	
 	public void setTheta(double theta) {
-		if (slope.x()==0&&slope.y()==0) {
-			slope.setX(Math.sin(theta));
-			slope.setZ(Math.cos(theta));
-			Theta=theta;
-			if (theta!=0&&theta!=Math.PI) System.out.println("Set by default slope x to match theta since s_perp=0");
-		}
-		else{
-			double s_perp=Math.sqrt(slope.x()*slope.x()+slope.y()*slope.y());
-			slope.setX(slope.x()*Math.sin(theta));
-			slope.setY(slope.y()*Math.sin(theta));
-			slope.setZ(s_perp*Math.cos(theta));
-			Theta=theta;
-			}
+		slope.setX(Math.cos(Phi)*Math.sin(theta));
+		slope.setY(Math.sin(Phi)*Math.sin(theta));
+		slope.setZ(Math.cos(theta));
+		Theta=theta;
 	}
 	
 	public void setPoint_XYZ(double dx, double dy, double dz) {
@@ -117,6 +86,7 @@ public class StraightLine {
 					distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
 				}
 			}
+			
 		}
 		
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
@@ -145,8 +115,9 @@ public class StraightLine {
 		    double distance_b=Math.abs(clus.getZ()-point_inter.z());
 		    distance=Math.min(distance_a, distance_b);
 		  }
-		  
+		
 		}
+		
 		return distance;
 	}
 

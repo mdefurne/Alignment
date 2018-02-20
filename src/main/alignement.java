@@ -34,7 +34,7 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<20) {
+		while(reader.hasEvent()&&count<45) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    System.out.println(count);

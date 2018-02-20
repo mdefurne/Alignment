@@ -21,9 +21,9 @@ public class FCNChi2 implements FCNBase {
 	      if (ToFit.size()==0) return val;
 	      
 	      for (int clus=0;clus<ToFit.size();clus++) {
-	    	  val+=Math.pow(line.getDistance(ToFit.GetCluster(clus)),2)/ToFit.GetCluster(clus).getErr();
+	    	  val+=Math.pow(line.getDistance(ToFit.GetCluster(clus))/ToFit.GetCluster(clus).getErr(),2);
 	      }
-	     
+	      
 	      return val;
 	   }
 	
