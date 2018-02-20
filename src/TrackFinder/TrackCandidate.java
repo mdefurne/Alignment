@@ -87,5 +87,11 @@ public class TrackCandidate{
 	public Cluster GetCluster(int i) {
 		return TrackTest.get(i);
 	}
+	
+	public TrackCandidate Duplicate() {
+		TrackCandidate temp=new TrackCandidate();
+		
+		return temp;
+	}
 
 }
