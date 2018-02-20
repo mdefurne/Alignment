@@ -21,6 +21,7 @@ public class Hit {
 		z_strip=z;
 		adc_strip=adc;
 		time_strip=time;
+		
 	}
 		
 	public int getADC() {

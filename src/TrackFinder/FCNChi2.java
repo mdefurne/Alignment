@@ -10,6 +10,7 @@ public class FCNChi2 implements FCNBase {
 	
 	public double valueOf(double[] par)
 	   {
+		System.out.println("/////////////");
 		  StraightLine line=new StraightLine();
 		  line.setPhi(par[0]);
 		  line.setTheta(par[1]);

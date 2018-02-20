@@ -49,7 +49,7 @@ public class TrackFinder {
 						IsAttributed=false;
 						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
 							//If we have a match in time
-							if (Math.abs(BMT_det.getTile(lay,sec).getClusters().get(clus+1).getT_min()-Candidates.get(num_cand+1).GetTimeLastHit())<time_match) {
+							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
 								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								IsAttributed=true;
 							}
@@ -64,6 +64,16 @@ public class TrackFinder {
 			}	
 		}
 		System.out.println("Size of candidate vector "+Candidates.size());
+	}
+	
+	public boolean IsCompatible(Cluster clus, TrackCandidate ToBuild) {
+		boolean test_val=false;
+		if (Math.abs(clus.getT_min()-ToBuild.GetTimeLastHit())<time_match) {
+			if (clus.getLayer()!=ToBuild.GetLayerLastHit()) {
+				test_val=true;
+			}
+		}
+		return test_val;
 	}
 	
 	public void FetchTrack() {

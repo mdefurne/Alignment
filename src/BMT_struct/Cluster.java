@@ -24,6 +24,8 @@ public class Cluster {
 	ArrayList<Integer> hit_id;
 	boolean Complete;
 	double Err;
+	int layer_clus;
+	int sector_clus;
 	
 	public Cluster() {
 		t_min=0;
@@ -132,6 +134,22 @@ public class Cluster {
 	
 	public int getLastEntry(){
 		return hit_id.get(hit_id.size()-1);
+	}
+	
+	public int getLayer(){
+		return layer_clus;
+	}
+	
+	public int getSector(){
+		return sector_clus;
+	}
+	
+	public void setLayer(int layer){
+		layer_clus=layer;
+	}
+	
+	public void setSector(int sector){
+		sector_clus=sector;
 	}
 	
 	public double getErr(){

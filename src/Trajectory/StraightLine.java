@@ -86,7 +86,7 @@ public class StraightLine {
 					distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
 				}
 			}
-			
+			System.out.println("Z "+distance);
 		}
 		
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
@@ -115,7 +115,7 @@ public class StraightLine {
 		    double distance_b=Math.abs(clus.getZ()-point_inter.z());
 		    distance=Math.min(distance_a, distance_b);
 		  }
-		
+			System.out.println("C "+distance);
 		}
 		
 		return distance;

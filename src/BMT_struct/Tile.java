@@ -55,6 +55,8 @@ public class Tile {
 		    		if (clustermap.size()!=0) clustermap.get(clustermap.size()).ComputeProperties();
 		    		Cluster clus=new Cluster();
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
+		    		clus.setLayer(layer_id);
+		    		clus.setSector(sector_id);
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}
 		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=50) {
@@ -63,7 +65,6 @@ public class Tile {
 			}
 		}
 		if (clustermap.size()!=0) clustermap.get(clustermap.size()).ComputeProperties();
-			//if (num_hit==0) System.out.println("No Hit recorded in the tile sector "+sector_id+" Layer "+layer_id);
 	}
 	
 	public void clear() {
