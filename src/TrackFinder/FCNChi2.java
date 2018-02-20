@@ -27,8 +27,8 @@ public class FCNChi2 implements FCNBase {
 	      return val;
 	   }
 	
-	public void SetTrackCandidate(TrackCandidate GetIt) {
-		ToFit=GetIt;
+	public void SetTrackCandidate(TrackCandidate Track) {
+		ToFit=Track;
 	}
 
 }
