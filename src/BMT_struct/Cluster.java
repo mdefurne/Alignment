@@ -4,11 +4,15 @@ import BMT_struct.Hit;
 import java.util.*;
 import java.math.*;
 import java.lang.*;
+import org.jlab.geom.prim.Point3D;
+import org.jlab.geom.prim.Vector3D;
 
 
 public class Cluster {
 	float t_min;
 	float t_max;
+	Vector3D XYZ;
+	Vector3D RPhiZ;
 	double centroid; //strip info
 	double centroid_phi; //info in loc frame, either phi or z.
 	double centroid_x; //info in loc frame, either phi or z.
@@ -25,11 +29,11 @@ public class Cluster {
 		t_min=0;
 		t_max=0;
 		centroid=0;
-		centroid_phi=Double.NaN;
-		centroid_r=Double.NaN;
-		centroid_x=Double.NaN;
-		centroid_y=Double.NaN;
-		centroid_z=Double.NaN;
+		centroid_phi=0;
+		centroid_r=0;
+		centroid_x=0;
+		centroid_y=0;
+		centroid_z=0;
 		size=0;
 		Edep=0;
 		hit_id=new ArrayList();
@@ -50,8 +54,13 @@ public class Cluster {
 			centroid_phi+=aHit.getADC()*aHit.getPhi();
 			centroid_x+=aHit.getADC()*Math.cos(aHit.getPhi());
 			centroid_y+=aHit.getADC()*Math.sin(aHit.getPhi());
+			centroid_z=Double.NaN;
 		}
-		if(!Double.isNaN(aHit.getZ()))centroid_z+=aHit.getADC()*aHit.getZ();
+		if(!Double.isNaN(aHit.getZ())) {
+			centroid_x=Double.NaN;
+			centroid_y=Double.NaN;
+			centroid_z+=aHit.getADC()*aHit.getZ();
+		}
 		centroid+=id_hit*aHit.getADC();
 		centroid_r=aHit.getRadius();
 	}
