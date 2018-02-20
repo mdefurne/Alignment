@@ -13,8 +13,8 @@ public class FCNChi2 implements FCNBase {
 		  StraightLine line=new StraightLine();
 		  line.setPhi(par[0]);
 		  line.setTheta(par[1]);
-		  if (!line.IsCosmic()) line.setPoint_XYZ(par[3], par[4], 0);
-		  if (!line.IsCosmic()) line.setPoint_XYZ(par[3], 0, par[4]);
+		  if (!line.IsCosmic()) line.setPoint_XYZ(par[2], par[3], 0);
+		  if (line.IsCosmic()) line.setPoint_XYZ(par[2], 0, par[3]);
 	     	      
 	      double val=0;
 	      

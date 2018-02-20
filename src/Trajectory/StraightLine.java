@@ -32,9 +32,11 @@ public class StraightLine {
 	}
 	
 	public void setSlope_X(double dx) {
-		slope.setX(dx);
-		this.setPhi(Math.atan2(slope.y(), slope.x()));
-		this.setTheta(Math.acos(slope.z()/slope.mag()));
+		if (dx!=slope.x()) {
+			slope.setX(dx);
+			this.setPhi(Math.atan2(slope.y(), slope.x()));
+			this.setTheta(Math.acos(slope.z()/slope.mag()));
+		}
 	}
 	
 	public void setSlope_Y(double dy) {
@@ -57,15 +59,15 @@ public class StraightLine {
 	
 	public void setTheta(double theta) {
 		if (slope.x()==0&&slope.y()==0) {
-			this.setSlope_X(Math.sin(theta));
+			slope.setX(Math.sin(theta));
 			slope.setZ(Math.cos(theta));
 			Theta=theta;
 			if (theta!=0&&theta!=Math.PI) System.out.println("Set by default slope x to match theta since s_perp=0");
 		}
 		else{
 			double s_perp=Math.sqrt(slope.x()*slope.x()+slope.y()*slope.y());
-			this.setSlope_X(slope.x()*Math.sin(theta));
-			this.setSlope_Y(slope.y()*Math.sin(theta));
+			slope.setX(slope.x()*Math.sin(theta));
+			slope.setY(slope.y()*Math.sin(theta));
 			slope.setZ(s_perp*Math.cos(theta));
 			Theta=theta;
 			}

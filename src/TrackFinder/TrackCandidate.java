@@ -26,6 +26,8 @@ public class TrackCandidate{
 		has_secondary_track=false;
 		chi2=0;
 		time_hit=new ArrayList();
+		layer_hit=new ArrayList();
+		sector_hit=new ArrayList();
 		mean_Theta=0;
 		mean_Phi=0;
 		nz=0;

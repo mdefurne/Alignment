@@ -5,6 +5,7 @@ import org.jlab.io.base.DataEvent;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.io.hipo.HipoDataSource;
 import BMT_struct.Barrel;
+import TrackFinder.*;
 
 public class alignement {
 	BMT_geo.Geometry BMTGeom;
@@ -33,10 +34,17 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<4) {
+		while(reader.hasEvent()&&count<20) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    if(event.hasBank("BMT::adc")) BMT.fillBarrel(event.getBank("BMT::adc"));
+		    System.out.println(count);
+		    if(event.hasBank("BMT::adc")) {
+		    	BMT.fillBarrel(event.getBank("BMT::adc"));
+		    	TrackFinder tracky=new TrackFinder();
+			    tracky.BuildCandidates(BMT);
+			    tracky.FetchTrack();
+		    }
+		      
 	   }
 		System.out.println("Done!");
  }

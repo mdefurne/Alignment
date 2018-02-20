@@ -27,11 +27,9 @@ public class Fitter {
 			    Straight.SetTrackCandidate(Candidates.get(num_cand+1));
 			    MnMigrad migrad = new MnMigrad(Straight, upar);
 			    FunctionMinimum min = migrad.minimize();
-			    
-			    double[] params = {1,1,1,1,1,1};
-		        double[] error = {1,1,1,1,1,1};
-		        MnScan scan = new MnScan(Straight, params, error);
-		        System.out.println("scan parameters: "+scan.parameters());
+			    System.out.println(min.isValid()+" "+min.nfcn());
+			    		    
+		        System.out.println("scan parameters: "+upar);
 			}
 		}
 		

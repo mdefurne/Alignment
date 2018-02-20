@@ -11,7 +11,7 @@ public class TrackFinder {
 	float time_match;
 	int cand_newsec;
 	
-	public TrackFinder(Barrel BMT) {
+	public TrackFinder() {
 		Candidates=new HashMap();
 		time_match=40;
 		cand_newsec=0;
@@ -63,8 +63,13 @@ public class TrackFinder {
 				}	
 			}	
 		}
+		System.out.println("Size of candidate vector "+Candidates.size());
+	}
+	
+	public void FetchTrack() {
 		Fitter myfit=new Fitter();
 		myfit.StraightTrack(Candidates);
-	}	
+	}
+	
 }	
 	
