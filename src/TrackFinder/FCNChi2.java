@@ -11,8 +11,10 @@ public class FCNChi2 implements FCNBase {
 	public double valueOf(double[] par)
 	   {
 		  StraightLine line=new StraightLine();
-		  line.setSlope_XYZ(par[0], par[1], par[2]);
-		  line.setPoint_XYZ(par[3], par[4], par[5]);
+		  line.setPhi(par[0]);
+		  line.setTheta(par[1]);
+		  if (!line.IsCosmic()) line.setPoint_XYZ(par[3], par[4], 0);
+		  if (!line.IsCosmic()) line.setPoint_XYZ(par[3], 0, par[4]);
 	     	      
 	      double val=0;
 	      

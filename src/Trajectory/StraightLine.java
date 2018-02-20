@@ -23,6 +23,10 @@ public class StraightLine {
 		point.setXYZ(0, 0, 0);
 	}
 	
+	public boolean IsCosmic() {
+		return isCosmic;
+	}
+	
 	public void setSlope_XYZ(double dx, double dy, double dz) {
 		slope.setXYZ(dx, dy, dz);
 	}
