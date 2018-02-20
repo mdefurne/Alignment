@@ -128,12 +128,16 @@ public class StraightLine {
 		if (delta==0) {
 		    double lambda=-b/2./a;
 		    point_inter=this.getPoint(lambda);
+		    distance=Math.abs(clus.getZ()-point_inter.z());
 		}
 		if (delta>0) {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter=this.getPoint(lambda_a);
+		    double distance_a=Math.abs(clus.getZ()-point_inter.z());
 		    point_inter=this.getPoint(lambda_b);
+		    double distance_b=Math.abs(clus.getZ()-point_inter.z());
+		    distance=Math.min(distance_a, distance_b);
 		  }
 		  
 		}

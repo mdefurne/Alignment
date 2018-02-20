@@ -50,10 +50,11 @@ public class Cluster {
 		if (t_min>aHit.getTime()) t_min=aHit.getTime();
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
 		Edep+=aHit.getADC();
+		centroid_r=aHit.getRadius();
 		if(!Double.isNaN(aHit.getPhi())) {
 			centroid_phi+=aHit.getADC()*aHit.getPhi();
-			centroid_x+=aHit.getADC()*Math.cos(aHit.getPhi());
-			centroid_y+=aHit.getADC()*Math.sin(aHit.getPhi());
+			centroid_x+=centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
+			centroid_y+=centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
 			centroid_z=Double.NaN;
 		}
 		if(!Double.isNaN(aHit.getZ())) {
@@ -62,7 +63,6 @@ public class Cluster {
 			centroid_z+=aHit.getADC()*aHit.getZ();
 		}
 		centroid+=id_hit*aHit.getADC();
-		centroid_r=aHit.getRadius();
 	}
 	
 	public void ComputeProperties() {
