@@ -3,6 +3,7 @@ package TrackFinder;
 import BMT_struct.*;
 import java.util.*;
 import TrackFinder.TrackCandidate;
+import TrackFinder.Fitter;
 
 public class TrackFinder {
 	
@@ -61,7 +62,9 @@ public class TrackFinder {
 					}
 				}	
 			}	
-		}	
+		}
+		Fitter myfit=new Fitter();
+		myfit.StraightTrack(Candidates);
 	}	
 }	
 	
