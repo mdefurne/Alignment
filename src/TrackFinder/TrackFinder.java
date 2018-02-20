@@ -42,6 +42,7 @@ public class TrackFinder {
 						TrackCandidate cand=new TrackCandidate();
 						cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 						Candidates.put(Candidates.size()+1, cand);
+						System.out.println("Layer 1 for sector "+(sec+1)+" "+Candidates.size());
 					}
 				}
 				
@@ -50,17 +51,18 @@ public class TrackFinder {
 						//Here we always test if we have a match by time
 						IsAttributed=false;
 						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
-							//If we have a match in time and will add a new layer
-							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-								IsAttributed=true;
-							}
 							//If we have a match in time but have already added a cluster of the same layer to the track candidate
 							if (this.IsTimeCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&!this.IsLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
 								TrackCandidate cand=new TrackCandidate();
 								cand=Candidates.get(num_cand+1).Duplicate();//Duplicate without the last cluster
 								cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								BufferLayer.add(cand);
+								IsAttributed=true;
+							}
+							//If we have a match in time and will add a new layer
+							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								IsAttributed=true;
 							}
 						}
 						if (!IsAttributed) {
@@ -68,8 +70,9 @@ public class TrackFinder {
 							cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 							Candidates.put(Candidates.size()+1, cand);
 						}
+						System.out.println("Layer "+(lay+1)+" for sector "+(sec+1)+" "+Candidates.size());
 					}
-					
+					System.out.println("Buffersize for Layer "+(lay+1)+" for sector "+(sec+1)+" "+BufferLayer.size());
 					//Need to transfer duplicated track candidate from the buffer to the Candidates map and then empty buffer list
 					for (int buf=0;buf<BufferLayer.size();buf++) {
 						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
@@ -108,6 +111,7 @@ public class TrackFinder {
 	public void FetchTrack() {
 		Fitter myfit=new Fitter();
 		myfit.StraightTrack(Candidates);
+		System.out.println("Size of candidate vector "+Candidates.size());
 	}
 	
 }	

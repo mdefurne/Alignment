@@ -16,12 +16,13 @@ public class Fitter {
 	public void StraightTrack(HashMap<Integer, TrackCandidate> Candidates) {
 		//Use minimizer
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
+			if (Candidates.get(num_cand+1).size()>6) System.out.println("Error: TrackCandidate with more than 6 clusters");
 			if (Candidates.get(num_cand+1).IsFittable()) {
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
 			    upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
 			    upar.add("theta", Math.PI/2., Math.PI/2., Math.toRadians(25), Math.toRadians(150));
-			    upar.add("point_x", 0, 50.,-50.,50);
+			    upar.add("point_x", 0, 50.,-50.,50.);
 			    upar.add("point_yz", 0, 50.,-50.,50.);
 			    
 			    //Create function to minimize

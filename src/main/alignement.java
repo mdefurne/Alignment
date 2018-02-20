@@ -34,15 +34,17 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<45) {
+		while(reader.hasEvent()&&count<40) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    System.out.println(count);
-		    if(event.hasBank("BMT::adc")) {
-		    	BMT.fillBarrel(event.getBank("BMT::adc"));
-		    	TrackFinder tracky=new TrackFinder();
-			    tracky.BuildCandidates(BMT);
-			    tracky.FetchTrack();
+		    if (count>=39) {
+		    	System.out.println(count);
+		    	if(event.hasBank("BMT::adc")) {
+		    		BMT.fillBarrel(event.getBank("BMT::adc"));
+		    		TrackFinder tracky=new TrackFinder();
+		    		tracky.BuildCandidates(BMT);
+		    		tracky.FetchTrack();
+		    	}
 		    }
 		      
 	   }

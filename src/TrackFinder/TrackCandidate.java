@@ -90,7 +90,9 @@ public class TrackCandidate{
 	
 	public TrackCandidate Duplicate() {
 		TrackCandidate temp=new TrackCandidate();
-		
+		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
+			temp.add(this.GetCluster(dup).getLayer(),this.GetCluster(dup).getSector(),this.GetCluster(dup));
+		}
 		return temp;
 	}
 
