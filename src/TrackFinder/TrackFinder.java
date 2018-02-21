@@ -81,7 +81,7 @@ public class TrackFinder {
 				}	
 			}	
 		}
-		System.out.println("Size of candidate vector "+Candidates.size());
+		
 	}
 	
 	public boolean IsCompatible(Cluster clus, TrackCandidate ToBuild) {
@@ -111,8 +111,8 @@ public class TrackFinder {
 	public void FetchTrack() {
 		Fitter myfit=new Fitter();
 		myfit.StraightTrack(Candidates);
-		System.out.println("Size of candidate vector "+Candidates.size());
-	}
+		System.out.println("We have in total "+Candidates.size()+" track candidates");
+		}
 	
 }	
 	

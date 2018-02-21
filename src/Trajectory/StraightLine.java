@@ -9,22 +9,22 @@ import org.jlab.geom.prim.Vector3D;
 public class StraightLine {
 	Vector3D slope;
 	Vector3D point;
-	boolean isCosmic;
+	boolean Point_in_Y; //Look at phi mean of the track candidate to determine which plan we should choose for the plan (x=0 or y=0)
 	double Phi; //atan2(sy,sx);
 	double Theta; //ACos(s_perp/s_tot)
 	
 	public StraightLine() {
 		slope=new Vector3D();
 		point=new Vector3D();
-		isCosmic=false;
+		Point_in_Y=false;
 		Phi=0;
 		Theta=0;
 		slope.setXYZ(0, 0, 0);
 		point.setXYZ(0, 0, 0);
 	}
 	
-	public boolean IsCosmic() {
-		return isCosmic;
+	public boolean IsPoint_in_Y() {
+		return Point_in_Y;
 	}
 	
 	
@@ -40,6 +40,11 @@ public class StraightLine {
 		slope.setY(Math.sin(Phi)*Math.sin(theta));
 		slope.setZ(Math.cos(theta));
 		Theta=theta;
+	}
+	
+	public void setPointLocation(double phi_mean) {
+		if (phi_mean<0) phi_mean=phi_mean+2*Math.PI;
+		if ((phi_mean>0&&phi_mean<Math.PI/4.)||(phi_mean>3*Math.PI/4.&&phi_mean<5*Math.PI/4.)||(phi_mean>7*Math.PI/4.&&phi_mean<2*Math.PI)) Point_in_Y=true;
 	}
 	
 	public void setPoint_XYZ(double dx, double dy, double dz) {

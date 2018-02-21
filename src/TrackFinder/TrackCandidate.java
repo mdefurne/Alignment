@@ -38,8 +38,8 @@ public class TrackCandidate{
 		layer_hit.add(layer);
 		sector_hit.add(sector);
 		TrackTest.add(clus);
-		mean_time+=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((double)TrackTest.size());
-		mean_Phi+=(mean_Phi*(TrackTest.size()-1)+clus.getPhi())/((double)TrackTest.size());
+		mean_time=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((float)TrackTest.size());
+		mean_Phi=(mean_Phi*(TrackTest.size()-1)+clus.getPhi())/((double)TrackTest.size());
 		time_hit.add(clus.getT_min());
 		if (layer==2||layer==3||layer==5) nz++;
 		if (layer==1||layer==4||layer==6) nc++;
@@ -94,6 +94,10 @@ public class TrackCandidate{
 			temp.add(this.GetCluster(dup).getLayer(),this.GetCluster(dup).getSector(),this.GetCluster(dup));
 		}
 		return temp;
+	}
+	
+	public double getPhiMean() {
+		return mean_Phi;
 	}
 
 }

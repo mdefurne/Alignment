@@ -10,12 +10,13 @@ public class FCNChi2 implements FCNBase {
 	
 	public double valueOf(double[] par)
 	   {
-		//System.out.println("/////////////");
 		  StraightLine line=new StraightLine();
 		  line.setPhi(par[0]);
 		  line.setTheta(par[1]);
-		  if (!line.IsCosmic()) line.setPoint_XYZ(par[2], par[3], 0);
-		  if (line.IsCosmic()) line.setPoint_XYZ(par[2], 0, par[3]);
+		  		  		  
+		  line.setPointLocation(ToFit.getPhiMean());
+		  if (!line.IsPoint_in_Y()) line.setPoint_XYZ(0, par[2], par[3]);
+		  if (line.IsPoint_in_Y()) line.setPoint_XYZ(par[2], 0, par[3]);
 	     	      
 	      double val=0;
 	      

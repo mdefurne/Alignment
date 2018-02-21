@@ -20,10 +20,11 @@ public class Fitter {
 			if (Candidates.get(num_cand+1).IsFittable()) {
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
-			    upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
-			    upar.add("theta", Math.PI/2., Math.PI/2., Math.toRadians(25), Math.toRadians(150));
-			    upar.add("point_x", 0, 50.,-50.,50.);
-			    upar.add("point_yz", 0, 50.,-50.,50.);
+			    //upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
+				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(50), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(20), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(20));
+			    upar.add("theta", Math.PI/2., Math.PI/2. , Math.toRadians(25), Math.toRadians(150));
+			    upar.add("point_xy", 0, 200.,-100.,100.);
+			    upar.add("point_z", 0, 200.,-100.,100.);
 			    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
