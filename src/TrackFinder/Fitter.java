@@ -21,10 +21,10 @@ public class Fitter {
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
 			    //upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
-				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(50), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(20), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(20));
+				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(30), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(20), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(20));
 			    upar.add("theta", Math.PI/2., Math.PI/2. , Math.toRadians(25), Math.toRadians(150));
-			    upar.add("point_xy", 0, 200.,-100.,100.);
-			    upar.add("point_z", 0, 200.,-100.,100.);
+			    upar.add("point_phi", Candidates.get(num_cand+1).getPhiMean(), Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()-Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()+Math.PI/2.);
+			    upar.add("point_z", 0, 300.,-300.,300.);
 			    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
@@ -43,6 +43,7 @@ public class Fitter {
 			    //Get parameters
 			    double[] res=migrad.params();
 		        System.out.println(Math.toDegrees(res[0])+" "+Math.toDegrees(res[1])+" "+res[2]+" "+res[3]);
+		        System.out.println(Math.toDegrees( Candidates.get(num_cand+1).getPhiMean()));
 			}
 		}
 		

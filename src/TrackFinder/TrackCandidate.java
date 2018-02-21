@@ -6,7 +6,9 @@ import java.util.*;
 public class TrackCandidate{
 	ArrayList<Cluster> TrackTest;
 	float mean_time;
-	double mean_Theta;
+	double mean_X;
+	double mean_Y;
+	double mean_Z;
 	double mean_Phi;
 	double chi2;
 	boolean is_secondary_track;
@@ -28,8 +30,10 @@ public class TrackCandidate{
 		time_hit=new ArrayList();
 		layer_hit=new ArrayList();
 		sector_hit=new ArrayList();
-		mean_Theta=0;
+		mean_X=0;
 		mean_Phi=0;
+		mean_Y=0;
+		mean_Z=0;
 		nz=0;
 		nc=0;
 	}
@@ -39,10 +43,17 @@ public class TrackCandidate{
 		sector_hit.add(sector);
 		TrackTest.add(clus);
 		mean_time=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((float)TrackTest.size());
-		mean_Phi=(mean_Phi*(TrackTest.size()-1)+clus.getPhi())/((double)TrackTest.size());
 		time_hit.add(clus.getT_min());
-		if (layer==2||layer==3||layer==5) nz++;
-		if (layer==1||layer==4||layer==6) nc++;
+		if (layer==2||layer==3||layer==5) {
+			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
+			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
+			mean_Phi=(mean_Phi*nz+clus.getPhi())/((double)(nz+1));
+			nz++;
+		}
+		if (layer==1||layer==4||layer==6) {
+			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
+			nc++;
+		}
 	}
 	
 	public void clear() {
@@ -103,6 +114,18 @@ public class TrackCandidate{
 	
 	public double getPhiMean() {
 		return mean_Phi;
+	}
+	
+	public double getXMean() {
+		return mean_X;
+	}
+	
+	public double getYMean() {
+		return mean_Y;
+	}
+	
+	public double getZMean() {
+		return mean_Z;
 	}
 
 }

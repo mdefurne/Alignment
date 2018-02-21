@@ -108,7 +108,6 @@ public class TrackFinder {
 	public boolean IsSpatialCompatible(Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
-		System.out.println(clus.getLayer()+" "+ToBuild.GetLayerLastHit());
 		if (clus.getLayer()!=ToBuild.GetLayerLastHit()) test_val=true;
 		return test_val;
 	}

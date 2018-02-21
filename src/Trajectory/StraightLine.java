@@ -81,17 +81,17 @@ public class StraightLine {
 			if (slope.x()==0&&slope.y()==0) distance=Math.sqrt(Math.pow(clus.getX()-point.x(), 2)+Math.pow(clus.getY()-point.y(), 2));
 			
 			//You have a line in xy-plane, so you can compute the distance between the point and the line
-			else {
-				if (slope.x()==0) distance=Math.abs(clus.getX()-point.x());
-				if (slope.y()==0) distance=Math.abs(clus.getY()-point.y());
-				if (slope.x()!=0&&slope.y()!=0) {
-					//Need to find the intersect between the line and its orthogonal through the cluster
-					double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
-					Vector3D Proj=this.getPoint(lambda);
-					distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
-				}
+			
+				/*if (slope.x()==0) distance=Math.abs(clus.getX()-point.x());
+				if (slope.y()==0) distance=Math.abs(clus.getY()-point.y());*/
+			if (slope.x()!=0||slope.y()!=0) {
+				//Need to find the intersect between the line and its orthogonal through the cluster
+				double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
+				Vector3D Proj=this.getPoint(lambda);
+				distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
 			}
-			//System.out.println("Z "+distance);
+			
+			System.out.println("Z "+distance);
 		}
 		
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
@@ -115,14 +115,11 @@ public class StraightLine {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter=this.getPoint(lambda_a);
-		    System.out.println(point_inter);
 		    double distance_a=Math.abs(clus.getZ()-point_inter.z());
 		    point_inter=this.getPoint(lambda_b);
-		    System.out.println(point_inter);
 		    double distance_b=Math.abs(clus.getZ()-point_inter.z());
 		    distance=Math.min(distance_a, distance_b);
-		    System.out.println(distance_a+" "+distance_b);
-		  }
+		 }
 		System.out.println("C "+distance);
 		}
 		

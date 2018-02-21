@@ -53,6 +53,7 @@ public class Cluster {
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
 		Edep+=aHit.getADC();
 		centroid_r=aHit.getRadius();
+		
 		if(!Double.isNaN(aHit.getPhi())) {
 			centroid_phi+=aHit.getADC()*aHit.getPhi();
 			centroid_x+=centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
