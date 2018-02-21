@@ -78,6 +78,11 @@ public class TrackCandidate{
 		return layer;
 	}
 	
+	public int GetSectorLastHit() {
+		int sector=0;
+		if (sector_hit.size()!=0) sector=sector_hit.get(sector_hit.size()-1);
+		return sector;
+	}
 	public boolean IsFittable() {
 		boolean fit=false;
 		if (nz>=2&&nc>=2) fit=true;

@@ -37,7 +37,7 @@ public class alignement {
 		while(reader.hasEvent()&&count<40) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    if (count>=39) {
+		    if (count>=38) {
 		    	System.out.println(count);
 		    	if(event.hasBank("BMT::adc")) {
 		    		BMT.fillBarrel(event.getBank("BMT::adc"));
