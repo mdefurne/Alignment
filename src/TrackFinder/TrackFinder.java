@@ -38,6 +38,7 @@ public class TrackFinder {
 			noHit_yet_sector=true;
 			
 			for (int lay=0;lay<6;lay++) {
+				
 				//If we have already some hit in the sector, there are track candidate to check
 				if (!noHit_yet_sector) {
 					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
@@ -63,9 +64,8 @@ public class TrackFinder {
 							cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 							Candidates.put(Candidates.size()+1, cand);
 						}
-						System.out.println("Layer "+(lay+1)+" for sector "+(sec+1)+" "+Candidates.size());
 					}
-					System.out.println("Buffersize for Layer "+(lay+1)+" for sector "+(sec+1)+" "+BufferLayer.size());
+					
 					//Need to transfer duplicated track candidate from the buffer to the Candidates map and then empty buffer list
 					for (int buf=0;buf<BufferLayer.size();buf++) {
 						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
@@ -80,7 +80,6 @@ public class TrackFinder {
 						TrackCandidate cand=new TrackCandidate();
 						cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 						Candidates.put(Candidates.size()+1, cand);
-						System.out.println("Layer 1 for sector "+(sec+1)+" "+Candidates.size());
 						noHit_yet_sector=false;
 					}
 				}
