@@ -34,10 +34,10 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<54) {
+		while(reader.hasEvent()&&count<39) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    if (count>=54) {
+		    if (count>=39) {
 		    	System.out.println(count);
 		    	if(event.hasBank("BMT::adc")) {
 		    		BMT.fillBarrel(event.getBank("BMT::adc"));

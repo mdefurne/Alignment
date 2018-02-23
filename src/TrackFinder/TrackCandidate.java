@@ -4,21 +4,23 @@ import BMT_struct.*;
 import java.util.*;
 
 public class TrackCandidate{
-	ArrayList<Cluster> TrackTest;
-	float mean_time;
-	double mean_X;
-	double mean_Y;
-	double mean_Z;
-	double mean_Phi;
-	double chi2;
-	boolean is_secondary_track;
-	boolean has_secondary_track;
-	ArrayList<Float> time_hit;
-	ArrayList<Integer> layer_hit;
-	ArrayList<Integer> sector_hit;
-	int cand_prim;
-	int nz;
-	int nc;
+	private ArrayList<Cluster> TrackTest;
+	private float mean_time;
+	private double mean_X;
+	private double mean_Y;
+	private double mean_Z;
+	private double mean_Phi;
+	private double last_Phi;
+	private double last_Z;
+	private double chi2;
+	private boolean is_secondary_track;
+	private boolean has_secondary_track;
+	private ArrayList<Float> time_hit;
+	private ArrayList<Integer> layer_hit;
+	private ArrayList<Integer> sector_hit;
+	private int cand_prim;
+	private int nz;
+	private int nc;
 	
 	public TrackCandidate(){
 		TrackTest=new ArrayList();
@@ -36,6 +38,8 @@ public class TrackCandidate{
 		mean_Z=0;
 		nz=0;
 		nc=0;
+		last_Phi=666;
+		last_Z=666;
 	}
 	
 	public void add(int layer, int sector, Cluster clus) {
@@ -48,10 +52,12 @@ public class TrackCandidate{
 			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
 			mean_Phi=(mean_Phi*nz+clus.getPhi())/((double)(nz+1));
+			last_Phi=clus.getPhi();
 			nz++;
 		}
 		if (layer==1||layer==4||layer==6) {
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
+			last_Z=clus.getZ();
 			nc++;
 		}
 	}
@@ -89,11 +95,37 @@ public class TrackCandidate{
 		return layer;
 	}
 	
+	public int GetLayerLast_Z_Hit() {
+		int layer=0;
+		for (int lay=0;lay<layer_hit.size();lay++) {
+		  if ((layer_hit.get(lay)==2||layer_hit.get(lay)==3||layer_hit.get(lay)==5)&&layer<layer_hit.get(lay)) layer=layer_hit.get(lay);				
+		}
+		return layer;
+	}
+	
+	public int GetLayerLast_C_Hit() {
+		int layer=0;
+		for (int lay=0;lay<layer_hit.size();lay++) {
+			  if ((layer_hit.get(lay)==1||layer_hit.get(lay)==4||layer_hit.get(lay)==6)&&layer<layer_hit.get(lay)) layer=layer_hit.get(lay);				
+			}	
+		return layer;
+	}
+	
+	
 	public int GetSectorLastHit() {
 		int sector=0;
 		if (sector_hit.size()!=0) sector=sector_hit.get(sector_hit.size()-1);
 		return sector;
 	}
+	
+	public double GetLastPhi() {
+		return last_Phi;
+	}
+	
+	public double GetLastZ() {
+		return last_Z;
+	}
+	
 	public boolean IsFittable() {
 		boolean fit=false;
 		if (nz>=2&&nc>=2) fit=true;

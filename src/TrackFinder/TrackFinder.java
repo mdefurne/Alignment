@@ -10,12 +10,14 @@ public class TrackFinder {
 	HashMap<Integer, TrackCandidate> Candidates;
 	ArrayList<TrackCandidate> BufferLayer; //Temporary store the duplicated track to avoid infinite loop
 	float time_match;
+	double phi_match;
 	int cand_newsec;
 	
 	public TrackFinder() {
 		Candidates=new HashMap();
 		BufferLayer=new ArrayList();
 		time_match=40;
+		phi_match=Math.toRadians(15);
 		cand_newsec=0;
 	}
 	
@@ -94,6 +96,9 @@ public class TrackFinder {
 			if (this.IsSpatialCompatible(clus, ToBuild)) {
 				test_val=true;
 			}
+		}
+		if (Double.isNaN(clus.getZ())) {
+			if (Math.abs(clus.getPhi()-ToBuild.GetLastPhi())<(ToBuild.GetLayerLast_Z_Hit()-clus.getLayer())*phi_match) test_val=false;//Test that the cluster for the z-layer is not too far from the previous one
 		}
 		return test_val;
 	}
