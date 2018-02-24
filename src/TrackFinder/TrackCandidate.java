@@ -38,8 +38,8 @@ public class TrackCandidate{
 		mean_Z=0;
 		nz=0;
 		nc=0;
-		last_Phi=666;
-		last_Z=666;
+		last_Phi=Double.NaN;
+		last_Z=Double.NaN;
 	}
 	
 	public void add(int layer, int sector, Cluster clus) {
@@ -129,6 +129,7 @@ public class TrackCandidate{
 	public boolean IsFittable() {
 		boolean fit=false;
 		if (nz>=2&&nc>=2) fit=true;
+		System.out.println(nz+" "+nc);
 		return fit;
 	}
 	

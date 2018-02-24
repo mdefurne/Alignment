@@ -47,17 +47,17 @@ public class TrackFinder {
 						//Here we always test if we have a match by time
 						IsAttributed=false;
 						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
+							//If we have a match in time and will add a new layer
+							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								IsAttributed=true;
+							}
 							//If we have a match in time but have already added a cluster of the same layer to the track candidate
-							if (this.IsTimeCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&!this.IsSpatialCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+							if (!IsAttributed&&this.IsTimeCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&this.IsSpatialCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&!this.IsLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
 								TrackCandidate cand=new TrackCandidate();
 								cand=Candidates.get(num_cand+1).Duplicate();//Duplicate without the last cluster
 								cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								BufferLayer.add(cand);
-								IsAttributed=true;
-							}
-							//If we have a match in time and will add a new layer
-							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								IsAttributed=true;
 							}
 						}
@@ -93,12 +93,11 @@ public class TrackFinder {
 	public boolean IsCompatible(Cluster clus, TrackCandidate ToBuild) {
 		boolean test_val=false;
 		if (this.IsTimeCompatible(clus, ToBuild)) {
-			if (this.IsSpatialCompatible(clus, ToBuild)) {
-				test_val=true;
+			if (this.IsLayerCompatible(clus, ToBuild)) {
+				if (this.IsSpatialCompatible(clus, ToBuild)) {
+					test_val=true;
+				}
 			}
-		}
-		if (Double.isNaN(clus.getZ())) {
-			if (Math.abs(clus.getPhi()-ToBuild.GetLastPhi())<(ToBuild.GetLayerLast_Z_Hit()-clus.getLayer())*phi_match) test_val=false;//Test that the cluster for the z-layer is not too far from the previous one
 		}
 		return test_val;
 	}
@@ -110,10 +109,20 @@ public class TrackFinder {
 		return test_val;
 	}
 	
-	public boolean IsSpatialCompatible(Cluster clus, TrackCandidate ToBuild) {
+	public boolean IsLayerCompatible(Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
 		if (clus.getLayer()!=ToBuild.GetLayerLastHit()) test_val=true;
+		return test_val;
+	}
+	
+	public boolean IsSpatialCompatible(Cluster clus, TrackCandidate ToBuild) {
+		//Test if not on the same layer... otherwise need to duplicate track candidate
+		boolean test_val=false;
+		if (Double.isNaN(clus.getZ())) {
+			if ((Math.abs(clus.getPhi()-ToBuild.GetLastPhi())<(clus.getLayer()-ToBuild.GetLayerLast_Z_Hit())*phi_match)||Double.isNaN(ToBuild.GetLastPhi())) test_val=true;
+		}
+		if (!Double.isNaN(clus.getZ())) test_val=true;
 		return test_val;
 	}
 	
