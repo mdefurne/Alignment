@@ -129,7 +129,6 @@ public class TrackCandidate{
 	public boolean IsFittable() {
 		boolean fit=false;
 		if (nz>=2&&nc>=2) fit=true;
-		System.out.println(nz+" "+nc);
 		return fit;
 	}
 	

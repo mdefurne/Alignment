@@ -10,7 +10,7 @@ public class FCNChi2 implements FCNBase {
 	
 	public double valueOf(double[] par)
 	   {
-			double radius=177.646;	//Radius of the middle layer which should be crossed by the track in anycase	
+		double radius=177.646;	//Radius of the middle layer which should be crossed by the track in anycase	
 		  StraightLine line=new StraightLine();
 		  line.setPhi(par[0]);
 		  line.setTheta(par[1]);

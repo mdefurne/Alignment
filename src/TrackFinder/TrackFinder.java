@@ -129,7 +129,6 @@ public class TrackFinder {
 	public void FetchTrack() {
 		Fitter myfit=new Fitter();
 		myfit.StraightTrack(Candidates);
-		System.out.println("We have in total "+Candidates.size()+" track candidates");
 		}
 	
 }	

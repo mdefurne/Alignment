@@ -82,9 +82,9 @@ public class StraightLine {
 			
 			//You have a line in xy-plane, so you can compute the distance between the point and the line
 			
-				/*if (slope.x()==0) distance=Math.abs(clus.getX()-point.x());
-				if (slope.y()==0) distance=Math.abs(clus.getY()-point.y());*/
-			if (slope.x()!=0||slope.y()!=0) {
+			if (slope.x()==0) distance=Math.abs(clus.getX()-point.x());
+			if (slope.y()==0) distance=Math.abs(clus.getY()-point.y());
+			if (slope.x()!=0&&slope.y()!=0) {
 				//Need to find the intersect between the line and its orthogonal through the cluster
 				double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
 				Vector3D Proj=this.getPoint(lambda);
@@ -115,15 +115,26 @@ public class StraightLine {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter=this.getPoint(lambda_a);
-		    double distance_a=Math.abs(clus.getZ()-point_inter.z());
+		    if (this.isinsector(point_inter)==clus.getSector()) distance=Math.abs(clus.getZ()-point_inter.z());
 		    point_inter=this.getPoint(lambda_b);
-		    double distance_b=Math.abs(clus.getZ()-point_inter.z());
-		    distance=Math.min(distance_a, distance_b);
+		    if (this.isinsector(point_inter)==clus.getSector()) distance=Math.abs(clus.getZ()-point_inter.z());
 		 }
 		System.out.println("C "+distance);
 		}
 		
 		return distance;
 	}
+	
+	public int isinsector(Vector3D point) {
+		int sec=0;
+		double ang=Math.toDegrees(Math.atan2(point.y(), point.x()));
+		if (ang<30) ang=ang+360;
+		if (ang>30&&ang<150) sec=2;
+		if (ang>=150&&ang<270) sec=1;
+		if (ang>=270&&ang<390) sec=3;
+		
+		return sec;
+	}
+	
 
 }

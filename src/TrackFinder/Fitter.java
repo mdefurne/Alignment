@@ -21,9 +21,9 @@ public class Fitter {
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
 			    //upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
-				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(30), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(45), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(45));
+				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(40), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(45), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(45));
 			    upar.add("theta", Math.PI/2., Math.PI/2. , Math.toRadians(25), Math.toRadians(150));
-			    upar.add("point_phi", Candidates.get(num_cand+1).getPhiMean(), Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()-Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()+Math.PI/2.);
+			    upar.add("point_phi", Candidates.get(num_cand+1).getPhiMean(), Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()-Math.PI/4.,Candidates.get(num_cand+1).getPhiMean()+Math.PI/4.);
 			    upar.add("point_z", 0, 300.,-300.,300.);
 			    
 			    //Create function to minimize
