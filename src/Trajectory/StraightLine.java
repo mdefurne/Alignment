@@ -89,6 +89,7 @@ public class StraightLine {
 				double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
 				Vector3D Proj=this.getPoint(lambda);
 				distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
+				if (clus.getPhi()!=Math.atan2(Proj.y(), Proj.x())) distance=distance*(Math.atan2(Proj.y(), Proj.x())-clus.getPhi())/Math.abs(clus.getPhi()-Math.atan2(Proj.y(), Proj.x()));
 			}
 			
 			//System.out.println("Z "+distance);
@@ -109,15 +110,15 @@ public class StraightLine {
 		if (delta==0) {
 		    double lambda=-b/2./a;
 		    point_inter=this.getPoint(lambda);
-		    distance=Math.abs(clus.getZ()-point_inter.z());
+		    distance=clus.getZ()-point_inter.z();
 		}
 		if (delta>0) {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter=this.getPoint(lambda_a);
-		    if (this.isinsector(point_inter)==clus.getSector()) distance=Math.abs(clus.getZ()-point_inter.z());
+		    if (this.isinsector(point_inter)==clus.getSector()) distance=clus.getZ()-point_inter.z();
 		    point_inter=this.getPoint(lambda_b);
-		    if (this.isinsector(point_inter)==clus.getSector()) distance=Math.abs(clus.getZ()-point_inter.z());
+		    if (this.isinsector(point_inter)==clus.getSector()) distance=clus.getZ()-point_inter.z();
 		 }
 		//System.out.println("C "+distance);
 		}
@@ -125,7 +126,7 @@ public class StraightLine {
 		return distance;
 	}
 	
-	public void FindResidual() {
+	public void FindResiduals() {
 		
 	}
 	

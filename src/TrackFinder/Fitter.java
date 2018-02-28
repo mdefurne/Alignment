@@ -57,8 +57,9 @@ public class Fitter {
 					line.setPhi(res[0]);
 					line.setTheta(res[1]);
 					line.setPoint_XYZ(radius*Math.cos(res[2]), radius*Math.sin(res[2]), res[3]);
-					
-					line.FindResiduals(Candidates.get(num_cand+1));
+					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
+						Candidates.get(num_cand+1).GetCluster(clus).set_residual(line.getDistance(Candidates.get(num_cand+1).GetCluster(clus)));
+				    }				
 			   	}
 			    //Get parameters
 			    //System.out.println(Math.toDegrees(res[0])+" "+Math.toDegrees(res[1])+" "+Math.toDegrees(res[2])+" "+res[3]);
