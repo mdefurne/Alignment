@@ -15,8 +15,8 @@ public class TrackAna {
 		Phi_track=new H1F("Phi angle of track","Phi angle for track",45,0,180);
 		for (int lay=0;lay<3;lay++) {
 			for (int sec=0;sec<3;sec++) {
-				Z_residual[lay][sec]=new H1F("Residuals for Z-tile "+lay+" "+sec+" in mm","Residuals for Z-tile "+lay+" "+sec+" in mm",60,-3,3);
-				C_residual[lay][sec]=new H1F("Residuals for C-tile "+lay+" "+sec+"in mm","Residuals for C-tile "+lay+" "+sec+"in mm",60,-3,3);
+				Z_residual[lay][sec]=new H1F("Residuals for Z-tile "+lay+" "+sec+" in mm","Residuals for Z-tile "+lay+" "+sec+" in mm",100,-1,1);
+				C_residual[lay][sec]=new H1F("Residuals for C-tile "+lay+" "+sec+"in mm","Residuals for C-tile "+lay+" "+sec+"in mm",100,-1,1);
 			}
 		}
 	}
@@ -27,10 +27,10 @@ public class TrackAna {
 			Phi_track.fill(Math.toDegrees(Math.atan2(cand.get_VectorTrack().y(),cand.get_VectorTrack().x())));
 			for (int clus=0; clus<cand.size();clus++) {
 				if (cand.get_Nz()==3&&(cand.GetCluster(clus).getLayer()==2||cand.GetCluster(clus).getLayer()==3||cand.GetCluster(clus).getLayer()==5)) {
-					Z_residual[cand.GetCluster(clus).getLayer()/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
+					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
 				}
 				if (cand.get_Nc()==3&&(cand.GetCluster(clus).getLayer()==1||cand.GetCluster(clus).getLayer()==4||cand.GetCluster(clus).getLayer()==6)) {
-					C_residual[cand.GetCluster(clus).getLayer()/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
+					C_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
 				}
 			}
 		}
