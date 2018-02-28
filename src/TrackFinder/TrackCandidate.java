@@ -2,6 +2,8 @@ package TrackFinder;
 
 import BMT_struct.*;
 import java.util.*;
+import org.jlab.geom.prim.Point3D;
+import org.jlab.geom.prim.Vector3D;
 
 public class TrackCandidate{
 	private ArrayList<Cluster> TrackTest;
@@ -22,6 +24,11 @@ public class TrackCandidate{
 	private int nz;
 	private int nc;
 	
+	//Fit results
+	private boolean fit_status;
+	private Vector3D vec_track;
+	private Vector3D point_track;
+	
 	public TrackCandidate(){
 		TrackTest=new ArrayList();
 		mean_time=0;
@@ -40,6 +47,36 @@ public class TrackCandidate{
 		nc=0;
 		last_Phi=Double.NaN;
 		last_Z=Double.NaN;
+		
+		fit_status=false;
+		vec_track=new Vector3D();
+		vec_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		point_track=new Vector3D();
+		point_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+	}
+	
+	public void set_FitStatus(boolean status) {
+		fit_status=status;
+	}
+	
+	public boolean get_FitStatus() {
+		return fit_status;
+	}
+	
+	public void set_VectorTrack(Vector3D vec) {
+		vec_track=vec;
+	}
+	
+	public void set_PointTrack(Vector3D point) {
+		point_track=point;
+	}
+	
+	public Vector3D get_VectorTrack() {
+		return vec_track;
+	}
+	
+	public Vector3D get_PointTrack() {
+		return point_track;
 	}
 	
 	public void add(int layer, int sector, Cluster clus) {

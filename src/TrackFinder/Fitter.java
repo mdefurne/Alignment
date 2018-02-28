@@ -6,6 +6,7 @@ import java.util.*;
 import TrackFinder.TrackCandidate;
 import TrackFinder.FCNChi2;
 import org.freehep.math.minuit.*;
+import org.jlab.geom.prim.Vector3D;
 
 public class Fitter {
 		
@@ -38,12 +39,22 @@ public class Fitter {
 			    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
 			    FunctionMinimum min = migrad.minimize();
 			    
-			    System.out.println(min.isValid()+" "+min.nfcn());
-			    
+			    //System.out.println(min.isValid()+" "+min.nfcn());
+			    if (min.isValid()) {
+			    	Candidates.get(num_cand+1).set_FitStatus(min.isValid());
+			    	double[] res=migrad.params(); //res[0] and res[1] are phi and theta for vec, res[2] is phi for intersection point on cylinder and  res[3] is z_inter
+			    	Vector3D temp=new Vector3D();
+			    	temp.setXYZ(Math.cos(res[0])*Math.sin(res[1]), Math.sin(res[0])*Math.sin(res[1]), Math.cos(res[1]));
+			    	Candidates.get(num_cand+1).set_VectorTrack(temp);
+			    	
+			    	Vector3D temp_bis=new Vector3D();
+			    	temp_bis.setXYZ(Math.cos(res[2])*177.646,Math.sin(res[2])*177.646,res[3]);
+			    	Candidates.get(num_cand+1).set_PointTrack(temp_bis);
+			    	
+			    }
 			    //Get parameters
-			    double[] res=migrad.params();
-		        System.out.println(Math.toDegrees(res[0])+" "+Math.toDegrees(res[1])+" "+Math.toDegrees(res[2])+" "+res[3]);
-		        System.out.println(Math.toDegrees( Candidates.get(num_cand+1).getPhiMean()));
+			    //System.out.println(Math.toDegrees(res[0])+" "+Math.toDegrees(res[1])+" "+Math.toDegrees(res[2])+" "+res[3]);
+		        //System.out.println(Math.toDegrees( Candidates.get(num_cand+1).getPhiMean()));
 			}
 		}
 		

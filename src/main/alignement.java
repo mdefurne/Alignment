@@ -6,14 +6,17 @@ import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.io.hipo.HipoDataSource;
 import BMT_struct.Barrel;
 import TrackFinder.*;
+import Analyzer.*;
 
 public class alignement {
 	BMT_geo.Geometry BMTGeom;
 	static Barrel BMT;
+	static Analyzer Holmes;
 	
 	public alignement() {
 		BMTGeom = new BMT_geo.Geometry();
 		BMT=new Barrel(BMTGeom);
+		Holmes=new Analyzer();
 	}
 	
 	public boolean init() {
@@ -34,20 +37,20 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<39) {
+		while(reader.hasEvent()&&count<20000) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    if (count>=39) {
-		    	System.out.println(count);
+		      	System.out.println(count);
 		    	if(event.hasBank("BMT::adc")) {
 		    		BMT.fillBarrel(event.getBank("BMT::adc"));
 		    		TrackFinder tracky=new TrackFinder();
 		    		tracky.BuildCandidates(BMT);
 		    		tracky.FetchTrack();
+		    		Holmes.analyze(BMT, tracky.get_Candidates());
 		    	}
-		    }
-		      
-	   }
+		         
+		}
+		Holmes.draw();
 		System.out.println("Done!");
  }
 }

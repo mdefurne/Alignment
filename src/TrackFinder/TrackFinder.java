@@ -21,6 +21,10 @@ public class TrackFinder {
 		cand_newsec=0;
 	}
 	
+	public HashMap<Integer, TrackCandidate> get_Candidates(){
+		return Candidates;
+	}
+	
 	public void setTimeMatch(float timing) {
 		time_match=timing;
 	}
