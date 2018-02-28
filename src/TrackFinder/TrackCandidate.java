@@ -196,5 +196,13 @@ public class TrackCandidate{
 	public double getZMean() {
 		return mean_Z;
 	}
+	
+	public int get_Nz() {
+		return nz;
+	}
+	
+	public int get_Nc() {
+		return nc;
+	}
 
 }
