@@ -125,6 +125,10 @@ public class StraightLine {
 		return distance;
 	}
 	
+	public void FindResidual() {
+		
+	}
+	
 	public int isinsector(Vector3D point) {
 		int sec=0;
 		double ang=Math.toDegrees(Math.atan2(point.y(), point.x()));

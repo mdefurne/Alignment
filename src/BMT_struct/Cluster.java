@@ -9,23 +9,24 @@ import org.jlab.geom.prim.Vector3D;
 
 
 public class Cluster {
-	float t_min;
-	float t_max;
-	Vector3D XYZ;
-	Vector3D RPhiZ;
-	double centroid; //strip info
-	double centroid_phi; //info in loc frame, either phi or z.
-	double centroid_x; //info in loc frame, either phi or z.
-	double centroid_y; //info in loc frame, either phi or z.
-	double centroid_z; //info in loc frame, either phi or z.
-	double centroid_r;
-	int size;
-	int Edep;
-	ArrayList<Integer> hit_id;
-	boolean Complete;
-	double Err;
-	int layer_clus;
-	int sector_clus;
+	private float t_min;
+	private float t_max;
+	private Vector3D XYZ;
+	private Vector3D RPhiZ;
+	private double centroid; //strip info
+	private double centroid_phi; //info in loc frame, either phi or z.
+	private double centroid_x; //info in loc frame, either phi or z.
+	private double centroid_y; //info in loc frame, either phi or z.
+	private double centroid_z; //info in loc frame, either phi or z.
+	private double centroid_r;
+	private int size;
+	private int Edep;
+	private ArrayList<Integer> hit_id;
+	private boolean Complete;
+	private double Err;
+	private int layer_clus;
+	private int sector_clus;
+	private double residual;
 	
 	public Cluster() {
 		t_min=0;
@@ -41,6 +42,7 @@ public class Cluster {
 		hit_id=new ArrayList();
 		Complete=false;
 		Err=0.1;//mm
+		residual=Double.NaN;
 	}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -155,5 +157,13 @@ public class Cluster {
 	
 	public double getErr(){
 		return Err;
+	}
+	
+	public double get_residual() {
+		return residual;
+	}
+	
+	public void set_residual(double res) {
+		residual=res;
 	}
 }
