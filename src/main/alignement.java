@@ -40,7 +40,7 @@ public class alignement {
 		while(reader.hasEvent()&&count<20000) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		      	System.out.println(count);
+		    //  	System.out.println(count);
 		    	if(event.hasBank("BMT::adc")) {
 		    		BMT.fillBarrel(event.getBank("BMT::adc"));
 		    		TrackFinder tracky=new TrackFinder();
