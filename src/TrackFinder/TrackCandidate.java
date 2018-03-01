@@ -35,7 +35,7 @@ public class TrackCandidate{
 		cand_prim=-1;
 		is_secondary_track=false;
 		has_secondary_track=false;
-		chi2=0;
+		chi2=Double.NaN;
 		time_hit=new ArrayList();
 		layer_hit=new ArrayList();
 		sector_hit=new ArrayList();
@@ -79,20 +79,20 @@ public class TrackCandidate{
 		return point_track;
 	}
 	
-	public void add(int layer, int sector, Cluster clus) {
-		layer_hit.add(layer);
-		sector_hit.add(sector);
+	public void add(Cluster clus) {
+		layer_hit.add(clus.getLayer());
+		sector_hit.add(clus.getSector());
 		TrackTest.add(clus);
 		mean_time=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((float)TrackTest.size());
 		time_hit.add(clus.getT_min());
-		if (layer==2||layer==3||layer==5) {
+		if (clus.getLayer()==2||clus.getLayer()==3||clus.getLayer()==5) {
 			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
 			mean_Phi=(mean_Phi*nz+clus.getPhi())/((double)(nz+1));
 			last_Phi=clus.getPhi();
 			nz++;
 		}
-		if (layer==1||layer==4||layer==6) {
+		if (clus.getLayer()==1||clus.getLayer()==4||clus.getLayer()==6) {
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
 			last_Z=clus.getZ();
 			nc++;
@@ -176,7 +176,7 @@ public class TrackCandidate{
 	public TrackCandidate Duplicate() {
 		TrackCandidate temp=new TrackCandidate();
 		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
-			temp.add(this.GetCluster(dup).getLayer(),this.GetCluster(dup).getSector(),this.GetCluster(dup));
+			temp.add(this.GetCluster(dup));
 		}
 		return temp;
 	}
@@ -203,6 +203,14 @@ public class TrackCandidate{
 	
 	public int get_Nc() {
 		return nc;
+	}
+	
+	public void set_chi2(double chi) {
+		chi2=chi;
+	}
+	
+	public double get_chi2() {
+		return chi2;
 	}
 
 }

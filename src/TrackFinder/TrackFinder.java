@@ -52,22 +52,22 @@ public class TrackFinder {
 						IsAttributed=false;
 						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
 							//If we have a match in time but have already added a cluster of the same layer to the track candidate
-							if (this.IsTimeCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&this.IsSpatialCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&!this.IsLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								TrackCandidate cand=new TrackCandidate();
-								cand=Candidates.get(num_cand+1).Duplicate();//Duplicate without the last cluster
-								cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-								BufferLayer.add(cand);
-								IsAttributed=true;
-							}
+							//if (this.IsTimeCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&this.IsSpatialCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))&&!this.IsLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+								//TrackCandidate cand=new TrackCandidate();
+								//cand=Candidates.get(num_cand+1).Duplicate();//Duplicate without the last cluster
+								//cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								//BufferLayer.add(cand);
+								//IsAttributed=true;
+							//}
 							//If we have a match in time and will add a new layer
 							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								Candidates.get(num_cand+1).add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								Candidates.get(num_cand+1).add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								IsAttributed=true;
 							}
 						}
 						if (!IsAttributed) {
 							TrackCandidate cand=new TrackCandidate();
-							cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+							cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 							Candidates.put(Candidates.size()+1, cand);
 						}
 					}
@@ -84,7 +84,7 @@ public class TrackFinder {
 					//Create a new Track Candidate for each cluster of first layer
 					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
 						TrackCandidate cand=new TrackCandidate();
-						cand.add(lay+1,sec+1,BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+						cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 						Candidates.put(Candidates.size()+1, cand);
 						noHit_yet_sector=false;
 					}
