@@ -30,13 +30,15 @@ public class TrackAna {
 			Phi_track.fill(Math.toDegrees(Math.atan2(cand.get_VectorTrack().y(),cand.get_VectorTrack().x())));
 			if (cand.get_Nc()==3&&cand.get_Nz()==3) Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
+				
 				if (cand.get_Nc()==3&&cand.get_Nz()==3&&cand.get_chi2()<50) {
+					//System.out.println(clus+" "+cand.GetCluster(clus).getLayer());
 				if (cand.get_Nz()==3&&(cand.GetCluster(clus).getLayer()==2||cand.GetCluster(clus).getLayer()==3||cand.GetCluster(clus).getLayer()==5)) {
-					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
+					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 					}
 				if (cand.get_Nc()==3&&(cand.GetCluster(clus).getLayer()==1||cand.GetCluster(clus).getLayer()==4||cand.GetCluster(clus).getLayer()==6)) {
-					C_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.GetCluster(clus).get_residual());
-					cand.getPhiMean();
+					C_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));
+				
 					}
 				}
 			}

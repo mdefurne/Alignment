@@ -26,8 +26,7 @@ public class Cluster {
 	private double Err;
 	private int layer_clus;
 	private int sector_clus;
-	private double residual;
-	
+		
 	public Cluster() {
 		t_min=0;
 		t_max=0;
@@ -42,8 +41,7 @@ public class Cluster {
 		hit_id=new ArrayList();
 		Complete=false;
 		Err=0.1;//mm
-		residual=Double.NaN;
-	}
+		}
 	
 	public void add(int id_hit, Hit aHit) {
 		if (hit_id.size()==0) {
@@ -158,12 +156,5 @@ public class Cluster {
 	public double getErr(){
 		return Err;
 	}
-	
-	public double get_residual() {
-		return residual;
-	}
-	
-	public void set_residual(double res) {
-		residual=res;
-	}
+				
 }

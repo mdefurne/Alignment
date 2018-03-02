@@ -7,6 +7,7 @@ import org.jlab.geom.prim.Vector3D;
 
 public class TrackCandidate{
 	private ArrayList<Cluster> TrackTest;
+	private ArrayList<Double> TrackResidual;
 	private float mean_time;
 	private double mean_X;
 	private double mean_Y;
@@ -31,6 +32,7 @@ public class TrackCandidate{
 	
 	public TrackCandidate(){
 		TrackTest=new ArrayList();
+		TrackResidual=new ArrayList();
 		mean_time=0;
 		cand_prim=-1;
 		is_secondary_track=false;
@@ -171,6 +173,14 @@ public class TrackCandidate{
 	
 	public Cluster GetCluster(int i) {
 		return TrackTest.get(i);
+	}
+	
+	public double getResidual(int i) {
+		return TrackResidual.get(i);
+	}
+	
+	public void AddResidual(double res) {
+		TrackResidual.add(res);
 	}
 	
 	public TrackCandidate Duplicate() {

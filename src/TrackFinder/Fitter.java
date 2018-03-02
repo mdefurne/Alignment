@@ -58,7 +58,7 @@ public class Fitter {
 					line.setTheta(res[1]);
 					line.setPoint_XYZ(radius*Math.cos(res[2]), radius*Math.sin(res[2]), res[3]);
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
-						Candidates.get(num_cand+1).GetCluster(clus).set_residual(line.getDistance(Candidates.get(num_cand+1).GetCluster(clus)));
+						Candidates.get(num_cand+1).AddResidual(line.getDistance(Candidates.get(num_cand+1).GetCluster(clus)));
 				    }
 					Candidates.get(num_cand+1).set_chi2(min.fval());
 			   	}
