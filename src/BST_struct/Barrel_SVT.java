@@ -68,5 +68,9 @@ public class Barrel_SVT {
 		MakeClusters();
 		//PrintClusters();
 	}
+	
+	public Geometry getGeometry() {
+		return geo;
+	}
 
 }

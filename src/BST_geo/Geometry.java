@@ -9,6 +9,7 @@ import org.jlab.detector.geant4.v2.SVT.SVTConstants;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.geometry.prim.Triangle3d;
+import Trajectory.*;
 
 public class Geometry {
 
@@ -729,6 +730,21 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 
         System.out.printf("PS: % 8.3f % 8.3f % 8.3f\n", aPoint.x, aPoint.y, aPoint.z );
     }
+
+	public Vector3D getIntersectWithRay(int layer, int sector, Vector3D dir_line, Vector3D pt_line) {
+		Vector3D n=findBSTPlaneNormal(sector, layer);
+		Point3D p=getPlaneModuleOrigin(sector, layer);
+		Vector3D inter=new Vector3D();
+		if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()==0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		else {
+			double lambda=(n.x()*(p.x()-pt_line.x())+n.y()*(p.y()-pt_line.y())+n.z()*(p.z()-pt_line.z()))
+					/(dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z());
+			inter.setX(lambda*dir_line.x()+pt_line.x());
+			inter.setY(lambda*dir_line.y()+pt_line.y());
+			inter.setZ(lambda*dir_line.z()+pt_line.z());
+		}
+		return inter;
+	}
 	
     public static void main(String arg[]) throws FileNotFoundException {
 

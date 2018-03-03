@@ -85,6 +85,8 @@ public class Barrel {
 		//PrintClusters();
 	}
 	
-	
+	public Geometry getGeometry() {
+		return geo;
+	}
 	
 }
