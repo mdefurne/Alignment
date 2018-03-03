@@ -45,11 +45,11 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		while(reader.hasEvent()&&count<1) {
+		while(reader.hasEvent()&&count<28) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    System.out.println(count);
-		    if(event.hasBank("BST::adc")) {
+		    //System.out.println(count);
+		    if(event.hasBank("BST::adc")&&count==27) {
 		    	BST.fillBarrel(event.getBank("BST::adc"));
 		    }
 		    

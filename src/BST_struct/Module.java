@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import BST_struct.Hit;
 import BST_struct.Cluster;
+import org.jlab.geom.prim.Vector3D;
 
 public class Module {
 
@@ -13,6 +14,7 @@ public class Module {
 	HashMap<Integer, Cluster> clustermap;
 	int layer_id;
 	int sector_id;
+	Vector3D norm;
 	
 	public Module() {
 		layer_id=0;
@@ -20,6 +22,7 @@ public class Module {
 		hitmap = new HashMap<Integer, Hit>();
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
+		norm=new Vector3D();
 	}
 	
 	public Module(int layer, int sector) {
@@ -28,6 +31,7 @@ public class Module {
 		hitmap = new HashMap<Integer, Hit>();
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
+		norm=new Vector3D();
 	}
 	
 	public void addHit(int strip, double phi, double z, double err_phi, double err_z, int adc, float time) {
@@ -69,4 +73,11 @@ public class Module {
 		clustermap.clear();
 	}
 	
+	public void setNormBST(Vector3D vec) {
+		norm=vec;
+	}
+	
+	public Vector3D getNormBST() {
+		return norm;
+	}
 }

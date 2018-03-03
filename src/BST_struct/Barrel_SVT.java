@@ -21,6 +21,7 @@ public class Barrel_SVT {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
 				Modules[lay][sec]=new Module(lay+1,sec+1);
+				Modules[lay][sec].setNormBST(geo.findBSTPlaneNormal(sec+1, lay+1));
 			}
 		}
 	}
@@ -60,7 +61,7 @@ public class Barrel_SVT {
 			Point3D end=new Point3D(geo.transformToFrame(sector, layer, endpoints[1][0], 0, endpoints[1][1], "lab", ""));
 			double phi_begin=Math.atan2(begin.y(),begin.x());
 			double phi_end=Math.atan2(end.y(),end.x());
-			Modules[layer-1][sector-1].addHit(strip, (phi_begin+phi_end)/2., (end.z()+begin.z())/2., (phi_begin-phi_end)/2., (end.z()-begin.z())/2., ADC, time);
+			Modules[layer-1][sector-1].addHit(strip, (phi_begin+phi_end)/2., (end.z()+begin.z())/2., Math.abs((phi_begin-phi_end)/2.), (end.z()-begin.z())/2., ADC, time);
 		}
 		MakeClusters();
 		//PrintClusters();
