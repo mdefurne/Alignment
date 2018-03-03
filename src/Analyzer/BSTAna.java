@@ -19,7 +19,8 @@ public class BSTAna {
 		if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<50) {
 			System.out.println(cand.get_PointTrack());
 			Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(1, cand.get_VectorTrack(), cand.get_PointTrack()));
-			System.out.println(BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), 1, BST.getGeometry().findSectorFromAngle(1, inter)));
+			double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), 1, BST.getGeometry().findSectorFromAngle(1, inter));
+			System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
 		}
 	}
 

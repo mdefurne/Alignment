@@ -751,6 +751,14 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		return inter;
 	}
 	
+	public double getResidual(int layer, int sector, int strip, Vector3D point) {
+		double dist=0;
+		Point3D Loc=new Point3D(this.transformToFrame(sector, layer, point.x(), point.y(), point.z(), "local", ""));
+		double x_strip=this.getXAtZ(layer, strip, Loc.z());
+		dist=Loc.x()-x_strip;
+		return dist;
+	}
+	
     public static void main(String arg[]) throws FileNotFoundException {
 
         Constants.Load();
