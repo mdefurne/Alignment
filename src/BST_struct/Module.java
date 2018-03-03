@@ -30,8 +30,8 @@ public class Module {
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
-	public void addHit(int strip, int adc, float time) {
-		Hit aHit=new Hit(adc, time);
+	public void addHit(int strip, double phi, double z, double err_phi, double err_z, int adc, float time) {
+		Hit aHit=new Hit(phi, z, err_phi, err_z, adc, time);
 		hitmap.put(strip, aHit);
 	}
 	

@@ -6,6 +6,7 @@ import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.io.hipo.HipoDataSource;
 import BMT_struct.Barrel;
+import BST_struct.Barrel_SVT;
 import TrackFinder.*;
 import Analyzer.*;
 
@@ -13,11 +14,13 @@ public class alignement {
 	BMT_geo.Geometry BMTGeom;
 	static BST_geo.Geometry BSTGeom;
 	static Barrel BMT;
+	static Barrel_SVT BST;
 	static Analyzer Holmes;
 	
 	public alignement() {
 		BMTGeom = new BMT_geo.Geometry();
 		BSTGeom = new BST_geo.Geometry();
+		BST=new Barrel_SVT(BSTGeom);
 		BMT=new Barrel(BMTGeom);
 		Holmes=new Analyzer();
 	}
@@ -46,13 +49,17 @@ public class alignement {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    System.out.println(count);
-		    	if(event.hasBank("BMT::adc")) {
-		    		BMT.fillBarrel(event.getBank("BMT::adc"));
-		    		TrackFinder tracky=new TrackFinder();
-		    		tracky.BuildCandidates(BMT);
-		    		tracky.FetchTrack();
-		    		Holmes.analyze(BMT, BSTGeom, tracky.get_Candidates());
-		    	}
+		    if(event.hasBank("BST::adc")) {
+		    	BST.fillBarrel(event.getBank("BST::adc"));
+		    }
+		    
+		    if(event.hasBank("BMT::adc")) {
+		    	BMT.fillBarrel(event.getBank("BMT::adc"));
+		    	TrackFinder tracky=new TrackFinder();
+		    	tracky.BuildCandidates(BMT);
+		    	tracky.FetchTrack();
+		    	Holmes.analyze(BMT, BSTGeom, tracky.get_Candidates());
+		    }
 		         
 		}
 		Holmes.draw();
