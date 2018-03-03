@@ -51,7 +51,7 @@ public class Geometry {
 
     //*** 
     public int findSectorFromAngle(int layer, Vector3D trkPoint) {
-        int Sect = Constants.NSECT[layer - 1];
+        int Sect = -1;
         for (int s = 0; s < Constants.NSECT[layer - 1] - 1; s++) {
             int sector = s + 1;
             Vector3D orig = new Vector3D(getPlaneModuleOrigin(sector, layer).x(), getPlaneModuleOrigin(sector, layer).y(), 0);
@@ -732,18 +732,22 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
     }
 
 	public Vector3D getIntersectWithRay(int layer, Vector3D dir_line, Vector3D pt_line) {
-		int sector=findSectorFromAngle(layer,pt_line);
-		Vector3D n=findBSTPlaneNormal(sector, layer);
-		Point3D p=getPlaneModuleOrigin(sector, layer);
 		Vector3D inter=new Vector3D();
-		if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()==0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
-		else {
-			double lambda=(n.x()*(p.x()-pt_line.x())+n.y()*(p.y()-pt_line.y())+n.z()*(p.z()-pt_line.z()))
-					/(dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z());
-			inter.setX(lambda*dir_line.x()+pt_line.x());
-			inter.setY(lambda*dir_line.y()+pt_line.y());
-			inter.setZ(lambda*dir_line.z()+pt_line.z());
+		int sector=findSectorFromAngle(layer,pt_line);
+		if (sector>0) {
+			Vector3D n=findBSTPlaneNormal(sector, layer);
+			Point3D p=getPlaneModuleOrigin(sector, layer);
+		
+			if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()==0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+			else {
+				double lambda=(n.x()*(p.x()-pt_line.x())+n.y()*(p.y()-pt_line.y())+n.z()*(p.z()-pt_line.z()))
+						/(dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z());
+				inter.setX(lambda*dir_line.x()+pt_line.x());
+				inter.setY(lambda*dir_line.y()+pt_line.y());
+				inter.setZ(lambda*dir_line.z()+pt_line.z());
+			}
 		}
+		else inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		return inter;
 	}
 	
