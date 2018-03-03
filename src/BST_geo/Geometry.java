@@ -50,7 +50,7 @@ public class Geometry {
     }
 
     //*** 
-    public int findSectorFromAngle(int layer, Point3D trkPoint) {
+    public int findSectorFromAngle(int layer, Vector3D trkPoint) {
         int Sect = Constants.NSECT[layer - 1];
         for (int s = 0; s < Constants.NSECT[layer - 1] - 1; s++) {
             int sector = s + 1;
@@ -731,7 +731,8 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
         System.out.printf("PS: % 8.3f % 8.3f % 8.3f\n", aPoint.x, aPoint.y, aPoint.z );
     }
 
-	public Vector3D getIntersectWithRay(int layer, int sector, Vector3D dir_line, Vector3D pt_line) {
+	public Vector3D getIntersectWithRay(int layer, Vector3D dir_line, Vector3D pt_line) {
+		int sector=findSectorFromAngle(layer,pt_line);
 		Vector3D n=findBSTPlaneNormal(sector, layer);
 		Point3D p=getPlaneModuleOrigin(sector, layer);
 		Vector3D inter=new Vector3D();

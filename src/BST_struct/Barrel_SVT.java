@@ -30,7 +30,7 @@ public class Barrel_SVT {
 	
 	public void clear() {
 		for (int lay=0; lay<6;lay++) {
-			for (int sec=0; sec<3;sec++) {
+			for (int sec=0; sec<18;sec++) {
 				Modules[lay][sec].clear();
 			}
 		}
@@ -52,7 +52,6 @@ public class Barrel_SVT {
 	public void fillBarrel(DataBank pbank) {
 		clear();
 		for (int row=0;row<pbank.rows();row++){
-			System.out.println("////////////////");
 			int layer= pbank.getByte("layer",row );
 			int sector= pbank.getByte("sector",row );
 			int strip= pbank.getShort("component",row );
