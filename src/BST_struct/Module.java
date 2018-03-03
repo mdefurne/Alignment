@@ -1,20 +1,20 @@
-package BMT_struct;
+package BST_struct;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import BMT_struct.Hit;
-import BMT_struct.Cluster;
+import BST_struct.Hit;
+import BST_struct.Cluster;
 
-public class Tile {
-	
+public class Module {
+
 	HashMap<Integer, Hit> hitmap;
 	TreeMap<Integer, Hit> sorted_hitmap;
 	HashMap<Integer, Cluster> clustermap;
 	int layer_id;
 	int sector_id;
 	
-	public Tile() {
+	public Module() {
 		layer_id=0;
 		sector_id=0;
 		hitmap = new HashMap<Integer, Hit>();
@@ -22,7 +22,7 @@ public class Tile {
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
-	public Tile(int layer, int sector) {
+	public Module(int layer, int sector) {
 		layer_id=layer;
 		sector_id=sector;
 		hitmap = new HashMap<Integer, Hit>();
@@ -30,8 +30,8 @@ public class Tile {
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
-	public void addHit(int strip, double radius, double phi, double z, int adc, float time) {
-		Hit aHit=new Hit(radius, phi, z, adc, time);
+	public void addHit(int strip, int adc, float time) {
+		Hit aHit=new Hit(adc, time);
 		hitmap.put(strip, aHit);
 	}
 	
@@ -51,14 +51,12 @@ public class Tile {
 		    		last_hit=clustermap.get(clustermap.size()).getLastEntry();
 		    		last_time=hitmap.get(last_hit).getTime();
 		    	}	
-		       	if ((m.getKey()-last_hit>2)||Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)>50) {
+		       	if (m.getKey()-last_hit>2) {
 		    		Cluster clus=new Cluster();
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
-		    		clus.setLayer(layer_id);
-		    		clus.setSector(sector_id);
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}
-		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=50) {
+		    	if (m.getKey()-last_hit<=2) {
 		    		clustermap.get(clustermap.size()).add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    	}
 			}
@@ -71,9 +69,4 @@ public class Tile {
 		clustermap.clear();
 	}
 	
-	public HashMap<Integer, Cluster> getClusters(){
-		return clustermap;
-	}
 }
-
-

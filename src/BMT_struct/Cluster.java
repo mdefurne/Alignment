@@ -22,7 +22,6 @@ public class Cluster {
 	private int size;
 	private int Edep;
 	private ArrayList<Integer> hit_id;
-	private boolean Complete;
 	private double Err;
 	private int layer_clus;
 	private int sector_clus;
@@ -39,7 +38,6 @@ public class Cluster {
 		size=0;
 		Edep=0;
 		hit_id=new ArrayList();
-		Complete=false;
 		Err=0.1;//mm
 		}
 	
@@ -51,38 +49,28 @@ public class Cluster {
 		hit_id.add(id_hit);
 		if (t_min>aHit.getTime()) t_min=aHit.getTime();
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
-		Edep+=aHit.getADC();
+		
 		centroid_r=aHit.getRadius();
 		
 		if(!Double.isNaN(aHit.getPhi())) {
-			centroid_phi+=aHit.getADC()*aHit.getPhi();
-			centroid_x+=centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
-			centroid_y+=centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
+			centroid_phi=Edep*centroid_phi+aHit.getADC()*aHit.getPhi();
+			centroid_x=Edep*centroid_x+centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
+			centroid_y=Edep*centroid_y+centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
+			Edep+=aHit.getADC();
+			centroid_phi=centroid_phi/Edep;
+			centroid_x=centroid_x/Edep;
+			centroid_y=centroid_y/Edep;
 			centroid_z=Double.NaN;
 		}
 		if(!Double.isNaN(aHit.getZ())) {
 			centroid_x=Double.NaN;
 			centroid_y=Double.NaN;
-			centroid_z+=aHit.getADC()*aHit.getZ();
+			centroid_z=Edep*centroid_z+aHit.getADC()*aHit.getZ();
+			Edep+=aHit.getADC();
+			centroid_z=centroid_z/Edep;
 		}
 		centroid+=id_hit*aHit.getADC();
-	}
-	
-	public void ComputeProperties() {
-		if (hit_id.size()!=0) {
-			centroid_phi=centroid_phi/Edep;
-			centroid_x=centroid_x/Edep;
-			centroid_y=centroid_y/Edep;
-			centroid_z=centroid_z/Edep;
-			centroid=centroid/Edep;
-			size=hit_id.size();
-			Complete=true;
-		}
-		else System.out.println("Sorry... your BMT cluster is empty.");
-	}
-	
-	public boolean IsComplete() {
-		return Complete;
+		
 	}
 	
 	public double getX() {

@@ -266,8 +266,17 @@ public class Constants {
         LAYRGAP = MODULERADIUS[1][0] - MODULERADIUS[0][0];
 
         // SHIFTS
-        
-        TX[0][0] = 0.177;	TY[0][0] = 0.184;	TZ[0][0] = 0.183;	RX[0][0] = 0.312;	RY[0][0] = 0;	RZ[0][0] = 0.95;	RA[0][0] = 0.164;
+        for (int reg=0;reg<3;reg++) {
+        	for (int sec=0; sec<NSECT[reg];sec++) {
+        		TX[reg][sec]=0.0;
+        		TY[reg][sec]=0.0;
+        		TZ[reg][sec]=0.0;
+        		RX[reg][sec]=0.0;
+        		RY[reg][sec]=0.0;
+        		RZ[reg][sec]=0.0;
+        	}
+        }
+        /*TX[0][0] = 0.177;	TY[0][0] = 0.184;	TZ[0][0] = 0.183;	RX[0][0] = 0.312;	RY[0][0] = 0;	RZ[0][0] = 0.95;	RA[0][0] = 0.164;
         TX[0][1] = 0.134;	TY[0][1] = 0.1;	TZ[0][1] = 0.19;	RX[0][1] = 0.243;	RY[0][1] = -0.177;	RZ[0][1] = 0.954;	RA[0][1] = 0.102;
         TX[0][2] = 0.14;	TY[0][2] = -0.083;	TZ[0][2] = 0.163;	RX[0][2] = 0.017;	RY[0][2] = -0.052;	RZ[0][2] = 0.999;	RA[0][2] = 0.106;
         TX[0][3] = 0.023;	TY[0][3] = -0.079;	TZ[0][3] = 0.148;	RX[0][3] = 0.103;	RY[0][3] = 0.317;	RZ[0][3] = 0.943;	RA[0][3] = 0.099;
@@ -308,7 +317,7 @@ public class Constants {
         TX[2][14] = -0.194;	TY[2][14] = 0.275;	TZ[2][14] = 0.143;	RX[2][14] = -0.027;	RY[2][14] = -0.152;	RZ[2][14] = 0.988;	RA[2][14] = 0.09;
         TX[2][15] = -0.145;	TY[2][15] = 0.3;	TZ[2][15] = 0.119;	RX[2][15] = 0;	RY[2][15] = 0;	RZ[2][15] = 0;	RA[2][15] = 0;
         TX[2][16] = -0.069;	TY[2][16] = 0.255;	TZ[2][16] = 0.119;	RX[2][16] = -0.071;	RY[2][16] = -0.059;	RZ[2][16] = 0.996;	RA[2][16] = 0.123;
-        TX[2][17] = 0.035;	TY[2][17] = 0.229;	TZ[2][17] = 0.109;	RX[2][17] = -0.059;	RY[2][17] = -0.022;	RZ[2][17] = 0.998;	RA[2][17] = 0.087;
+        TX[2][17] = 0.035;	TY[2][17] = 0.229;	TZ[2][17] = 0.109;	RX[2][17] = -0.059;	RY[2][17] = -0.022;	RZ[2][17] = 0.998;	RA[2][17] = 0.087;*/
        /* TX[3][0] = -0.191;	TY[3][0] = -0.17;	TZ[3][0] = -0.136;	RX[3][0] = -0.876;	RY[3][0] = 0;	RZ[3][0] = -0.481;	RA[3][0] = 0.089;
         TX[3][1] = -0.196;	TY[3][1] = -0.123;	TZ[3][1] = -0.137;	RX[3][1] = -0.689;	RY[3][1] = 0.185;	RZ[3][1] = -0.701;	RA[3][1] = 0.105;
         TX[3][2] = -0.081;	TY[3][2] = -0.162;	TZ[3][2] = -0.162;	RX[3][2] = -0.374;	RY[3][2] = 0.216;	RZ[3][2] = -0.902;	RA[3][2] = 0.118;
@@ -335,52 +344,52 @@ public class Constants {
         TX[3][23] = -0.181;	TY[3][23] = -0.225;	TZ[3][23] = -0.171;	RX[3][23] = 0;	RY[3][23] = 0;	RZ[3][23] = 0;	RA[3][23] = 0;
         */
        
-                        
-        {
-            ArrayList<ArrayList<Shape3D>> modules = new ArrayList<ArrayList<Shape3D>>();
-            Geometry geo = new Geometry();
+                      
+        
+        ArrayList<ArrayList<Shape3D>> modules = new ArrayList<ArrayList<Shape3D>>();
+        Geometry geo = new Geometry();
 
-            for (int layer = 1; layer <= 8; layer++) {
-                ArrayList<Shape3D> layerModules = new ArrayList<Shape3D>();
-
-                for (int sector = 1; sector <= Constants.NSECT[layer - 1]; sector++) {
-
-                    Shape3D module = new Shape3D();
-
-                    Point3D PlaneModuleOrigin = geo.getPlaneModuleOrigin(sector, layer);
-                    double x0 = PlaneModuleOrigin.x();
-                    double y0 = PlaneModuleOrigin.y();
-                    Point3D PlaneModuleEnd = geo.getPlaneModuleEnd(sector, layer);
-                    double x1 = PlaneModuleEnd.x();
-                    double y1 = PlaneModuleEnd.y();
-
-                    double[] z = new double[6];
-                    z[0] = PlaneModuleOrigin.z();
-                    z[1] = PlaneModuleOrigin.z() + Constants.ACTIVESENLEN;
-                    z[2] = PlaneModuleOrigin.z() + Constants.ACTIVESENLEN + 1 * Constants.DEADZNLEN;
-                    z[3] = PlaneModuleOrigin.z() + 2 * Constants.ACTIVESENLEN + 1 * Constants.DEADZNLEN;
-                    z[4] = PlaneModuleOrigin.z() + 2 * Constants.ACTIVESENLEN + 2 * Constants.DEADZNLEN;
-                    z[5] = PlaneModuleOrigin.z() + 3 * Constants.ACTIVESENLEN + 2 * Constants.DEADZNLEN;
-
-                    for (int i = 0; i < 5; i++) {
-                        Point3D ModulePoint1 = new Point3D(x0, y0, z[i]);
-                        Point3D ModulePoint2 = new Point3D(x1, y1, z[i]);
-                        Point3D ModulePoint3 = new Point3D(x0, y0, z[i + 1]);
-                        Point3D ModulePoint4 = new Point3D(x1, y1, z[i + 1]);
-
-                        Triangle3D Module1 = new Triangle3D(ModulePoint1, ModulePoint2, ModulePoint4);
-                        Triangle3D Module2 = new Triangle3D(ModulePoint1, ModulePoint3, ModulePoint4);
-
-                        module.addFace(Module1);
-                        module.addFace(Module2);
-                    }
-
-                    layerModules.add(module);
-                }
+        for (int layer = 1; layer <= 8; layer++) {
+        	ArrayList<Shape3D> layerModules = new ArrayList<Shape3D>();
+        	
+        	for (int sector = 1; sector <= Constants.NSECT[layer - 1]; sector++) {
+        		
+        		Shape3D module = new Shape3D();
+        		
+        		Point3D PlaneModuleOrigin = geo.getPlaneModuleOrigin(sector, layer);
+        		double x0 = PlaneModuleOrigin.x();
+        		double y0 = PlaneModuleOrigin.y();
+        		Point3D PlaneModuleEnd = geo.getPlaneModuleEnd(sector, layer);
+        		double x1 = PlaneModuleEnd.x();
+        		double y1 = PlaneModuleEnd.y();
+        		
+        		double[] z = new double[6];
+        		z[0] = PlaneModuleOrigin.z();
+        		z[1] = PlaneModuleOrigin.z() + Constants.ACTIVESENLEN;
+        		z[2] = PlaneModuleOrigin.z() + Constants.ACTIVESENLEN + 1 * Constants.DEADZNLEN;
+        		z[3] = PlaneModuleOrigin.z() + 2 * Constants.ACTIVESENLEN + 1 * Constants.DEADZNLEN;
+        		z[4] = PlaneModuleOrigin.z() + 2 * Constants.ACTIVESENLEN + 2 * Constants.DEADZNLEN;
+        		z[5] = PlaneModuleOrigin.z() + 3 * Constants.ACTIVESENLEN + 2 * Constants.DEADZNLEN;
+        		
+        		for (int i = 0; i < 5; i++) {
+        			Point3D ModulePoint1 = new Point3D(x0, y0, z[i]);
+        			Point3D ModulePoint2 = new Point3D(x1, y1, z[i]);
+        			Point3D ModulePoint3 = new Point3D(x0, y0, z[i + 1]);
+        			Point3D ModulePoint4 = new Point3D(x1, y1, z[i + 1]);
+        			
+        			Triangle3D Module1 = new Triangle3D(ModulePoint1, ModulePoint2, ModulePoint4);
+        			Triangle3D Module2 = new Triangle3D(ModulePoint1, ModulePoint3, ModulePoint4);
+        			
+        			module.addFace(Module1);
+        			module.addFace(Module2);
+                    	}
+        		
+        		layerModules.add(module);
+                	}
                 modules.add(layer - 1, layerModules);
-            }
+            }	
             MODULEPLANES = modules;
-        }
+        
 
         areConstantsLoaded = true;
         System.out.println(" SVT geometry constants loaded ? " + areConstantsLoaded);
