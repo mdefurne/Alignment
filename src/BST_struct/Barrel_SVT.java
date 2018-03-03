@@ -7,8 +7,9 @@ import org.jlab.io.base.DataBank;
 import BST_struct.Hit;
 import BST_struct.Cluster;
 import BST_struct.Module;
-import BST_geo.Geometry;
+import BST_geo.*;
 import org.jlab.geom.prim.Point3D;
+import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 
 
 public class Barrel_SVT {
@@ -16,8 +17,9 @@ public class Barrel_SVT {
 	Module[][] Modules=new Module[6][18]; //Six Layers made of at most 18 modules
 	Geometry geo;
 	
-	public Barrel_SVT(Geometry BSTgeo){
-		geo=BSTgeo;
+	public Barrel_SVT(){
+		geo= new BST_geo.Geometry();
+		BST_geo.Constants.Load();
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
 				Modules[lay][sec]=new Module(lay+1,sec+1);

@@ -7,14 +7,16 @@ import org.jlab.io.base.DataBank;
 import BMT_struct.Hit;
 import BMT_struct.Cluster;
 import BMT_struct.Tile;
-import BMT_geo.Geometry;
+import BMT_geo.*;
+import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 
 public class Barrel {
 	Tile[][] Tiles=new Tile[6][3]; 
 	Geometry geo;
 	
-	public Barrel(Geometry BMTgeo){
-		geo=BMTgeo;
+	public Barrel(){
+		geo= new BMT_geo.Geometry();
+		BMT_geo.CCDBConstantsLoader.Load(new DatabaseConstantProvider(10, "default"));
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<3;sec++) {
 				Tiles[lay][sec]=new Tile(lay+1,sec+1);
