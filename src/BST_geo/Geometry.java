@@ -136,7 +136,7 @@ public class Geometry {
     //***
 
     public Point3D transformToFrame(int sector, int layer, double x, double y, double z, String frame, String MiddlePlane) {
-
+    	
         // global rotation angle
         double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) * 2. * Math.PI + Constants.PHI0[layer - 1];
         // angle to rotate to global frame
@@ -276,7 +276,7 @@ public class Geometry {
     }
 
     public double calcNearestStrip(double X, double Y, double Z, int layer, int sect) {
-
+    	
         Point3D LocPoint = this.transformToFrame(sect, layer, X, Y, Z, "local", "");
 
         double x = LocPoint.x();
@@ -745,6 +745,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 				inter.setX(lambda*dir_line.x()+pt_line.x());
 				inter.setY(lambda*dir_line.y()+pt_line.y());
 				inter.setZ(lambda*dir_line.z()+pt_line.z());
+				if (findSectorFromAngle(layer,inter)<0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 			}
 		}
 		else inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);

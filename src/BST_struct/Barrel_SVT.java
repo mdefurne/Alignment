@@ -16,6 +16,7 @@ public class Barrel_SVT {
 	
 	Module[][] Modules=new Module[6][18]; //Six Layers made of at most 18 modules
 	Geometry geo;
+	int [] layer_swap={2,1,4,3,6,5};
 	
 	public Barrel_SVT(){
 		geo= new BST_geo.Geometry();
@@ -53,7 +54,9 @@ public class Barrel_SVT {
 		clear();
 		for (int row=0;row<pbank.rows();row++){
 			int layer= pbank.getByte("layer",row );
+			layer=layer_swap[layer-1];
 			int sector= pbank.getByte("sector",row );
+			sector=19-sector;
 			int strip= pbank.getShort("component",row );
 			int ADC= pbank.getInt("ADC",row );
 			float time= pbank.getFloat("time",row );
