@@ -52,7 +52,7 @@ public class Geometry {
     //*** 
     public int findSectorFromAngle(int layer, Vector3D trkPoint) {
         int Sect = -1;
-        for (int s = 0; s < Constants.NSECT[layer - 1] - 1; s++) {
+        for (int s = 0; s < Constants.NSECT[layer - 1]; s++) {
             int sector = s + 1;
             Vector3D orig = new Vector3D(getPlaneModuleOrigin(sector, layer).x(), getPlaneModuleOrigin(sector, layer).y(), 0);
             Vector3D end = new Vector3D(getPlaneModuleEnd(sector, layer).x(), getPlaneModuleEnd(sector, layer).y(), 0);
@@ -139,6 +139,7 @@ public class Geometry {
     	
         // global rotation angle
         double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) * 2. * Math.PI + Constants.PHI0[layer - 1];
+        
         // angle to rotate to global frame
         double Loc_to_Glob_rangl = Glob_rangl - Constants.LOCZAXISROTATION;
 

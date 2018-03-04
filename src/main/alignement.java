@@ -2,7 +2,7 @@ package main;
 
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
-import org.jlab.geom.prim.Point3D;
+import org.jlab.geom.prim.Vector3D;
 import org.jlab.io.hipo.HipoDataSource;
 import BMT_struct.Barrel;
 import BST_struct.Barrel_SVT;
@@ -42,7 +42,6 @@ public class alignement {
 		while(reader.hasEvent()) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
-		    
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"));
 		    	BST.fillBarrel(event.getBank("BST::adc"));

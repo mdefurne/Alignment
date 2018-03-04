@@ -38,7 +38,7 @@ public class Barrel_SVT {
 	}
 	
 	public Module getModule(int lay, int sec) {
-		return Modules[lay][sec];
+		return Modules[lay-1][sec-1];
 	}
 	
 	public void MakeClusters() {
@@ -54,9 +54,7 @@ public class Barrel_SVT {
 		clear();
 		for (int row=0;row<pbank.rows();row++){
 			int layer= pbank.getByte("layer",row );
-			layer=layer_swap[layer-1];
 			int sector= pbank.getByte("sector",row );
-			sector=19-sector;
 			int strip= pbank.getShort("component",row );
 			int ADC= pbank.getInt("ADC",row );
 			float time= pbank.getFloat("time",row );
