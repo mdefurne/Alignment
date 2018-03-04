@@ -8,20 +8,47 @@ import org.jlab.geom.prim.Vector3D;
 
 
 public class BSTAna {
-	
+	H1F[][] SVT_residual=new H1F[6][18];
 	
 	public BSTAna() {
-		
+		for (int lay=0; lay<6;lay++) {
+			for (int sec=0; sec<18;sec++) {
+				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",200,-5,5);
+			}
+		}
 	}
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
 		
 		if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<50) {
-			System.out.println(cand.get_PointTrack());
-			Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(1, cand.get_VectorTrack(), cand.get_PointTrack()));
-			double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), 1, BST.getGeometry().findSectorFromAngle(1, inter));
-			System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
+			for (int lay=1;lay<6;lay++) {
+				int sec=BST.getGeometry().findSectorFromAngle(lay, cand.get_PointTrack());
+				if (!Double.isNaN(sec)) {
+					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
+					double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay, BST.getGeometry().findSectorFromAngle(lay, inter));
+					double ClosestStrip=-20;
+					for (int clus=0;clus<BST.getModule(lay, sec).getClusters().size();clus++) {
+						//System.out.println(BST.getModule(lay, sec).getClusters().size()+" ");
+						if (Math.abs(BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid()-strip)<Math.abs(ClosestStrip-strip)) ClosestStrip=BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid();
+					}
+					SVT_residual[lay-1][sec-1].fill(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), (int)ClosestStrip, inter));
+				}
+				//System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
+			}
 		}
+	}
+	
+	public void draw() {
+		 TCanvas[] residual = new TCanvas[6];
+		 for (int lay=0;lay<6;lay++) {
+		 residual[lay]= new TCanvas("Residual for layer "+(lay+1), 1100, 700);
+		 residual[lay].divide(4, 5);
+		 for (int sec=0;sec<18;sec++) {
+					residual[lay].cd(sec);
+					residual[lay].draw(SVT_residual[lay][sec]);
+					
+		 	}
+		 }
 	}
 
 }

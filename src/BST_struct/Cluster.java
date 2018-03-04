@@ -11,6 +11,7 @@ public class Cluster {
 	
 	private int size;
 	private int Edep;
+	private double centroid;
 	private double phi_mid;
 	private double z_mid;
 	private double err_phi_mid;
@@ -20,6 +21,7 @@ public class Cluster {
 	public Cluster() {
 		size=0;
 		Edep=0;
+		centroid=0;
 		phi_mid=0;
 		z_mid=0;
 		err_phi_mid=0;
@@ -29,6 +31,7 @@ public class Cluster {
 	
 	public void add(int id_hit, Hit aHit) {
 		hit_id.add(id_hit);
+		centroid=Edep*centroid+aHit.getADC()*id_hit;
 		size++;
 		phi_mid=Edep*phi_mid+aHit.getPhi()*aHit.getADC();
 		z_mid=Edep*z_mid+aHit.getZ()*aHit.getADC();
@@ -40,6 +43,7 @@ public class Cluster {
 			z_mid=z_mid/Edep;
 			err_phi_mid=err_phi_mid/Edep;
 			err_z_mid=err_z_mid/Edep;
+			centroid=centroid/Edep;
 		}
 	}
 
@@ -61,6 +65,10 @@ public class Cluster {
 	
 	public double getErrZ() {
 		return err_z_mid;
+	}
+	
+	public double getCentroid() {
+		return centroid;
 	}
 	
 }

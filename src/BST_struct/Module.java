@@ -80,4 +80,8 @@ public class Module {
 	public Vector3D getNormBST() {
 		return norm;
 	}
+	
+	public HashMap<Integer, Cluster> getClusters(){
+		return clustermap;
+	}
 }
