@@ -47,7 +47,7 @@ public class Module {
 	public void DoClustering() {
 		SortHitmap();
 		int num_hit=sorted_hitmap.size();
-		int last_hit=-3;
+		int last_hit=-5;
 		float last_time=-1000;
 		if (num_hit!=0) {
 			for(HashMap.Entry<Integer,Hit> m:sorted_hitmap.entrySet()) {

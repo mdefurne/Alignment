@@ -34,17 +34,23 @@ public class alignement {
 		MVTAli.init();
 		
 		String fileName;
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_90.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
+		boolean isMC=false;
+		
 		while(reader.hasEvent()) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
+		    
+		    if (event.hasBank("MC::True")) isMC=true;
+		    
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
-		    	BMT.fillBarrel(event.getBank("BMT::adc"));
-		    	BST.fillBarrel(event.getBank("BST::adc"));
+		    	BMT.fillBarrel(event.getBank("BMT::adc"),isMC);
+		    	BST.fillBarrel(event.getBank("BST::adc"),isMC);
 		    	TrackFinder tracky=new TrackFinder();
 		    	tracky.BuildCandidates(BMT);
 		    	tracky.FetchTrack();

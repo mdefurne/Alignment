@@ -67,18 +67,19 @@ public class Barrel {
 	}
 	
 	@SuppressWarnings("static-access")
-	public void fillBarrel(DataBank pbank) {
+	public void fillBarrel(DataBank pbank, boolean isMC) {
 		clear();
+		float time=0;
 		for (int row=0;row<pbank.rows();row++){
 			int layer= pbank.getByte("layer",row );
 			int sector= pbank.getByte("sector",row );
 			int strip= pbank.getShort("component",row );
 			int ADC= pbank.getInt("ADC",row );
-			float time= pbank.getFloat("time",row );
-			
-			if (geo.getZorC(layer)==1) 
+			if (!isMC) time= pbank.getFloat("time",row );
+						
+			if (geo.getZorC(layer)==1&&strip>0&&ADC>0) 
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time);
-			if (geo.getZorC(layer)==0) 
+			if (geo.getZorC(layer)==0&&strip>0&&ADC>0) 
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time);
 		}
 		MakeClusters();
