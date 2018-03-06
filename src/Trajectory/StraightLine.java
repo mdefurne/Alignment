@@ -89,7 +89,11 @@ public class StraightLine {
 				double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
 				Vector3D Proj=this.getPoint(lambda);
 				distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
-				if (clus.getPhi()!=Math.atan2(Proj.y(), Proj.x())) distance=distance*(Math.atan2(Proj.y(), Proj.x())-clus.getPhi())/Math.abs(clus.getPhi()-Math.atan2(Proj.y(), Proj.x()));
+				double phi_clus=clus.getPhi();
+				if (phi_clus<0) phi_clus=phi_clus+2*Math.PI;
+				double phi_proj=Math.atan2(Proj.y(), Proj.x());
+				if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
+				distance=clus.getRadius()*(phi_clus-phi_proj);
 			}
 			
 			//System.out.println("Z "+distance);
