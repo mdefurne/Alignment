@@ -30,8 +30,8 @@ public class Tile {
 		clustermap = new HashMap<Integer, Cluster>();
 	}
 	
-	public void addHit(int strip, double radius, double phi, double z, int adc, float time) {
-		Hit aHit=new Hit(radius, phi, z, adc, time);
+	public void addHit(int strip, double radius, double phi, double z, int adc, float time, double err) {
+		Hit aHit=new Hit(radius, phi, z, adc, time, err);
 		hitmap.put(strip, aHit);
 	}
 	

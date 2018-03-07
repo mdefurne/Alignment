@@ -20,18 +20,9 @@ public class alignement {
 		Holmes=new Analyzer();
 	}
 	
-	public boolean init() {
-        System.out.println(" ........................................ trying to connect to db ");
-        //BST_geo.CCDBConstantsLoader.Load(new DatabaseConstantProvider(10, "default"));
-        BST_geo.Constants.Load();
-        return true;
-    }
-	
-	
 	public static void main(String[] args) {
 		
 		alignement MVTAli=new alignement();
-		MVTAli.init();
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";

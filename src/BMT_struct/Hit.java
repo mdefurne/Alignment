@@ -5,23 +5,24 @@ public class Hit {
 	float time_strip;
 	double radius_strip;
 	double phi_strip;
+	double err_strip;
 	double z_strip;
 	
 	public Hit() {
-		this.set(Float.NaN,Float.NaN,Float.NaN,0,0);
+		this.set(Float.NaN,Float.NaN,Float.NaN,0,0,0);
 	}
 	
-	public Hit(double radius, double phi, double z,int adc, float time) {
-		this.set(radius, phi, z, adc, time);
+	public Hit(double radius, double phi, double z,int adc, float time, double err) {
+		this.set(radius, phi, z, adc, time, err);
 	}
 	
-	public final void set(double radius, double phi, double z,int adc, float time) {
+	public final void set(double radius, double phi, double z,int adc, float time, double err) {
 		radius_strip=radius;
 		phi_strip=phi;
 		z_strip=z;
 		adc_strip=adc;
 		time_strip=time;
-		
+		err_strip=err;
 	}
 		
 	public int getADC() {
@@ -42,6 +43,10 @@ public class Hit {
 	
 	public double getZ() {
 		return z_strip;
+	}
+	
+	public double getErr() {
+		return err_strip;
 	}
 	
 	public void print() {

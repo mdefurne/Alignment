@@ -78,9 +78,9 @@ public class Barrel {
 			if (!isMC) time= pbank.getFloat("time",row );
 						
 			if (geo.getZorC(layer)==1&&strip>0&&ADC>0) 
-				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time);
+				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
 			if (geo.getZorC(layer)==0&&strip>0&&ADC>0) 
-				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time);
+				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
 		}
 		MakeClusters();
 		//PrintClusters();

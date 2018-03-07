@@ -16,8 +16,7 @@ public class Barrel_SVT {
 	
 	Module[][] Modules=new Module[6][18]; //Six Layers made of at most 18 modules
 	Geometry geo;
-	int [] layer_swap={2,1,4,3,6,5};
-	
+		
 	public Barrel_SVT(){
 		geo= new BST_geo.Geometry();
 		BST_geo.Constants.Load();

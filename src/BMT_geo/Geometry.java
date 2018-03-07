@@ -180,26 +180,33 @@ public class Geometry {
 
     public double CRCStrip_GetPitch(int layer, int strip) {
 
-        int num_strip = strip - 1;     			// index of the strip (starts at 0)
+    	int num_strip = strip - 1;     			// index of the strip (starts at 0)
         int num_region = (int) (layer + 1) / 2 - 1; // region index (0...2) 0=layers 1&2, 1=layers 3&4, 2=layers 5&6
-
+        double pitch=0.0;
         //For CR6C, this function returns the Z position of the strip center
-        int group = 0;
-        int limit = Constants.getCRCGROUP()[num_region][group];
+        if (this.getZorC(layer)==0) {
+        	int group = 0;
+        	int limit = Constants.getCRCGROUP()[num_region][group];
 
-        if (num_strip > 0) {
-            for (int j = 1; j < num_strip + 1; j++) {
+        	if (num_strip > 0) {
+        		for (int j = 1; j < num_strip + 1; j++) {
 
-                if (j >= limit) { //test if we change the width
-                    group++;
-                    limit += Constants.getCRCGROUP()[num_region][group];
-                }
-            }
+        			if (j >= limit) { //test if we change the width
+        				group++;
+        				limit += Constants.getCRCGROUP()[num_region][group];
+        			}
+        		}
+        	}
+        	pitch=Constants.getCRCWIDTH()[num_region][group];
+        }
+        
+        if (this.getZorC(layer)==1) {
+        	pitch=Constants.getCRZWIDTH()[num_region];
         }
 
-        return Constants.getCRCWIDTH()[num_region][group]; //
+        return pitch; //
     }
-
+    
     /**
      *
      * @param layer

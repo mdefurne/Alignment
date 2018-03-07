@@ -38,7 +38,7 @@ public class Cluster {
 		size=0;
 		Edep=0;
 		hit_id=new ArrayList();
-		Err=0.1;//mm
+		Err=0.0;//mm
 		}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -51,6 +51,7 @@ public class Cluster {
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
 		
 		centroid_r=aHit.getRadius();
+		Err=Edep*Err+aHit.getADC()*aHit.getErr();
 		
 		if(!Double.isNaN(aHit.getPhi())) {
 			centroid_phi=Edep*centroid_phi+aHit.getADC()*aHit.getPhi();
@@ -70,7 +71,7 @@ public class Cluster {
 			centroid_z=centroid_z/Edep;
 		}
 		centroid+=id_hit*aHit.getADC();
-		
+		Err=Err/Edep;
 	}
 	
 	public double getX() {

@@ -13,7 +13,11 @@ public class Fitter {
 	private double radius;
 	
 	public Fitter() {
-		radius=177.646;
+		radius=100;
+	}
+	
+	public double getPointRadius() {
+		return radius;
 	}
 	
 	public void StraightTrack(HashMap<Integer, TrackCandidate> Candidates) {
@@ -52,7 +56,7 @@ public class Fitter {
 			    	temp_bis.setXYZ(radius*Math.cos(res[2]),radius*Math.sin(res[2]),res[3]);
 			    	Candidates.get(num_cand+1).set_PointTrack(temp_bis);
 			    	
-			    	//double radius=177.646;	//Radius of the middle layer which should be crossed by the track in anycase	
+			    //Radius of the middle layer which should be crossed by the track in anycase	
 					StraightLine line=new StraightLine();
 					line.setPhi(res[0]);
 					line.setTheta(res[1]);
