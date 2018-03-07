@@ -33,7 +33,7 @@ public class alignement {
 		int count=0;
 		boolean isMC=false;
 		
-		while(reader.hasEvent()&&count<15000) {
+		while(reader.hasEvent()) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    

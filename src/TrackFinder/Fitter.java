@@ -26,7 +26,7 @@ public class Fitter {
 			    upar.add("theta", Math.PI/2., Math.PI/2. , Math.toRadians(25), Math.toRadians(150));
 			    upar.add("point_phi", Candidates.get(num_cand+1).getPhiMean(), Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()-Math.PI/4.,Candidates.get(num_cand+1).getPhiMean()+Math.PI/4.);
 			    upar.add("point_z", 0, 300.,-300.,300.);
-			    
+			   			    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
 			    
