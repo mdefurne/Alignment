@@ -13,14 +13,14 @@ public class BSTAna {
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
-				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
+				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",200,-2,2);
 			}
 		}
 	}
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
 		
-		if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<10&&cand.get_FitStatus()) {
+		if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<50&&cand.get_FitStatus()) {
 			for (int lay=1;lay<7;lay++) {
 					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
 					if (!Double.isNaN(inter.x())) {

@@ -25,8 +25,8 @@ public class alignement {
 		alignement MVTAli=new alignement();
 		
 		String fileName;
-		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_90.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_90.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);

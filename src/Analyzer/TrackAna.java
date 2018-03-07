@@ -12,7 +12,7 @@ public class TrackAna {
 	H1F[][] C_residual=new H1F[3][3];
 	
 	public TrackAna() {
-		Theta_track=new H1F("Theta angle of track","Theta angle for track",45,80,100);
+		Theta_track=new H1F("Theta angle of track","Theta angle for track",90,0,180);
 		Phi_track=new H1F("Phi angle of track","Phi angle for track",90,-180,180);
 		Chi2_track=new H1F("Chi2 of track","Chi2 angle for track",90,0,100);
 		for (int lay=0;lay<3;lay++) {
@@ -31,7 +31,7 @@ public class TrackAna {
 			if (cand.get_Nc()==3&&cand.get_Nz()==3) Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
-				if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<10) {
+				if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<50) {
 					//System.out.println(clus+" "+cand.GetCluster(clus).getLayer());
 				if (cand.get_Nz()==3&&(cand.GetCluster(clus).getLayer()==2||cand.GetCluster(clus).getLayer()==3||cand.GetCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));
