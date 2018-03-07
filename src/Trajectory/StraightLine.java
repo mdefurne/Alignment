@@ -12,7 +12,7 @@ public class StraightLine {
 	boolean Point_in_Y; //Look at phi mean of the track candidate to determine which plan we should choose for the plan (x=0 or y=0)
 	double Phi; //atan2(sy,sx);
 	double Theta; //ACos(s_perp/s_tot)
-	
+		
 	public StraightLine() {
 		slope=new Vector3D();
 		point=new Vector3D();
@@ -130,10 +130,7 @@ public class StraightLine {
 		return distance;
 	}
 	
-	public void FindResiduals() {
 		
-	}
-	
 	public int isinsector(Vector3D point) {
 		int sec=0;
 		double ang=Math.toDegrees(Math.atan2(point.y(), point.x()));
