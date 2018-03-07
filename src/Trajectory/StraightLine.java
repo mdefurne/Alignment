@@ -90,7 +90,7 @@ public class StraightLine {
 				Vector3D Proj=this.getPoint(lambda);
 				distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
 				double phi_clus=clus.getPhi();
-				if (phi_clus<0) phi_clus=phi_clus+2*Math.PI;
+				if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
 				double phi_proj=Math.atan2(Proj.y(), Proj.x());
 				if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
 				distance=clus.getRadius()*(phi_clus-phi_proj);
