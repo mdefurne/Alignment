@@ -8,16 +8,19 @@ import BMT_struct.Barrel;
 import BST_struct.Barrel_SVT;
 import TrackFinder.*;
 import Analyzer.*;
+import Particles.*;
 
 public class alignement {
 	static Barrel BMT;
 	static Barrel_SVT BST;
-	static Analyzer Holmes;
+	static ParticleEvent MCParticles;
+	static Analyzer Sherlock;
 	
 	public alignement() {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
-		Holmes=new Analyzer();
+		Sherlock=new Analyzer();
+		MCParticles=new ParticleEvent();
 	}
 	
 	public static void main(String[] args) {
@@ -31,25 +34,38 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		boolean isMC=false;
-		
+			
 		while(reader.hasEvent()) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    
-		    if (event.hasBank("MC::True")) isMC=true;
+		    //Load all the constant needed but only for the first event
+		    if (!main.constant.isLoaded) {
+		    	if (event.hasBank("MC::Particle")) {
+		    		main.constant.setMC(true);
+		    	}
 		    
+		    	if (event.hasBank("RUN::config")) {
+		    		main.constant.setSolenoidscale(event.getBank("RUN::Config").getFloat("solenoid", 0));
+		    		if (main.constant.solenoid_scale==0.0) main.constant.setCosmic(true);
+		    	}
+		    	main.constant.setLoaded(true);
+		    }
+		    
+		    //Analyze the event
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
-		    	BMT.fillBarrel(event.getBank("BMT::adc"),isMC);
-		    	BST.fillBarrel(event.getBank("BST::adc"),isMC);
+		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
+		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
 		    	TrackFinder tracky=new TrackFinder();
 		    	tracky.BuildCandidates(BMT);
 		    	tracky.FetchTrack();
-		    	Holmes.analyze(BMT, BST, tracky.get_Candidates());
+		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
+		    	Sherlock.analyze(BMT, BST, tracky.get_Candidates(), MCParticles);
 		    }
-		         
+		   		   		         
 		}
-		Holmes.draw();
+		
+		Sherlock.draw();
 		
 		System.out.println("Done!");
  }

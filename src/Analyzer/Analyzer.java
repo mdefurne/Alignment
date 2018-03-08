@@ -4,6 +4,8 @@ import java.util.HashMap;
 import BST_struct.*;
 import BMT_struct.Barrel;
 import TrackFinder.*;
+import org.jlab.io.base.DataBank;
+import Particles.*;
 
 public class Analyzer {
 	TrackAna Trackmeter;
@@ -14,7 +16,7 @@ public class Analyzer {
 		Simeter=new BSTAna();
 	}
 	
-	public void analyze(Barrel BMT, Barrel_SVT BST , HashMap<Integer,TrackCandidate> candidates) {
+	public void analyze(Barrel BMT, Barrel_SVT BST , HashMap<Integer,TrackCandidate> candidates, ParticleEvent MCParticle) {
 		for (int i=0;i<candidates.size();i++) {
 			if (candidates.get(i+1).get_FitStatus()) {
 				Trackmeter.analyze(candidates.get(i+1));
