@@ -10,10 +10,12 @@ import Particles.*;
 public class Analyzer {
 	TrackAna Trackmeter;
 	BSTAna Simeter;
+	MCAna MCmeter;
 	
 	public Analyzer() {
 		Trackmeter=new TrackAna();
 		Simeter=new BSTAna();
+		MCmeter= new MCAna();
 	}
 	
 	public void analyze(Barrel BMT, Barrel_SVT BST , HashMap<Integer,TrackCandidate> candidates, ParticleEvent MCParticle) {
@@ -21,13 +23,15 @@ public class Analyzer {
 			if (candidates.get(i+1).get_FitStatus()) {
 				Trackmeter.analyze(candidates.get(i+1));
 				Simeter.analyze(BST, candidates.get(i+1));
+				MCmeter.analyze(MCParticle,candidates.get(i+1));
 			}
 		}
 	}
 	
 	public void draw() {
 		Trackmeter.draw();
-		Simeter.draw();
+		//Simeter.draw();
+		MCmeter.draw();
 	}
 	
 }

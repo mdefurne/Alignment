@@ -1,7 +1,6 @@
 package Particles;
 
 import java.util.ArrayList;
-
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 
@@ -252,6 +251,7 @@ public class ParticleEvent {
 	 * @param event  event to CompareTo
 	 */
 	public void readMCBanks(DataEvent event){
+		particles.clear();
 		if (event.hasBank("MC::Particle") == true) {
 			DataBank bankParticle = event.getBank("MC::Particle");
 

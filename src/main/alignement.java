@@ -46,7 +46,7 @@ public class alignement {
 		    	}
 		    
 		    	if (event.hasBank("RUN::config")) {
-		    		main.constant.setSolenoidscale(event.getBank("RUN::Config").getFloat("solenoid", 0));
+		    		main.constant.setSolenoidscale(event.getBank("RUN::config").getFloat("solenoid", 0));
 		    		if (main.constant.solenoid_scale==0.0) main.constant.setCosmic(true);
 		    	}
 		    	main.constant.setLoaded(true);

@@ -222,5 +222,23 @@ public class TrackCandidate{
 	public double get_chi2() {
 		return chi2;
 	}
+	
+	public boolean IsGoodCandidate() {
+		boolean good=true;
+		if (chi2>50) good=false;
+		if (nz<2) good=false;
+		if (nc<2) good=false;
+		if (!fit_status) good=false;
+		return good;
+	}
+	
+	public boolean IsVeryGoodCandidate() {
+		boolean good=true;
+		if (chi2>10) good=false;
+		if (nz<3) good=false;
+		if (nc<3) good=false;
+		if (!fit_status) good=false;
+		return good;
+	}
 
 }
