@@ -25,6 +25,7 @@ public class Cluster {
 	private double Err;
 	private int layer_clus;
 	private int sector_clus;
+	boolean InTheFit;
 		
 	public Cluster() {
 		t_min=0;
@@ -39,6 +40,7 @@ public class Cluster {
 		Edep=0;
 		hit_id=new ArrayList();
 		Err=0.0;//mm
+		InTheFit=true;
 		}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -144,6 +146,14 @@ public class Cluster {
 	
 	public double getErr(){
 		return Err;
+	}
+	
+	public void InTheFit(boolean infit) {
+		InTheFit=infit;
+	}
+	
+	public boolean IsInFit() {
+		return InTheFit;
 	}
 				
 }

@@ -13,6 +13,7 @@ public class Tile {
 	HashMap<Integer, Cluster> clustermap;
 	int layer_id;
 	int sector_id;
+	boolean InTheTracking;
 	
 	public Tile() {
 		layer_id=0;
@@ -20,6 +21,7 @@ public class Tile {
 		hitmap = new HashMap<Integer, Hit>();
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
+		InTheTracking=true;
 	}
 	
 	public Tile(int layer, int sector) {
@@ -28,6 +30,7 @@ public class Tile {
 		hitmap = new HashMap<Integer, Hit>();
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
+		InTheTracking=true;
 	}
 	
 	public void addHit(int strip, double radius, double phi, double z, int adc, float time, double err) {
@@ -38,6 +41,14 @@ public class Tile {
 	public void SortHitmap() {
 		sorted_hitmap.clear();
 		sorted_hitmap.putAll(hitmap);
+	}
+	
+	public void DisableTile() {
+		InTheTracking=false;
+	}
+	
+	public void EnableTile() {
+		InTheTracking=true;
 	}
 	
 	public void DoClustering() {
@@ -56,6 +67,7 @@ public class Tile {
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    		clus.setLayer(layer_id);
 		    		clus.setSector(sector_id);
+		    		clus.InTheFit(InTheTracking);
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}
 		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=50) {

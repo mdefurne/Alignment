@@ -36,6 +36,27 @@ public class Barrel {
 		return Tiles[lay][sec];
 	}
 	
+	public void DisableTile(int lay, int sec) {
+		Tiles[lay-1][sec-1].DisableTile();
+	}
+	
+	public void EnableTile(int lay, int sec) {
+		Tiles[lay-1][sec-1].EnableTile();
+	}
+		
+	public void DisableLayer(int lay) {
+		for (int sec=0;sec<3;sec++) {
+			Tiles[lay-1][sec].DisableTile();
+		}
+	}
+	
+	public void EnableLayer(int lay) {
+		for (int sec=0;sec<3;sec++) {
+			Tiles[lay-1][sec].EnableTile();
+		}
+	}
+	
+	
 	public void PrintClusters() {
 		int nb_clusters;
 		double rad,phi,z;
