@@ -4,10 +4,14 @@ import org.freehep.math.minuit.FCNBase;
 import TrackFinder.TrackCandidate;
 import Trajectory.StraightLine;
 import TrackFinder.Fitter;
+import BMT_struct.*;
+import BST_struct.*;
 
 public class FCNChi2 implements FCNBase {
 
 	TrackCandidate ToFit;
+	Barrel BMT;
+	Barrel_SVT BST;
 	
 	public double valueOf(double[] par)
 	   {
@@ -24,14 +28,16 @@ public class FCNChi2 implements FCNBase {
 	      if (ToFit.size()==0) return val;
 	      
 	      for (int clus=0;clus<ToFit.size();clus++) {
-	    	  if (ToFit.GetCluster(clus).IsInFit()) val+=Math.pow(line.getDistance(ToFit.GetCluster(clus))/ToFit.GetCluster(clus).getErr(),2);
+	    	  if (ToFit.GetCluster(clus).IsInFit()) val+=Math.pow(BMT.getGeometry().getResidual_line(ToFit.GetCluster(clus),line.getSlope(),line.getPoint())/ToFit.GetCluster(clus).getErr(),2);
 	      }
 	      
 	      return val;
 	   }
 	
-	public void SetTrackCandidate(TrackCandidate Track) {
+	public void SetTrackCandidate(Barrel BMT_det, Barrel_SVT BST_det, TrackCandidate Track) {
 		ToFit=Track;
+		BMT=BMT_det;
+		BST=BST_det;
 	}
 
 }

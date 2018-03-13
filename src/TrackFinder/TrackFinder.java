@@ -1,6 +1,7 @@
 package TrackFinder;
 
 import BMT_struct.*;
+import BST_struct.*;
 import java.util.*;
 import TrackFinder.TrackCandidate;
 import TrackFinder.Fitter;
@@ -12,13 +13,17 @@ public class TrackFinder {
 	float time_match;
 	double phi_match;
 	int cand_newsec;
+	Barrel BMT_det;
+	Barrel_SVT BST_det;
 	
-	public TrackFinder() {
+	public TrackFinder(Barrel BMT, Barrel_SVT BST) {
 		Candidates=new HashMap();
 		BufferLayer=new ArrayList();
 		time_match=40;
 		phi_match=Math.toRadians(15);
 		cand_newsec=0;
+		BMT_det=BMT;
+		BST_det=BST;
 	}
 	
 	public HashMap<Integer, TrackCandidate> get_Candidates(){
@@ -33,7 +38,7 @@ public class TrackFinder {
 		Candidates.clear();
 	}
 	
-	public void BuildCandidates(Barrel BMT_det) {
+	public void BuildCandidates() {
 		Tile tiles=new Tile();
 		boolean IsAttributed=true;
 		boolean noHit_yet_sector=true;
@@ -94,7 +99,7 @@ public class TrackFinder {
 		
 	}
 	
-	public boolean IsCompatible(Cluster clus, TrackCandidate ToBuild) {
+	public boolean IsCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		boolean test_val=false;
 		if (this.IsTimeCompatible(clus, ToBuild)) {
 			if (this.IsLayerCompatible(clus, ToBuild)) {
@@ -106,21 +111,21 @@ public class TrackFinder {
 		return test_val;
 	}
 	
-	public boolean IsTimeCompatible(Cluster clus, TrackCandidate ToBuild) {
+	public boolean IsTimeCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
 		if (Math.abs(clus.getT_min()-ToBuild.GetTimeLastHit())<time_match) test_val=true;
 		return test_val;
 	}
 	
-	public boolean IsLayerCompatible(Cluster clus, TrackCandidate ToBuild) {
+	public boolean IsLayerCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
 		if (clus.getLayer()!=ToBuild.GetLayerLastHit()) test_val=true;
 		return test_val;
 	}
 	
-	public boolean IsSpatialCompatible(Cluster clus, TrackCandidate ToBuild) {
+	public boolean IsSpatialCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
 		if (Double.isNaN(clus.getZ())) {
@@ -132,7 +137,7 @@ public class TrackFinder {
 	
 	public void FetchTrack() {
 		Fitter myfit=new Fitter();
-		myfit.StraightTrack(Candidates);
+		myfit.StraightTrack(BMT_det, BST_det, Candidates);
 		}
 	
 }	

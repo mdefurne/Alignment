@@ -22,7 +22,7 @@ public class BSTAna {
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
 		
-		if (cand.get_Nc()==3&&cand.get_Nz()>=2&&cand.get_chi2()<50&&cand.get_FitStatus()) {
+		if (cand.IsGoodCandidate()&&cand.get_FitStatus()) {
 			for (int lay=1;lay<7;lay++) {
 					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
 					if (!Double.isNaN(inter.x())) {
@@ -33,7 +33,7 @@ public class BSTAna {
 						//System.out.println(BST.getModule(lay, sec).getClusters().size()+" ");
 						if (Math.abs(BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid()-strip)<Math.abs(ClosestStrip-strip)) ClosestStrip=BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid();
 					}
-					double residual=BST.getGeometry().getResidual(lay, BST.getGeometry().findSectorFromAngle(lay, inter), (int)ClosestStrip, inter);
+					double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), (int)ClosestStrip, inter);
 					SVT_residual[lay-1][sec-1].fill(residual);
 					residual_vs_z[lay-1][sec-1].fill(inter.z(),residual);
 				}

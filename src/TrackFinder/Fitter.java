@@ -2,6 +2,7 @@ package TrackFinder;
 
 import Jama.Matrix;
 import BMT_struct.*;
+import BST_struct.*;
 import java.util.*;
 import TrackFinder.*;
 import org.freehep.math.minuit.*;
@@ -14,7 +15,7 @@ public class Fitter {
 		
 	}
 			
-	public void StraightTrack(HashMap<Integer, TrackCandidate> Candidates) {
+	public void StraightTrack(Barrel BMT, Barrel_SVT BST, HashMap<Integer, TrackCandidate> Candidates) {
 		//Use minimizer
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
 			if (Candidates.get(num_cand+1).size()>6) System.out.println("Error: TrackCandidate with more than 6 clusters");
@@ -31,7 +32,7 @@ public class Fitter {
 			    FCNChi2 Straight=new FCNChi2();
 			    
 			    //Give clusters to Chi2 to compute distance
-			    Straight.SetTrackCandidate(Candidates.get(num_cand+1));
+			    Straight.SetTrackCandidate(BMT,BST,Candidates.get(num_cand+1));
 			    
 			    //Create Minuit (parameters and function to minimize)
 			    MnMigrad migrad = new MnMigrad(Straight, upar);
@@ -39,6 +40,7 @@ public class Fitter {
 			    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
 			    FunctionMinimum min = migrad.minimize();
 			    
+			    //If fit is valid, then compute the residuals
 			    if (min.isValid()) {
 			    	Candidates.get(num_cand+1).set_FitStatus(min.isValid());
 			    	double[] res=migrad.params(); //res[0] and res[1] are phi and theta for vec, res[2] is phi for intersection point on cylinder and  res[3] is z_inter
@@ -56,7 +58,7 @@ public class Fitter {
 					line.setTheta(res[1]);
 					line.setPoint_XYZ(Constant.point_radius*Math.cos(res[2]), Constant.point_radius*Math.sin(res[2]), res[3]);
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
-						Candidates.get(num_cand+1).AddResidual(line.getDistance(Candidates.get(num_cand+1).GetCluster(clus)));
+						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetCluster(clus),line.getSlope(),line.getPoint()));
 				    }
 					Candidates.get(num_cand+1).set_chi2(min.fval());
 			   	}

@@ -28,14 +28,14 @@ public class alignement {
 		alignement MVTAli=new alignement();
 		
 		String fileName;
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<10000) {
+		while(reader.hasEvent()&&count<100000) {
 		    DataEvent event = reader.getNextEvent();
 		    count++;
 		    
@@ -52,14 +52,12 @@ public class alignement {
 		    	main.constant.setLoaded(true);
 		    }
 		    
-		    BMT.DisableLayer(4);
-		    
 		    //Analyze the event
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	TrackFinder tracky=new TrackFinder();
-		    	tracky.BuildCandidates(BMT);
+		    	TrackFinder tracky=new TrackFinder(BMT,BST);
+		    	tracky.BuildCandidates();
 		    	tracky.FetchTrack();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	Sherlock.analyze(BMT, BST, tracky.get_Candidates(), MCParticles);

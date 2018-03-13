@@ -753,11 +753,12 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		return inter;
 	}
 	
-	public double getResidual(int layer, int sector, int strip, Vector3D point) {
+	public double getResidual_line(int layer, int sector, int strip, Vector3D point) {
 		double dist=0;
 		Point3D Loc=new Point3D(this.transformToFrame(sector, layer, point.x(), point.y(), point.z(), "local", ""));
 		double x_strip=this.getXAtZ(layer, strip, Loc.z());
-		dist=Loc.x()-x_strip;
+		double ialpha1 = (strip - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+		dist=(Loc.x()-x_strip)*Math.cos(ialpha1);
 		return dist;
 	}
 	
