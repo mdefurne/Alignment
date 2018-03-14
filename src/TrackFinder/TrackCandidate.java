@@ -25,6 +25,12 @@ public class TrackCandidate{
 	private int nz;
 	private int nc;
 	
+	//Seeder Searcher
+	private double phi_seed=Double.NaN;
+	private double theta_seed=Double.NaN;
+	private double phi_tolerance=Math.toDegrees(60);
+	private double theta_tolerance=Double.NaN;
+	
 	//Fit results
 	private boolean fit_status;
 	private Vector3D vec_track;
