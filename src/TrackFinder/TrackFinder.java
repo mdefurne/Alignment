@@ -5,22 +5,22 @@ import BST_struct.*;
 import java.util.*;
 import TrackFinder.TrackCandidate;
 import TrackFinder.Fitter;
+import org.jlab.geom.prim.Vector3D;
 
 public class TrackFinder {
 	
 	HashMap<Integer, TrackCandidate> Candidates;
 	ArrayList<TrackCandidate> BufferLayer; //Temporary store the duplicated track to avoid infinite loop
 	float time_match;
-	double phi_match;
 	int cand_newsec;
 	Barrel BMT_det;
 	Barrel_SVT BST_det;
 	
+	
 	public TrackFinder(Barrel BMT, Barrel_SVT BST) {
-		Candidates=new HashMap();
-		BufferLayer=new ArrayList();
+		Candidates=new HashMap<Integer, TrackCandidate>();
+		BufferLayer=new ArrayList<TrackCandidate>();
 		time_match=40;
-		phi_match=Math.toRadians(15);
 		cand_newsec=0;
 		BMT_det=BMT;
 		BST_det=BST;
@@ -39,7 +39,6 @@ public class TrackFinder {
 	}
 	
 	public void BuildCandidates() {
-		Tile tiles=new Tile();
 		boolean IsAttributed=true;
 		boolean noHit_yet_sector=true;
 		//We are looking for Straight Track
@@ -128,10 +127,30 @@ public class TrackFinder {
 	public boolean IsSpatialCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
+		
 		if (Double.isNaN(clus.getZ())) {
-			if ((Math.abs(clus.getPhi()-ToBuild.GetLastPhi())<(clus.getLayer()-ToBuild.GetLayerLast_Z_Hit())*phi_match)||Double.isNaN(ToBuild.GetLastPhi())) test_val=true;
+			if (ToBuild.get_Nz()==0) {
+				test_val=true;
+			}
+			if (ToBuild.get_Nz()>0) {
+				Vector3D meas=new Vector3D(ToBuild.getLastX()-clus.getX(),ToBuild.getLastY()-clus.getY(),0);
+				Vector3D tr_phi=new Vector3D(Math.cos(ToBuild.getPhiSeed()),Math.sin(ToBuild.getPhiSeed()),0);
+				double angle_meas=meas.angle(tr_phi);
+				if (angle_meas<ToBuild.getPhiTolerance()) test_val=true;
+			}
 		}
-		if (!Double.isNaN(clus.getZ())) test_val=true;
+		if (!Double.isNaN(clus.getZ())) {
+			if (ToBuild.get_Nc()==0) {	
+				test_val=true;
+				
+			}
+			if (ToBuild.get_Nc()>0) {
+				double Theta_meas=Math.acos((clus.getZ()-ToBuild.getLastZ())/Math.sqrt((ToBuild.getLastZ()-clus.getZ())*(ToBuild.getLastZ()-clus.getZ())
+						+(clus.getRadius()-ToBuild.getLastR())*(clus.getRadius()-ToBuild.getLastR())));
+				if (Theta_meas>ToBuild.getThetaMin()&&Theta_meas<ToBuild.getThetaMax()) test_val=true;
+			}
+			test_val=true;
+		}
 		return test_val;
 	}
 	

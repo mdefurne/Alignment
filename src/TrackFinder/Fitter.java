@@ -20,12 +20,14 @@ public class Fitter {
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
 			if (Candidates.get(num_cand+1).size()>6) System.out.println("Error: TrackCandidate with more than 6 clusters");
 			if (Candidates.get(num_cand+1).IsFittable()) {
+				Constant.setPointRadius(Math.sqrt(Candidates.get(num_cand+1).getXMean()*Candidates.get(num_cand+1).getXMean()+Candidates.get(num_cand+1).getYMean()*Candidates.get(num_cand+1).getYMean()));
+				
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
 			    //upar.add("phi", Math.PI/2., Math.PI/2., 0, Math.PI);
-				upar.add("phi", Candidates.get(num_cand+1).getPhiMean(), Math.toRadians(40), Candidates.get(num_cand+1).getPhiMean()-Math.toRadians(45), Candidates.get(num_cand+1).getPhiMean()+Math.toRadians(45));
-			    upar.add("theta", Math.PI/2., Math.PI/2. , Math.toRadians(25), Math.toRadians(150));
-			    upar.add("point_phi", Candidates.get(num_cand+1).getPhiMean(), Math.PI/2.,Candidates.get(num_cand+1).getPhiMean()-Math.PI/4.,Candidates.get(num_cand+1).getPhiMean()+Math.PI/4.);
+				upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(10));
+			    upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(10));
+			    upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/2.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/4.);
 			    upar.add("point_z", 0, 300.,-300.,300.);
 			   			    
 			    //Create function to minimize
@@ -49,14 +51,14 @@ public class Fitter {
 			    	Candidates.get(num_cand+1).set_VectorTrack(temp);
 			    	
 			    	Vector3D temp_bis=new Vector3D();
-			    	temp_bis.setXYZ(Constant.point_radius*Math.cos(res[2]),Constant.point_radius*Math.sin(res[2]),res[3]);
+			    	temp_bis.setXYZ(Constant.getPointRadius()*Math.cos(res[2]),Constant.getPointRadius()*Math.sin(res[2]),res[3]);
 			    	Candidates.get(num_cand+1).set_PointTrack(temp_bis);
 			    	
 			    //Radius of the middle layer which should be crossed by the track in anycase	
 					StraightLine line=new StraightLine();
 					line.setPhi(res[0]);
 					line.setTheta(res[1]);
-					line.setPoint_XYZ(Constant.point_radius*Math.cos(res[2]), Constant.point_radius*Math.sin(res[2]), res[3]);
+					line.setPoint_XYZ(Constant.getPointRadius()*Math.cos(res[2]), Constant.getPointRadius()*Math.sin(res[2]), res[3]);
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
 						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetCluster(clus),line.getSlope(),line.getPoint()));
 				    }

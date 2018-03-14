@@ -9,27 +9,37 @@ public class TrackCandidate{
 	private ArrayList<Cluster> TrackTest;
 	private ArrayList<Double> TrackResidual;
 	private float mean_time;
-	private double mean_X;
-	private double mean_Y;
-	private double mean_Z;
 	private double mean_Phi;
-	private double last_Phi;
-	private double last_Z;
 	private double chi2;
 	private boolean is_secondary_track;
 	private boolean has_secondary_track;
 	private ArrayList<Float> time_hit;
 	private ArrayList<Integer> layer_hit;
 	private ArrayList<Integer> sector_hit;
+	private double mean_X;
+	private double mean_Y;
+	private double mean_Z;	
+	private ArrayList<Double> X_hit;
+	private ArrayList<Double> Y_hit;
+	private ArrayList<Double> Z_hit;
+	private ArrayList<Double> R_hit;
+	private ArrayList<Double> Phi_track;
+	private ArrayList<Double> Theta_track;
 	private int cand_prim;
 	private int nz;
 	private int nc;
 	
 	//Seeder Searcher
-	private double phi_seed=Double.NaN;
-	private double theta_seed=Double.NaN;
-	private double phi_tolerance=Math.toDegrees(60);
-	private double theta_tolerance=Double.NaN;
+	//Indexes are going from outer CVT to inner CVT
+	private double phi_seed;
+	private double theta_seed;
+	private double phi_tolerance;
+	private double theta_min;
+	private double theta_max;
+	private final double radius_SVT_2=93;
+	private final double start_SVT_2=-181.;
+	private final double end_SVT_2=153.;
+	
 	
 	//Fit results
 	private boolean fit_status;
@@ -47,21 +57,34 @@ public class TrackCandidate{
 		time_hit=new ArrayList();
 		layer_hit=new ArrayList();
 		sector_hit=new ArrayList();
-		mean_X=0;
+		//X-Y only filled for Z layer
+		X_hit=new ArrayList();
+		Y_hit=new ArrayList();
+		//R-Z only filled for C-layer
+		Z_hit=new ArrayList();
+		R_hit=new ArrayList();
+		
+		Theta_track=new ArrayList();
+		Phi_track=new ArrayList();
 		mean_Phi=0;
-		mean_Y=0;
-		mean_Z=0;
 		nz=0;
 		nc=0;
-		last_Phi=Double.NaN;
-		last_Z=Double.NaN;
-		
+		mean_X=0;
+		mean_Y=0;
+		mean_Z=0;
+				
+		//Just to seed	
 		fit_status=false;
+		phi_seed=0;
+		theta_seed=Math.PI/2.;
 		vec_track=new Vector3D();
-		vec_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 		point_track=new Vector3D();
 		point_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
-	}
+		phi_tolerance=Math.toRadians(60);
+		theta_min=Math.toRadians(0);
+		theta_max=Math.toRadians(180);
+		}
 	
 	public void set_FitStatus(boolean status) {
 		fit_status=status;
@@ -93,16 +116,47 @@ public class TrackCandidate{
 		TrackTest.add(clus);
 		mean_time=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((float)TrackTest.size());
 		time_hit.add(clus.getT_min());
+		
+		//If it is a Z-layer
 		if (clus.getLayer()==2||clus.getLayer()==3||clus.getLayer()==5) {
+			if (nz==0) {
+				Phi_track.add(clus.getPhi());
+				phi_seed=clus.getPhi();
+				this.setPhiTolerance(Math.toRadians(60));
+			}
+			if (nz>0) {
+				phi_seed=Math.atan2(Y_hit.get(Y_hit.size()-1)-clus.getY(),X_hit.get(X_hit.size()-1)-clus.getX());
+				//if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
+				Phi_track.add(phi_seed);
+				this.setPhiTolerance(Math.toRadians(10));
+			}
 			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
-			mean_Phi=(mean_Phi*nz+clus.getPhi())/((double)(nz+1));
-			last_Phi=clus.getPhi();
+			X_hit.add(clus.getX());
+			Y_hit.add(clus.getY());
 			nz++;
 		}
+		
+		//If it is a C-layer
 		if (clus.getLayer()==1||clus.getLayer()==4||clus.getLayer()==6) {
+			if (nc==0) {
+				theta_seed=Math.acos(clus.getZ()/Math.sqrt(clus.getZ()*clus.getZ()+clus.getRadius()*clus.getRadius()));
+				Theta_track.add(theta_seed);
+				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
+				this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+				this.setThetaMax(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+			}
+			if (nc>0) {
+				theta_seed=Math.acos((Z_hit.get(Z_hit.size()-1)-clus.getZ())/Math.sqrt((Z_hit.get(Z_hit.size()-1)-clus.getZ())*(Z_hit.get(Z_hit.size()-1)-clus.getZ())
+						+(clus.getRadius()-R_hit.get(R_hit.size()-1))*(clus.getRadius()-R_hit.get(R_hit.size()-1))));
+				Theta_track.add(theta_seed);
+				this.setThetaMin(theta_seed-Math.toRadians(10));
+				this.setThetaMax(theta_seed+Math.toRadians(10));
+				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
+			}
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
-			last_Z=clus.getZ();
+			R_hit.add(clus.getRadius());
+			Z_hit.add(clus.getZ());
 			nc++;
 		}
 	}
@@ -163,14 +217,6 @@ public class TrackCandidate{
 		return sector;
 	}
 	
-	public double GetLastPhi() {
-		return last_Phi;
-	}
-	
-	public double GetLastZ() {
-		return last_Z;
-	}
-	
 	public boolean IsFittable() {
 		boolean fit=false;
 		if (nz>=2&&nc>=2) fit=true;
@@ -197,20 +243,12 @@ public class TrackCandidate{
 		return temp;
 	}
 	
-	public double getPhiMean() {
-		return mean_Phi;
+	public double getPhiSeed() {
+		return phi_seed;
 	}
 	
-	public double getXMean() {
-		return mean_X;
-	}
-	
-	public double getYMean() {
-		return mean_Y;
-	}
-	
-	public double getZMean() {
-		return mean_Z;
+	public double getThetaSeed() {
+		return theta_seed;
 	}
 	
 	public int get_Nz() {
@@ -227,6 +265,58 @@ public class TrackCandidate{
 	
 	public double get_chi2() {
 		return chi2;
+	}
+	
+	public double getXMean() {
+		return mean_X;
+	}
+	
+	public double getYMean() {
+		return mean_Y;
+	}
+	
+	public double getZMean() {
+		return mean_Z;
+	}
+	
+	public double getLastX() {
+		return X_hit.get(X_hit.size()-1);
+	}
+	
+	public double getLastY() {
+		return Y_hit.get(Y_hit.size()-1);
+	}
+	
+	public double getLastZ() {
+		return Z_hit.get(Z_hit.size()-1);
+	}
+	
+	public double getLastR() {
+		return R_hit.get(R_hit.size()-1);
+	}
+	
+	public void setPhiTolerance(double ang) {
+		phi_tolerance=ang;
+	}
+	
+	public double getPhiTolerance() {
+		return phi_tolerance;
+	}
+	
+	public void setThetaMin(double ang) {
+		theta_min=ang;
+	}
+	
+	public double getThetaMin() {
+		return theta_min;
+	}
+	
+	public void setThetaMax(double ang) {
+		theta_max=ang;
+	}
+	
+	public double getThetaMax() {
+		return theta_max;
 	}
 	
 	public boolean IsGoodCandidate() {
