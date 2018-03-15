@@ -24,7 +24,6 @@ public class MCAna {
 					double theta_part=Math.acos(MCParticle.getParticles().get(i).getPz()/MCParticle.getParticles().get(i).getMomentum().mag());
 					Phi_res.fill(phi_part-Math.atan2(cand.get_VectorTrack().y(),cand.get_VectorTrack().x()));
 					Theta_res.fill(theta_part-Math.acos(cand.get_VectorTrack().z()));
-					System.out.println(Math.toDegrees(theta_part)+" "+Math.toDegrees(Math.acos(cand.get_VectorTrack().z())));
 				}
 			}
 		}

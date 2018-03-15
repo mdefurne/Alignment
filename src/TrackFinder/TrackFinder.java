@@ -47,7 +47,7 @@ public class TrackFinder {
 			cand_newsec=Candidates.size(); //Avoid to mix the sectors between them
 			noHit_yet_sector=true;
 			
-			for (int lay=0;lay<6;lay++) {
+			for (int lay=5;lay>-1;lay--) {
 				
 				//If we have already some hit in the sector, there are track candidate to check
 				if (!noHit_yet_sector) {

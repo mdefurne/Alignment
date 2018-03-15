@@ -31,7 +31,7 @@ public class TrackAna {
 			if (cand.get_Nc()==3&&cand.get_Nz()==3) Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
-				if (cand.get_Nc()==3&&cand.IsGoodCandidate()) {
+				if (cand.get_Nc()==3&&cand.IsVeryGoodCandidate()) {
 					//System.out.println(clus+" "+cand.GetCluster(clus).getLayer());
 				if (cand.get_Nz()==3&&(cand.GetCluster(clus).getLayer()==2||cand.GetCluster(clus).getLayer()==3||cand.GetCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));

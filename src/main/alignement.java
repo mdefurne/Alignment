@@ -36,9 +36,10 @@ public class alignement {
 		int count=0;
 			
 		while(reader.hasEvent()&&count<10000) {
-		    DataEvent event = reader.getNextEvent();
+		 DataEvent event = reader.getNextEvent();
+		//DataEvent event = reader.gotoEvent(10784);	
 		    count++;
-		    
+		    System.out.println(count);
 		    //Load all the constant needed but only for the first event
 		    if (!main.constant.isLoaded) {
 		    	if (event.hasBank("MC::Particle")) {
