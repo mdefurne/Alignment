@@ -29,9 +29,11 @@ public class MCAna {
 		}
 		
 		public void draw() {
-			TCanvas theta_res = new TCanvas("theta", 1100, 700);
-			 theta_res.draw(Theta_res);
-			 TCanvas phi_res = new TCanvas("phi", 1100, 700);
-			 phi_res.draw(Phi_res);
+			if (Theta_res.getEntries()!=0&&Phi_res.getEntries()!=0) {
+				TCanvas theta_res = new TCanvas("theta", 1100, 700);
+				theta_res.draw(Theta_res);
+				TCanvas phi_res = new TCanvas("phi", 1100, 700);
+				phi_res.draw(Phi_res);
+			}
 		}
 }

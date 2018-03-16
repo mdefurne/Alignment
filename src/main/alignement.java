@@ -35,9 +35,9 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<10000) {
+		while(reader.hasEvent()) {
 		 DataEvent event = reader.getNextEvent();
-		//DataEvent event = reader.gotoEvent(10784);	
+		//DataEvent event = reader.gotoEvent(52038);	
 		    count++;
 		    System.out.println(count);
 		    //Load all the constant needed but only for the first event

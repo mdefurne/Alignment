@@ -29,6 +29,12 @@ public class Fitter {
 			    upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/8.);
 			    upar.add("point_z", 0, 300.,-300.,300.);
 			    
+			    //System.out.println(upar);
+			    //System.out.println(Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+" "+Candidates.get(num_cand+1).getPhiSeed());
+			    //for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
+			    	//System.out.println(Candidates.get(num_cand+1).GetBMTCluster(clus).getLayer()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getSector()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getX()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getY()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getZ());
+			    //}
+			    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
 			    
@@ -59,7 +65,7 @@ public class Fitter {
 					line.setTheta(res[1]);
 					line.setPoint_XYZ(Constant.getPointRadius()*Math.cos(res[2]), Constant.getPointRadius()*Math.sin(res[2]), res[3]);
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
-						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetCluster(clus),line.getSlope(),line.getPoint()));
+						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetBMTCluster(clus),line.getSlope(),line.getPoint()));
 				    }
 					Candidates.get(num_cand+1).set_chi2(min.fval());
 			   	}

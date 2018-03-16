@@ -33,11 +33,11 @@ public class TrackAna {
 				
 				if (cand.get_Nc()==3&&cand.IsVeryGoodCandidate()) {
 					//System.out.println(clus+" "+cand.GetCluster(clus).getLayer());
-				if (cand.get_Nz()==3&&(cand.GetCluster(clus).getLayer()==2||cand.GetCluster(clus).getLayer()==3||cand.GetCluster(clus).getLayer()==5)) {
-					Z_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));
+				if (cand.get_Nz()==3&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
+					Z_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 					}
-				if (cand.get_Nc()==3&&(cand.GetCluster(clus).getLayer()==1||cand.GetCluster(clus).getLayer()==4||cand.GetCluster(clus).getLayer()==6)) {
-					C_residual[(cand.GetCluster(clus).getLayer()-1)/2][cand.GetCluster(clus).getSector()-1].fill(cand.getResidual(clus));
+				if (cand.get_Nc()==3&&(cand.GetBMTCluster(clus).getLayer()==1||cand.GetBMTCluster(clus).getLayer()==4||cand.GetBMTCluster(clus).getLayer()==6)) {
+					C_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 				
 					}
 				}

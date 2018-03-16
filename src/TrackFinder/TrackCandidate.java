@@ -1,12 +1,13 @@
 package TrackFinder;
 
 import BMT_struct.*;
+import BST_struct.*;
 import java.util.*;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 
 public class TrackCandidate{
-	private ArrayList<Cluster> TrackTest;
+	private ArrayList<BMT_struct.Cluster> TrackTest;
 	private ArrayList<Double> TrackResidual;
 	private float mean_time;
 	private double mean_Phi;
@@ -46,8 +47,12 @@ public class TrackCandidate{
 	private Vector3D vec_track;
 	private Vector3D point_track;
 	
-	public TrackCandidate(){
-		TrackTest=new ArrayList();
+	//Need to access the geometry of both detectors for the track candidate
+	Barrel BMT;
+	Barrel_SVT BST;
+		
+	public TrackCandidate(Barrel BMT_det, Barrel_SVT BST_det){
+		TrackTest=new ArrayList<BMT_struct.Cluster>();
 		TrackResidual=new ArrayList();
 		mean_time=0;
 		cand_prim=-1;
@@ -84,6 +89,9 @@ public class TrackCandidate{
 		phi_tolerance=Math.toRadians(60);
 		theta_min=Math.toRadians(0);
 		theta_max=Math.toRadians(180);
+		
+		BMT=BMT_det;
+		BST=BST_det;
 		}
 	
 	public void set_FitStatus(boolean status) {
@@ -110,7 +118,7 @@ public class TrackCandidate{
 		return point_track;
 	}
 	
-	public void add(Cluster clus) {
+	public void add(BMT_struct.Cluster clus) {
 		layer_hit.add(clus.getLayer());
 		sector_hit.add(clus.getSector());
 		TrackTest.add(clus);
@@ -217,6 +225,7 @@ public class TrackCandidate{
 		return sector;
 	}
 	
+	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
 		if (nz<2||nc<2) fit=false;
@@ -231,11 +240,23 @@ public class TrackCandidate{
 				 
 			double delta=b*b-4*a*c;
 			if (delta<0) fit=false;
+			if (delta==0) {
+			    double lambda=-b/2./a;
+			   Vector3D inter=new Vector3D(sx*lambda+ix,sy*lambda+iy,0);
+			    if (BMT.getGeometry().isinsector(inter)!=TrackTest.get(i).getSector()) fit=false;
+			}
+			if (delta>0) {
+				double lambda_a=(-b+Math.sqrt(delta))/2./a;
+			    double lambda_b=(-b-Math.sqrt(delta))/2./a;
+			    Vector3D inter_a=new Vector3D(sx*lambda_a+ix,sy*lambda_a+iy,0);
+			    Vector3D inter_b=new Vector3D(sx*lambda_b+ix,sy*lambda_b+iy,0);
+				if (BMT.getGeometry().isinsector(inter_a)!=TrackTest.get(i).getSector()&&BMT.getGeometry().isinsector(inter_b)!=TrackTest.get(i).getSector()) fit=false;
+			}
 		}
 		return fit;
 	}
 	
-	public Cluster GetCluster(int i) {
+	public BMT_struct.Cluster GetBMTCluster(int i) {
 		return TrackTest.get(i);
 	}
 	
@@ -248,9 +269,9 @@ public class TrackCandidate{
 	}
 	
 	public TrackCandidate Duplicate() {
-		TrackCandidate temp=new TrackCandidate();
+		TrackCandidate temp=new TrackCandidate(BMT, BST);
 		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
-			temp.add(this.GetCluster(dup));
+			temp.add(this.GetBMTCluster(dup));
 		}
 		return temp;
 	}

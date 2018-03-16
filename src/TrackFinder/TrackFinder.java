@@ -70,7 +70,7 @@ public class TrackFinder {
 							}
 						}
 						if (!IsAttributed) {
-							TrackCandidate cand=new TrackCandidate();
+							TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
 							cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 							Candidates.put(Candidates.size()+1, cand);
 						}
@@ -87,7 +87,7 @@ public class TrackFinder {
 				if (noHit_yet_sector) {
 					//Create a new Track Candidate for each cluster of first layer
 					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
-						TrackCandidate cand=new TrackCandidate();
+						TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
 						cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 						Candidates.put(Candidates.size()+1, cand);
 						noHit_yet_sector=false;
