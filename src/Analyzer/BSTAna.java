@@ -49,8 +49,8 @@ public class BSTAna {
 		 residual[lay].divide(4, 5);
 		 for (int sec=0;sec<18;sec++) {
 					residual[lay].cd(sec);
-					//residual[lay].draw(SVT_residual[lay][sec]);
-					residual[lay].draw(residual_vs_z[lay][sec]);
+					residual[lay].draw(SVT_residual[lay][sec]);
+					//residual[lay].draw(residual_vs_z[lay][sec]);
 					
 		 	}
 		 }

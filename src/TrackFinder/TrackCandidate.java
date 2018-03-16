@@ -218,8 +218,20 @@ public class TrackCandidate{
 	}
 	
 	public boolean IsFittable() {
-		boolean fit=false;
-		if (nz>=2&&nc>=2) fit=true;
+		boolean fit=true;
+		if (nz<2||nc<2) fit=false;
+		for (int i=0;i<TrackTest.size();i++) {
+			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
+			double ix=mean_X; double iy=mean_Y;
+				  
+			//Find the intersection
+			double a=sx*sx+sy*sy;
+			double b=2*(sx*ix+sy*iy);
+			double c=ix*ix+iy*iy-TrackTest.get(i).getRadius()*TrackTest.get(i).getRadius();
+				 
+			double delta=b*b-4*a*c;
+			if (delta<0) fit=false;
+		}
 		return fit;
 	}
 	
