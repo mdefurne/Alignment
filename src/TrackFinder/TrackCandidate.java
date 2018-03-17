@@ -136,7 +136,7 @@ public class TrackCandidate{
 				phi_seed=Math.atan2(Y_hit.get(Y_hit.size()-1)-clus.getY(),X_hit.get(X_hit.size()-1)-clus.getX());
 				if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
 				Phi_track.add(phi_seed);
-				this.setPhiTolerance(Math.toRadians(5));
+				this.setPhiTolerance(Math.toRadians(15));
 			}
 			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
@@ -282,6 +282,14 @@ public class TrackCandidate{
 	
 	public double getThetaSeed() {
 		return theta_seed;
+	}
+	
+	public double getPhi() {
+		return Math.atan2(vec_track.y(), vec_track.x());
+	}
+	
+	public double getTheta() {
+		return Math.acos(vec_track.z());
 	}
 	
 	public int get_Nz() {

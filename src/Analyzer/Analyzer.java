@@ -30,7 +30,7 @@ public class Analyzer {
 	
 	public void draw() {
 		Trackmeter.draw();
-		Simeter.draw();
+		//Simeter.draw();
 		MCmeter.draw();
 	}
 	

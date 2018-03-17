@@ -136,7 +136,9 @@ public class TrackFinder {
 				Vector3D meas=new Vector3D(ToBuild.getLastX()-clus.getX(),ToBuild.getLastY()-clus.getY(),0);
 				Vector3D tr_phi=new Vector3D(Math.cos(ToBuild.getPhiSeed()),Math.sin(ToBuild.getPhiSeed()),0);
 				double angle_meas=meas.angle(tr_phi);
-				if (angle_meas<ToBuild.getPhiTolerance()) test_val=true;
+				if (angle_meas<ToBuild.getPhiTolerance()
+						||Math.abs(angle_meas-Math.PI)<ToBuild.getPhiTolerance()
+							||Math.abs(angle_meas-2*Math.PI)<ToBuild.getPhiTolerance()) test_val=true;
 			}
 		}
 		if (!Double.isNaN(clus.getZ())) {

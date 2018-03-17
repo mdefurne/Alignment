@@ -3,8 +3,10 @@ package Analyzer;
 import org.jlab.groot.data.*;
 import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
+import Analyzer.ClusterAna;
 
 public class TrackAna {
+	ClusterAna Clusty;
 	H1F Theta_track;
 	H1F Phi_track;
 	H1F Chi2_track;
@@ -12,6 +14,7 @@ public class TrackAna {
 	H1F[][] C_residual=new H1F[3][3];
 	
 	public TrackAna() {
+		Clusty=new ClusterAna();
 		Theta_track=new H1F("Theta angle of track","Theta angle for track",90,0,180);
 		Phi_track=new H1F("Phi angle of track","Phi angle for track",90,-180,180);
 		Chi2_track=new H1F("Chi2 of track","Chi2 angle for track",90,0,100);
@@ -32,10 +35,13 @@ public class TrackAna {
 			for (int clus=0; clus<cand.size();clus++) {
 				
 				if (cand.get_Nc()==3&&cand.IsVeryGoodCandidate()) {
-					//System.out.println(clus+" "+cand.GetCluster(clus).getLayer());
+					
+					Clusty.analyze(cand);
+					
 				if (cand.get_Nz()==3&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 					}
+					
 				if (cand.get_Nc()==3&&(cand.GetBMTCluster(clus).getLayer()==1||cand.GetBMTCluster(clus).getLayer()==4||cand.GetBMTCluster(clus).getLayer()==6)) {
 					C_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 				
@@ -62,5 +68,7 @@ public class TrackAna {
 					z_res.draw(Z_residual[lay][sec]);
 				}
 		 }
+		 
+		 Clusty.draw();
 	}
 }

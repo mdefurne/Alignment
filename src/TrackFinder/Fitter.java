@@ -18,10 +18,9 @@ public class Fitter {
 	public void StraightTrack(Barrel BMT, Barrel_SVT BST, HashMap<Integer, TrackCandidate> Candidates) {
 		//Use minimizer
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
-			if (Candidates.get(num_cand+1).size()>6) System.out.println("Error: TrackCandidate with more than 6 clusters");
+			if (Candidates.get(num_cand+1).size()>6) System.err.println("Error: TrackCandidate with more than 6 clusters");
 			if (Candidates.get(num_cand+1).IsFittable()) {
-				Constant.setPointRadius(Math.sqrt(Candidates.get(num_cand+1).getXMean()*Candidates.get(num_cand+1).getXMean()+Candidates.get(num_cand+1).getYMean()*Candidates.get(num_cand+1).getYMean()));
-				
+								
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
 			  	upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(10));
