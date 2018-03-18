@@ -23,13 +23,14 @@ public class FCNChi2 implements FCNBase {
 		  line.setPoint_XYZ(radius*Math.cos(par[2]), radius*Math.sin(par[2]), par[3]);
 		  
 	      double val=0;
-	      
+	    
 	      if (ToFit.size()==0) return val;
 	      
 	      for (int clus=0;clus<ToFit.size();clus++) {
 	    	  if (ToFit.GetBMTCluster(clus).IsInFit()) val+=Math.pow(BMT.getGeometry().getResidual_line(ToFit.GetBMTCluster(clus),line.getSlope(),line.getPoint())/ToFit.GetBMTCluster(clus).getErr(),2);
 	      }
-	      
+	      System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]);
+	      System.out.println(val);
 	      return val;
 	   }
 	

@@ -632,35 +632,8 @@ public class Geometry {
 		Vector3D point_inter=new Vector3D();
 		point_inter.setXYZ(0,0,0);
 		
-		
-		if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
-			//In that case, we just compute the distance between the line and the point in xy-plane
-			//First case: is the slope in x and y are both null, the line becomes then a point.
-			if (slope.x()==0&&slope.y()==0) distance=Math.sqrt(Math.pow(clus.getX()-point.x(), 2)+Math.pow(clus.getY()-point.y(), 2));
-			
-			//You have a line in xy-plane, so you can compute the distance between the point and the line
-			
-			if (slope.x()==0) distance=Math.abs(clus.getX()-point.x());
-			if (slope.y()==0) distance=Math.abs(clus.getY()-point.y());
-			if (slope.x()!=0&&slope.y()!=0) {
-				//Need to find the intersect between the line and its orthogonal through the cluster
-				double lambda=(clus.getY()*slope.y()+slope.x()*clus.getX()-slope.x()*point.x()-slope.y()*point.y())/(Math.pow(slope.x(), 2)+Math.pow(slope.y(), 2));
-				Vector3D Proj=new Vector3D();
-				Proj.setXYZ(slope.x()*lambda+point.x(),slope.y()*lambda+point.y(),slope.z()*lambda+point.z());
-				distance=Math.sqrt(Math.pow(clus.getX()-Proj.x(), 2)+Math.pow(clus.getY()-Proj.y(), 2));
-				double phi_clus=clus.getPhi();
-				if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
-				double phi_proj=Math.atan2(Proj.y(), Proj.x());
-				if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
-				distance=clus.getRadius()*(phi_clus-phi_proj);
-			}
-			
-			//System.out.println("Z "+distance);
-		}
-		
+				
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
-		if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) {
-			  
 		double sx=slope.x(); double sy=slope.y(); 
 		double ix=point.x(); double iy=point.y();
 			  
@@ -673,18 +646,63 @@ public class Geometry {
 		if (delta==0) {
 		    double lambda=-b/2./a;
 		    point_inter.setXYZ(slope.x()*lambda+point.x(),slope.y()*lambda+point.y(),slope.z()*lambda+point.z());
-		    distance=clus.getZ()-point_inter.z();
+			if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
+			if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+	    		double phi_clus=clus.getPhi();
+				if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
+				double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
+				if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
+				double delta_phi=phi_clus-phi_proj;
+				while (delta_phi>Math.PI) {
+					delta_phi-=2*Math.PI;
+				}
+				while (delta_phi<-Math.PI) {
+					delta_phi+=2*Math.PI;
+				}
+				distance=clus.getRadius()*delta_phi;
+	    	}
 		}
 		if (delta>0) {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
-		    if (this.isinsector(point_inter)==clus.getSector()) distance=clus.getZ()-point_inter.z();
+		    if (this.isinsector(point_inter)==clus.getSector()) {
+		    	if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
+		    	if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+		    		double phi_clus=clus.getPhi();
+					if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
+					double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
+					if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
+					double delta_phi=phi_clus-phi_proj;
+					while (delta_phi>Math.PI) {
+						delta_phi-=2*Math.PI;
+					}
+					while (delta_phi<-Math.PI) {
+						delta_phi+=2*Math.PI;
+					}
+					distance=clus.getRadius()*delta_phi;
+		    	}
+		    }
 		    point_inter.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
-		    if (this.isinsector(point_inter)==clus.getSector()) distance=clus.getZ()-point_inter.z();
+		    if (this.isinsector(point_inter)==clus.getSector()) {
+		    	if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
+		    	if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+		    		double phi_clus=clus.getPhi();
+					if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
+					double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
+					if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
+					double delta_phi=phi_clus-phi_proj;
+					while (delta_phi>Math.PI) {
+						delta_phi-=2*Math.PI;
+					}
+					while (delta_phi<-Math.PI) {
+						delta_phi+=2*Math.PI;
+					}
+					distance=clus.getRadius()*delta_phi;
+		    	}
+		    }
 		 }
-		//System.out.println("C "+distance);
-		}
+	
 		
 		return distance;
 	}

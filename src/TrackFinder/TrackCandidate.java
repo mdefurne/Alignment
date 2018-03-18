@@ -19,7 +19,8 @@ public class TrackCandidate{
 	private ArrayList<Integer> sector_hit;
 	private double mean_X;
 	private double mean_Y;
-	private double mean_Z;	
+	private double mean_Z;
+	private double mean_R;	
 	private ArrayList<Double> X_hit;
 	private ArrayList<Double> Y_hit;
 	private ArrayList<Double> Z_hit;
@@ -77,6 +78,7 @@ public class TrackCandidate{
 		mean_X=0;
 		mean_Y=0;
 		mean_Z=0;
+		mean_R=0;
 				
 		//Just to seed	
 		fit_status=false;
@@ -128,8 +130,9 @@ public class TrackCandidate{
 		//If it is a Z-layer
 		if (clus.getLayer()==2||clus.getLayer()==3||clus.getLayer()==5) {
 			if (nz==0) {
-				Phi_track.add(clus.getPhi());
 				phi_seed=clus.getPhi();
+				if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
+				Phi_track.add(phi_seed);
 				this.setPhiTolerance(Math.toRadians(60));
 			}
 			if (nz>0) {
@@ -163,6 +166,7 @@ public class TrackCandidate{
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 			}
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
+			mean_R=(mean_R*nc+clus.getZ())/((double)(nc+1));
 			R_hit.add(clus.getRadius());
 			Z_hit.add(clus.getZ());
 			nc++;
@@ -317,6 +321,10 @@ public class TrackCandidate{
 	}
 	
 	public double getZMean() {
+		return mean_Z;
+	}
+	
+	public double getRMean() {
 		return mean_Z;
 	}
 	

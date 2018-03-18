@@ -28,17 +28,17 @@ public class alignement {
 		alignement MVTAli=new alignement();
 		
 		String fileName;
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<20000) {
-		 DataEvent event = reader.getNextEvent();
-		//DataEvent event = reader.gotoEvent(52038);	
+		//while(reader.hasEvent()&&count<20000) {
+			//DataEvent event = reader.getNextEvent();
+		DataEvent event = reader.gotoEvent(19966);	
 		    count++;
 		    System.out.println(count);
 		    //Load all the constant needed but only for the first event
@@ -65,7 +65,7 @@ public class alignement {
 		    	Sherlock.analyze(BMT, BST, tracky.get_Candidates(), MCParticles);
 		    }
 		   		   		         
-		}
+		//}
 		
 		Sherlock.draw();
 		
