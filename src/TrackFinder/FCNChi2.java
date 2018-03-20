@@ -29,8 +29,7 @@ public class FCNChi2 implements FCNBase {
 	      for (int clus=0;clus<ToFit.size();clus++) {
 	    	  if (ToFit.GetBMTCluster(clus).IsInFit()) val+=Math.pow(BMT.getGeometry().getResidual_line(ToFit.GetBMTCluster(clus),line.getSlope(),line.getPoint())/ToFit.GetBMTCluster(clus).getErr(),2);
 	      }
-	      System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]);
-	      System.out.println(val);
+	     
 	      return val;
 	   }
 	

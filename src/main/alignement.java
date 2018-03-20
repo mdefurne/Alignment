@@ -29,8 +29,8 @@ public class alignement {
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
@@ -38,7 +38,7 @@ public class alignement {
 			
 		while(reader.hasEvent()&&count<20000) {
 		 DataEvent event = reader.getNextEvent();
-		//DataEvent event = reader.gotoEvent(20000);	
+		//DataEvent event = reader.gotoEvent(3418);	
 		    count++;
 		    System.out.println(count);
 		    //Load all the constant needed but only for the first event

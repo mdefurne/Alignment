@@ -155,7 +155,7 @@ public class TrackCandidate{
 				Theta_track.add(theta_seed);
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 				this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
-				this.setThetaMax(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+				this.setThetaMax(Math.acos((clus.getZ()-end_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
 			}
 			if (nc>0) {
 				theta_seed=Math.acos((Z_hit.get(Z_hit.size()-1)-clus.getZ())/Math.sqrt((Z_hit.get(Z_hit.size()-1)-clus.getZ())*(Z_hit.get(Z_hit.size()-1)-clus.getZ())
@@ -169,6 +169,7 @@ public class TrackCandidate{
 			mean_R=(mean_R*nc+clus.getZ())/((double)(nc+1));
 			R_hit.add(clus.getRadius());
 			Z_hit.add(clus.getZ());
+			System.out.println(Math.toDegrees(theta_seed)+" "+Math.toDegrees(theta_min)+" "+Math.toDegrees(theta_max));
 			nc++;
 		}
 	}
