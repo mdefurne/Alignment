@@ -630,6 +630,8 @@ public class Geometry {
     public double getResidual_line(Cluster clus, Vector3D slope, Vector3D point) {
 		double distance=0;
 		Vector3D point_inter=new Vector3D();
+		Vector3D point_inter_a=new Vector3D();
+		Vector3D point_inter_b=new Vector3D();
 		point_inter.setXYZ(0,0,0);
 		
 				
@@ -665,8 +667,9 @@ public class Geometry {
 		if (delta>0) {
 			double lambda_a=(-b+Math.sqrt(delta))/2./a;
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
-		    point_inter.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
-		    if (this.isinsector(point_inter)==clus.getSector()) {
+		    point_inter_a.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
+		    point_inter_b.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
+		    point_inter=this.ClosestToSector(clus.getSector(), point_inter_a, point_inter_b);
 		    	if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
 		    	if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
 		    		double phi_clus=clus.getPhi();
@@ -682,28 +685,9 @@ public class Geometry {
 					}
 					distance=clus.getRadius()*delta_phi;
 		    	}
-		    }
-		    point_inter.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
-		    if (this.isinsector(point_inter)==clus.getSector()) {
-		    	if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
-		    	if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
-		    		double phi_clus=clus.getPhi();
-					if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
-					double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
-					if (phi_proj<0) phi_proj=phi_proj+2*Math.PI;
-					double delta_phi=phi_clus-phi_proj;
-					while (delta_phi>Math.PI) {
-						delta_phi-=2*Math.PI;
-					}
-					while (delta_phi<-Math.PI) {
-						delta_phi+=2*Math.PI;
-					}
-					distance=clus.getRadius()*delta_phi;
-		    	}
-		    }
-		 }
-	
-		
+		}
+		 
+		  		
 		return distance;
 	}
 	
@@ -717,5 +701,35 @@ public class Geometry {
 		if (ang>=270&&ang<390) sec=3;
 		
 		return sec;
+	}
+	
+	public Vector3D ClosestToSector(int sector, Vector3D point_a, Vector3D point_b) {
+		Vector3D pt=new Vector3D();
+		
+		double ang_a=Math.toDegrees(Math.atan2(point_a.y(), point_a.x()));
+		double ang_b=Math.toDegrees(Math.atan2(point_b.y(), point_b.x()));
+		if (ang_a<30) ang_a=ang_a+360;
+		if (ang_b<30) ang_b=ang_b+360;
+		double middle_sec=210-120*(sector-1);
+		if (middle_sec<0) middle_sec+=360;
+		double delta_phi_a=ang_a-middle_sec;
+		double delta_phi_b=ang_b-middle_sec;
+		while (delta_phi_a>180) {
+			delta_phi_a-=360;
+		}
+		while (delta_phi_a<-180) {
+			delta_phi_a+=360;
+		}
+		while (delta_phi_b>180) {
+			delta_phi_b-=360;
+		}
+		while (delta_phi_b<-180) {
+			delta_phi_b+=360;
+		}
+		
+		if (Math.abs(delta_phi_a)>Math.abs(delta_phi_b)) pt.setXYZ(point_b.x(), point_b.y(), point_b.z());
+		if (Math.abs(delta_phi_b)>Math.abs(delta_phi_a)) pt.setXYZ(point_a.x(), point_a.y(), point_a.z());
+		
+		return pt;
 	}
 }
