@@ -386,5 +386,21 @@ public class TrackCandidate{
 		if (!fit_status) good=false;
 		return good;
 	}
+	
+	public boolean IsFromTarget() {
+		boolean FromTarget=false;
+		double target_end=50;;
+		double theta_begin=Math.acos((point_track.z()+target_end)/Math.sqrt((point_track.z()+target_end)*(point_track.z()+target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
+		double theta_end=Math.acos((point_track.z()-target_end)/Math.sqrt((point_track.z()-target_end)*(point_track.z()-target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
+		double delta_phi=Math.atan2(point_track.y(), point_track.x())-Math.atan2(vec_track.y(),vec_track.x());
+		while (delta_phi>Math.PI) {
+			delta_phi-=2*Math.PI;
+		}
+		while (delta_phi<-Math.PI) {
+			delta_phi+=2*Math.PI;
+		}
+		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(10)) FromTarget=true;
+		return FromTarget;
+	}
 
 }

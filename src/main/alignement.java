@@ -4,23 +4,28 @@ import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.io.hipo.HipoDataSource;
+
+import Analyzer.Analyzer;
 import BMT_struct.Barrel;
 import BST_struct.Barrel_SVT;
 import TrackFinder.*;
-import Analyzer.*;
 import Particles.*;
+import PostProcessor.*;
 
 public class alignement {
 	static Barrel BMT;
 	static Barrel_SVT BST;
 	static ParticleEvent MCParticles;
 	static Analyzer Sherlock;
+	static Tracker Tracky;
+	
 	
 	public alignement() {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
-		Sherlock=new Analyzer();
 		MCParticles=new ParticleEvent();
+		Tracky=new Tracker();
+		Sherlock=new Analyzer();
 	}
 	
 	public static void main(String[] args) {
@@ -40,7 +45,7 @@ public class alignement {
 		 DataEvent event = reader.getNextEvent();
 		//DataEvent event = reader.gotoEvent(3418);	
 		    count++;
-		    System.out.println(count);
+		  
 		    //Load all the constant needed but only for the first event
 		    if (!main.constant.isLoaded) {
 		    	if (event.hasBank("MC::Particle")) {
@@ -58,17 +63,16 @@ public class alignement {
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	TrackFinder tracky=new TrackFinder(BMT,BST);
-		    	tracky.BuildCandidates();
-		    	tracky.FetchTrack();
+		    	TrackFinder Lycos=new TrackFinder(BMT,BST);
+		    	Lycos.BuildCandidates();
+		    	Lycos.FetchTrack();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
-		    	Sherlock.analyze(BMT, BST, tracky.get_Candidates(), MCParticles);
+		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
 		    }
 		   		   		         
 		}
 		
-		Sherlock.draw();
-		
+		Sherlock.draw();		
 		System.out.println("Done!");
  }
 }
