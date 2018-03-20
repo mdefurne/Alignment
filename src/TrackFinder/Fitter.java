@@ -28,10 +28,6 @@ public class Fitter {
 			    upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/8.);
 			    upar.add("point_z", Candidates.get(num_cand+1).getZMean(), 200.,Candidates.get(num_cand+1).getZMean()-100.,Candidates.get(num_cand+1).getZMean()+100.);
 			    
-			   for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
-			    	System.out.println(Candidates.get(num_cand+1).GetBMTCluster(clus).getLayer()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getSector()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getX()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getY()+" "+Candidates.get(num_cand+1).GetBMTCluster(clus).getZ());
-			    }
-			    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
 			    

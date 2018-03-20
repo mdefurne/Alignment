@@ -169,7 +169,7 @@ public class TrackCandidate{
 			mean_R=(mean_R*nc+clus.getZ())/((double)(nc+1));
 			R_hit.add(clus.getRadius());
 			Z_hit.add(clus.getZ());
-			System.out.println(Math.toDegrees(theta_seed)+" "+Math.toDegrees(theta_min)+" "+Math.toDegrees(theta_max));
+		
 			nc++;
 		}
 	}

@@ -1,8 +1,6 @@
 package main;
 
-import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
-import org.jlab.geom.prim.Vector3D;
 import org.jlab.io.hipo.HipoDataSource;
 
 import Analyzer.Analyzer;
@@ -41,8 +39,9 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<20000) {
+		while(reader.hasEvent()&&count<1) {
 		 DataEvent event = reader.getNextEvent();
+			 
 		//DataEvent event = reader.gotoEvent(3418);	
 		    count++;
 		  
