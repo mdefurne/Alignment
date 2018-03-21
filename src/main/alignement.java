@@ -9,6 +9,7 @@ import BST_struct.Barrel_SVT;
 import TrackFinder.*;
 import Particles.*;
 import PostProcessor.*;
+import Trajectory.*;
 
 public class alignement {
 	static Barrel BMT;
@@ -39,11 +40,12 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<10000) {
+		while(reader.hasEvent()&&count<20000) {
 		 DataEvent event = reader.getNextEvent();
 			 
 		//DataEvent event = reader.gotoEvent(3418);	
 		    count++;
+
 		  
 		    //Load all the constant needed but only for the first event
 		    if (!main.constant.isLoaded) {

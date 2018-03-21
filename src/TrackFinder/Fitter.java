@@ -54,8 +54,7 @@ public class Fitter {
 			    	
 			    //Radius of the middle layer which should be crossed by the track in anycase	
 					StraightLine line=new StraightLine();
-					line.setPhi(res[0]);
-					line.setTheta(res[1]);
+					line.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
 					line.setPoint_XYZ(Constant.getPointRadius()*Math.cos(res[2]), Constant.getPointRadius()*Math.sin(res[2]), res[3]);
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
 						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetBMTCluster(clus),line.getSlope(),line.getPoint()));

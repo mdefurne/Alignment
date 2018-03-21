@@ -15,27 +15,12 @@ public class StraightLine {
 	public StraightLine() {
 		slope=new Vector3D();
 		point=new Vector3D();
-		Phi=Math.PI/4.;
-		Theta=Math.PI/4.;
-		slope.setXYZ(0, 0, 0);
+		Phi=0;
+		Theta=0;
+		slope.setXYZ(0, 0, 1);
 		point.setXYZ(0, 0, 0);
 	}
 		
-	
-	public void setPhi(double phi) {
-		slope.setX(Math.cos(phi)*Math.sin(Theta));
-		slope.setY(Math.sin(phi)*Math.sin(Theta));
-		slope.setZ(Math.cos(Theta));
-		Phi=phi;
-	}
-	
-	public void setTheta(double theta) {
-		slope.setX(Math.cos(Phi)*Math.sin(theta));
-		slope.setY(Math.sin(Phi)*Math.sin(theta));
-		slope.setZ(Math.cos(theta));
-		Theta=theta;
-	}
-	
 	public void setPoint_XYZ(double dx, double dy, double dz) {
 		point.setXYZ(dx, dy, dz);
 	}
@@ -66,8 +51,10 @@ public class StraightLine {
 		return slope;
 	}
 	
-	public void setSlope_XYZ(Vector3D vect) {
-		slope=vect;
+	public void setSlope_XYZ(double sx, double sy, double sz) {
+		slope.setX(sx);slope.setY(sy);slope.setZ(sz);
+		Phi=Math.atan2(slope.y(), slope.x());
+		Theta=Math.acos(slope.z()/slope.mag());
 	}
 	
 	public double getDistanceToLine(StraightLine line_bis) {
@@ -83,7 +70,9 @@ public class StraightLine {
 		double d=(s2x*s2x+s2y*s2y+s2z*s2z);
 		double c=-b;
 		double det=(a*d-b*c);
-		
+//		System.out.println(det);
+//		this.Print();
+//		line_bis.Print();
 		if (det==0) dist=Math.sqrt((i1x-i2x)*(i1x-i2x)+(i1y-i2y)*(i1y-i2y)+(i1z-i2z)*(i1z-i2z));
 		if (det!=0) {
 			double bx=s1x*(i1x-i2x)+s1y*(i1y-i2y)+s1z*(i1z-i2z);
@@ -93,8 +82,10 @@ public class StraightLine {
 			double mu=(-bx*c+a*by)/det;
 			
 			Vector3D point_a=this.getPointOnTrack(lambda);
-			Vector3D point_b=line_bis.getPointOnTrack(lambda);
-			dist=Math.sqrt((point_b.x()-point_a.x())*(point_b.x()-point_a.x())+(point_b.y()-point_a.y())*(point_b.y()-point_a.y())+(point_b.z()-point_a.z())*(point_b.z()-point_a.z()));
+			Vector3D point_b=line_bis.getPointOnTrack(mu);
+			dist=Math.sqrt((point_b.x()-point_a.x())*(point_b.x()-point_a.x())
+					+(point_b.y()-point_a.y())*(point_b.y()-point_a.y())
+					+(point_b.z()-point_a.z())*(point_b.z()-point_a.z()));
 		}
 		return dist;
 	}

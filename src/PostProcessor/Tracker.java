@@ -16,7 +16,7 @@ public class Tracker {
 	
 	public Tracker() {
 		ntarget=0;
-		nBeamFinder=100;
+		nBeamFinder=50;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
 		Vexter=new VertexFinder();
 			

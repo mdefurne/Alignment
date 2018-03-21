@@ -18,8 +18,8 @@ public class BeamFinder {
 		
 		//Create parameters
 		MnUserParameters upar = new MnUserParameters();
-	  	upar.add("phi", 0, Math.toRadians(20), -Math.toRadians(10), Math.toRadians(10));
-	    upar.add("theta", 0, Math.toRadians(20), -Math.toRadians(10), Math.toRadians(10));
+	  	upar.add("tx", 0, 1,-0.5,0.5); //angle beween x,z
+	  	upar.add("ty",0, 1,-0.5,0.5); //angle beween y,z
 	    upar.add("x", 0, 50,-25,25);
 	    upar.add("y", 0, 50,-25,25);
 	    
@@ -36,9 +36,7 @@ public class BeamFinder {
 	    if (min.isValid()) {
 	    	double[] res=migrad.params();
 	    	beam.setPoint_XYZ(res[2], res[3], 0);
-	    	beam.setPhi(res[0]);
-	    	beam.setTheta(res[1]);
-	    	System.out.println(res[0]+" "+res[1]+" "+res[2]+" "+res[3]);
+	    	beam.setSlope_XYZ(res[0],res[1],1.0);
 	    }
 		
 		return beam;
