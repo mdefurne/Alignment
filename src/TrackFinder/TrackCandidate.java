@@ -42,6 +42,7 @@ public class TrackCandidate{
 	private final double start_SVT_2=-181.;
 	private final double end_SVT_2=153.;
 	
+	private Vector3D vertex;
 	
 	//Fit results
 	private boolean fit_status;
@@ -94,6 +95,9 @@ public class TrackCandidate{
 		
 		BMT=BMT_det;
 		BST=BST_det;
+		
+		vertex=new Vector3D();
+		vertex.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		}
 	
 	public void set_FitStatus(boolean status) {
@@ -402,6 +406,14 @@ public class TrackCandidate{
 		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(5)) FromTarget=true;
 		//System.out.println(theta_begin+" "+Math.acos(vec_track.z())+" "+theta_end+" "+Math.toDegrees(delta_phi));
 		return FromTarget;
+	}
+	
+	public void setVertex(Vector3D ver) {
+		vertex=ver;
+	}
+	
+	public Vector3D setVertex() {
+		return vertex;
 	}
 
 }

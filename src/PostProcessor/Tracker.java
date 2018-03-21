@@ -27,7 +27,7 @@ public class Tracker {
 		
 		//Load the events and store them until enough statistics to find beam
 		for (int i=0;i<candidates.size();i++) {
-			if (candidates.get(i+1).IsVeryGoodCandidate()) {
+			if (candidates.get(i+1).IsGoodCandidate()) {
 				TrackList.add(candidates.get(i+1));
 				if (candidates.get(i+1).IsFromTarget()) ntarget++;
 			}

@@ -70,9 +70,7 @@ public class StraightLine {
 		double d=(s2x*s2x+s2y*s2y+s2z*s2z);
 		double c=-b;
 		double det=(a*d-b*c);
-//		System.out.println(det);
-//		this.Print();
-//		line_bis.Print();
+
 		if (det==0) dist=Math.sqrt((i1x-i2x)*(i1x-i2x)+(i1y-i2y)*(i1y-i2y)+(i1z-i2z)*(i1z-i2z));
 		if (det!=0) {
 			double bx=s1x*(i1x-i2x)+s1y*(i1y-i2y)+s1z*(i1z-i2z);
@@ -88,6 +86,35 @@ public class StraightLine {
 					+(point_b.z()-point_a.z())*(point_b.z()-point_a.z()));
 		}
 		return dist;
+	}
+	
+	public Vector3D getClosestPointToLine(StraightLine line_bis) {
+		double dist=0;
+		Vector3D point_a=new Vector3D();
+		double s1x=this.getSlope().x();double s1y=this.getSlope().y();double s1z=this.getSlope().z();
+		double i1x=this.getPoint().x();double i1y=this.getPoint().y();double i1z=this.getPoint().z();
+		
+		double s2x=line_bis.getSlope().x();double s2y=line_bis.getSlope().y();double s2z=line_bis.getSlope().z();
+		double i2x=line_bis.getPoint().x();double i2y=line_bis.getPoint().y();double i2z=line_bis.getPoint().z();
+		
+		double a=-(s1x*s1x+s1y*s1y+s1z*s1z);
+		double b=(s1x*s2x+s2y*s1y+s2z*s1z);
+		double d=(s2x*s2x+s2y*s2y+s2z*s2z);
+		double c=-b;
+		double det=(a*d-b*c);
+
+		if (det==0) point_a.setXYZ(i1x, i1y, i1z);
+		if (det!=0) {
+			double bx=s1x*(i1x-i2x)+s1y*(i1y-i2y)+s1z*(i1z-i2z);
+			double by=s2x*(i1x-i2x)+s2y*(i1y-i2y)+s2z*(i1z-i2z);
+			
+			double lambda=(bx*d-b*by)/det;
+			double mu=(-bx*c+a*by)/det;
+			
+			point_a=this.getPointOnTrack(lambda);
+			
+		}
+		return point_a;
 	}
 	
 	public void Print() {
