@@ -412,7 +412,7 @@ public class TrackCandidate{
 		vertex=ver;
 	}
 	
-	public Vector3D setVertex() {
+	public Vector3D getVertex() {
 		return vertex;
 	}
 
