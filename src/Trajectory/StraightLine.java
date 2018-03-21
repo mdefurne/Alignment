@@ -15,8 +15,8 @@ public class StraightLine {
 	public StraightLine() {
 		slope=new Vector3D();
 		point=new Vector3D();
-		Phi=0;
-		Theta=0;
+		Phi=Math.PI/4.;
+		Theta=Math.PI/4.;
 		slope.setXYZ(0, 0, 0);
 		point.setXYZ(0, 0, 0);
 	}
@@ -66,6 +66,10 @@ public class StraightLine {
 		return slope;
 	}
 	
+	public void setSlope_XYZ(Vector3D vect) {
+		slope=vect;
+	}
+	
 	public double getDistanceToLine(StraightLine line_bis) {
 		double dist=0;
 		double s1x=this.getSlope().x();double s1y=this.getSlope().y();double s1z=this.getSlope().z();
@@ -76,8 +80,8 @@ public class StraightLine {
 		
 		double a=-(s1x*s1x+s1y*s1y+s1z*s1z);
 		double b=(s1x*s2x+s2y*s1y+s2z*s1z);
-		double c=(s2x*s2x+s2y*s2y+s2z*s2z);
-		double d=-b;
+		double d=(s2x*s2x+s2y*s2y+s2z*s2z);
+		double c=-b;
 		double det=(a*d-b*c);
 		
 		if (det==0) dist=Math.sqrt((i1x-i2x)*(i1x-i2x)+(i1y-i2y)*(i1y-i2y)+(i1z-i2z)*(i1z-i2z));
@@ -95,5 +99,10 @@ public class StraightLine {
 		return dist;
 	}
 	
+	public void Print() {
+		System.out.println("/////////////////");
+		System.out.println(slope);
+		System.out.println(point);
+	}
 	
 }

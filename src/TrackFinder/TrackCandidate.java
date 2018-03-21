@@ -399,7 +399,8 @@ public class TrackCandidate{
 		while (delta_phi<-Math.PI) {
 			delta_phi+=2*Math.PI;
 		}
-		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(10)) FromTarget=true;
+		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(5)) FromTarget=true;
+		//System.out.println(theta_begin+" "+Math.acos(vec_track.z())+" "+theta_end+" "+Math.toDegrees(delta_phi));
 		return FromTarget;
 	}
 

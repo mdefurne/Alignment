@@ -39,7 +39,7 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()&&count<1) {
+		while(reader.hasEvent()&&count<10000) {
 		 DataEvent event = reader.getNextEvent();
 			 
 		//DataEvent event = reader.gotoEvent(3418);	
@@ -66,6 +66,7 @@ public class alignement {
 		    	Lycos.BuildCandidates();
 		    	Lycos.FetchTrack();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
+		    	Tracky.addEvent(count, Lycos.get_Candidates());
 		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
 		    }
 		   		   		         
