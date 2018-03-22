@@ -22,7 +22,7 @@ public class VertexFinder {
 					track.setPoint_XYZ(Events.get(i+1).get(j).get_PointTrack().x(), Events.get(i+1).get(j).get_PointTrack().y(), Events.get(i+1).get(j).get_PointTrack().z());
 					track.setSlope_XYZ(Events.get(i+1).get(j).get_VectorTrack().x(),Events.get(i+1).get(j).get_VectorTrack().y(),Events.get(i+1).get(j).get_VectorTrack().z());
 					
-					if (track.getDistanceToLine(Beam)<3) Events.get(i+1).get(j).setVertex(track.getClosestPointToLine(Beam));
+					if (track.getDistanceToLine(Beam)<5) Events.get(i+1).get(j).setVertex(track.getClosestPointToLine(Beam));
 				}
 			 }
 		}

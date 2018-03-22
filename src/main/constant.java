@@ -1,11 +1,14 @@
 package main;
 
+import Trajectory.StraightLine;
+
 public class constant {
 	
 	public static double solenoid_scale=0;
 	public static boolean isLoaded=false;
 	public static boolean isMC=false;
 	public static boolean isCosmic=false;
+	public static StraightLine IdealBeam;
 	
 	public static double getSolenoidscale() {
 		return solenoid_scale;
@@ -13,6 +16,9 @@ public class constant {
 	
 	public static void setSolenoidscale(double scale) {
 		solenoid_scale=scale;
+		IdealBeam=new StraightLine();
+		IdealBeam.setPoint_XYZ(0, 0, 0);
+		IdealBeam.setSlope_XYZ(0, 0, 1);
 	}
 	
 	public static boolean IsMC() {

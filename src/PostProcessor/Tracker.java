@@ -5,21 +5,23 @@ import Trajectory.*;
 import java.util.*;
 import Analyzer.*;
 import PostProcessor.*;
+import Analyzer.*;
 
 public class Tracker {
 	
 	private int ntarget;
 	private int nBeamFinder;
 	private VertexFinder Vexter;
+	private BeamAna BPMer;
 		
 	private HashMap<Integer, ArrayList<TrackCandidate> > Events;
 	
 	public Tracker() {
 		ntarget=0;
-		nBeamFinder=50;
+		nBeamFinder=30;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
 		Vexter=new VertexFinder();
-			
+		BPMer=new BeamAna();	
 	}
 	
 	public void addEvent(int event, HashMap<Integer,TrackCandidate> candidates) {
@@ -39,10 +41,15 @@ public class Tracker {
 			BeamFinder Beamer=new BeamFinder();
 			StraightLine Beam=Beamer.FindBeam(Events);
 			Vexter.FindVertices(Beam,Events);
+			BPMer.Analyze(Beam, Events);
 			Events.clear();
 			ntarget=0;
 		}
 		
+	}
+	
+	public void draw() {
+		BPMer.draw();
 	}
 
 }

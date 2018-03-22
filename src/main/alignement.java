@@ -73,8 +73,8 @@ public class alignement {
 		    }
 		   		   		         
 		}
-		
-		Sherlock.draw();		
+		Tracky.draw();
+		//Sherlock.draw();		
 		System.out.println("Done!");
  }
 }

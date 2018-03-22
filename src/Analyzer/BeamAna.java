@@ -46,7 +46,23 @@ public class BeamAna {
 	}
 	
 	public void draw() {
-		
+		 TCanvas BeamViewer = new TCanvas("Beam Viewer", 1100, 700);
+		 BeamViewer.divide(1, 3);
+		 BeamViewer.cd(0);
+		 BeamViewer.draw(xy_beam);
+		 BeamViewer.cd(1);
+		 BeamViewer.draw(xz_beam);
+		 BeamViewer.cd(2);
+		 BeamViewer.draw(yz_beam);
+		 
+		 TCanvas TargetViewer = new TCanvas("Target Viewer", 1100, 700);
+		 TargetViewer.divide(1, 3);
+		 TargetViewer.cd(0);
+		 TargetViewer.draw(vx);
+		 TargetViewer.cd(1);
+		 TargetViewer.draw(vy);
+		 TargetViewer.cd(2);
+		 TargetViewer.draw(vz);
 	}
 
 }

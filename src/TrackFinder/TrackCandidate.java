@@ -5,6 +5,7 @@ import BST_struct.*;
 import java.util.*;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
+import Trajectory.StraightLine;
 
 public class TrackCandidate{
 	private ArrayList<BMT_struct.Cluster> TrackTest;
@@ -393,17 +394,21 @@ public class TrackCandidate{
 	
 	public boolean IsFromTarget() {
 		boolean FromTarget=false;
-		double target_end=50;;
-		double theta_begin=Math.acos((point_track.z()+target_end)/Math.sqrt((point_track.z()+target_end)*(point_track.z()+target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
-		double theta_end=Math.acos((point_track.z()-target_end)/Math.sqrt((point_track.z()-target_end)*(point_track.z()-target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
-		double delta_phi=Math.atan2(point_track.y(), point_track.x())-Math.atan2(vec_track.y(),vec_track.x());
-		while (delta_phi>Math.PI) {
-			delta_phi-=2*Math.PI;
-		}
-		while (delta_phi<-Math.PI) {
-			delta_phi+=2*Math.PI;
-		}
-		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(5)) FromTarget=true;
+		StraightLine track=new StraightLine();
+		track.setPoint_XYZ(point_track.x(),point_track.y() , point_track.z());
+		track.setSlope_XYZ(vec_track.x(),vec_track.y() , vec_track.z());
+		if (main.constant.IdealBeam.getDistanceToLine(track)<12&&Math.abs(main.constant.IdealBeam.getClosestPointToLine(track).z())<40) FromTarget=true;
+//		double target_end=50;;
+//		double theta_begin=Math.acos((point_track.z()+target_end)/Math.sqrt((point_track.z()+target_end)*(point_track.z()+target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
+//		double theta_end=Math.acos((point_track.z()-target_end)/Math.sqrt((point_track.z()-target_end)*(point_track.z()-target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
+//		double delta_phi=Math.atan2(point_track.y(), point_track.x())-Math.atan2(vec_track.y(),vec_track.x());
+//		while (delta_phi>Math.PI) {
+//			delta_phi-=2*Math.PI;
+//		}
+//		while (delta_phi<-Math.PI) {
+//			delta_phi+=2*Math.PI;
+//		}
+//		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(5)) FromTarget=true;
 		//System.out.println(theta_begin+" "+Math.acos(vec_track.z())+" "+theta_end+" "+Math.toDegrees(delta_phi));
 		return FromTarget;
 	}
