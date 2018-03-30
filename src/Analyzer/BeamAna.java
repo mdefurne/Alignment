@@ -2,7 +2,7 @@ package Analyzer;
 
 import org.jlab.groot.data.*;
 import TrackFinder.*;
-import org.jlab.groot.ui.TCanvas;
+import org.jlab.groot.ui.*;
 import java.util.*;
 import Trajectory.StraightLine;
 
@@ -18,14 +18,14 @@ public class BeamAna {
 	
 	public BeamAna() {
 		
-		vz=new H1F("Z-vertex","Z-vertex",100,-50,50);
-		vy=new H1F("Y-vertex","Y-vertex",50,-25,25);
-		vx=new H1F("X-vertex","X-vertex",50,-25,25);
+		vz=new H1F("Z-vertex","Z-vertex",150,-50,50);
+		vy=new H1F("Y-vertex","Y-vertex",150,-25,25);
+		vx=new H1F("X-vertex","X-vertex",150,-25,25);
 		
 		xz_beam=new H1F("xz_beam angle (degrees)","xz_beam angle (degrees)",50,-10,10);
 		yz_beam=new H1F("yz_beam angle (degrees)","yz_beam angle (degrees)",50,-10,10);
 		
-		xy_beam=new H2F("Beam position in z=0",50,-25,25,50,-25,25);
+		xy_beam=new H2F("Beam position in z=0",50,-5,5,50,-5,5);
 	}
 	
 	public void Analyze(StraightLine Beam, HashMap<Integer, ArrayList<TrackCandidate> > Events) {
@@ -47,7 +47,7 @@ public class BeamAna {
 	
 	public void draw() {
 		 TCanvas BeamViewer = new TCanvas("Beam Viewer", 1100, 700);
-		 BeamViewer.divide(1, 3);
+		 BeamViewer.divide(3, 1);
 		 BeamViewer.cd(0);
 		 BeamViewer.draw(xy_beam);
 		 BeamViewer.cd(1);

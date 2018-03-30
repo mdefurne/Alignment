@@ -8,7 +8,8 @@ import org.jlab.geom.prim.Vector3D;
 import Trajectory.StraightLine;
 
 public class TrackCandidate{
-	private ArrayList<BMT_struct.Cluster> TrackTest;
+	private ArrayList<BMT_struct.Cluster> BMTClus;
+	private ArrayList<BST_struct.Cluster> BSTClus;
 	private ArrayList<Double> TrackResidual;
 	private float mean_time;
 	private double mean_Phi;
@@ -55,7 +56,8 @@ public class TrackCandidate{
 	Barrel_SVT BST;
 		
 	public TrackCandidate(Barrel BMT_det, Barrel_SVT BST_det){
-		TrackTest=new ArrayList<BMT_struct.Cluster>();
+		BMTClus=new ArrayList<BMT_struct.Cluster>();
+		BSTClus=new ArrayList<BST_struct.Cluster>();
 		TrackResidual=new ArrayList();
 		mean_time=0;
 		cand_prim=-1;
@@ -128,8 +130,8 @@ public class TrackCandidate{
 	public void add(BMT_struct.Cluster clus) {
 		layer_hit.add(clus.getLayer());
 		sector_hit.add(clus.getSector());
-		TrackTest.add(clus);
-		mean_time=(mean_time*(TrackTest.size()-1)+clus.getT_min())/((float)TrackTest.size());
+		BMTClus.add(clus);
+		mean_time=(mean_time*(BMTClus.size()-1)+clus.getT_min())/((float)BMTClus.size());
 		time_hit.add(clus.getT_min());
 		
 		//If it is a Z-layer
@@ -144,7 +146,7 @@ public class TrackCandidate{
 				phi_seed=Math.atan2(Y_hit.get(Y_hit.size()-1)-clus.getY(),X_hit.get(X_hit.size()-1)-clus.getX());
 				if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
 				Phi_track.add(phi_seed);
-				this.setPhiTolerance(Math.toRadians(15));
+				this.setPhiTolerance(Math.toRadians(5));
 			}
 			mean_X=(mean_X*nz+clus.getX())/((double)(nz+1));
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
@@ -161,17 +163,18 @@ public class TrackCandidate{
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 				this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
 				this.setThetaMax(Math.acos((clus.getZ()-end_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+				
 			}
 			if (nc>0) {
 				theta_seed=Math.acos((Z_hit.get(Z_hit.size()-1)-clus.getZ())/Math.sqrt((Z_hit.get(Z_hit.size()-1)-clus.getZ())*(Z_hit.get(Z_hit.size()-1)-clus.getZ())
 						+(clus.getRadius()-R_hit.get(R_hit.size()-1))*(clus.getRadius()-R_hit.get(R_hit.size()-1))));
 				Theta_track.add(theta_seed);
-				this.setThetaMin(theta_seed-Math.toRadians(10));
-				this.setThetaMax(theta_seed+Math.toRadians(10));
+				this.setThetaMin(theta_seed-Math.toRadians(5));
+				this.setThetaMax(theta_seed+Math.toRadians(5));
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 			}
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
-			mean_R=(mean_R*nc+clus.getZ())/((double)(nc+1));
+			mean_R=(mean_R*nc+clus.getRadius())/((double)(nc+1));
 			R_hit.add(clus.getRadius());
 			Z_hit.add(clus.getZ());
 		
@@ -180,11 +183,11 @@ public class TrackCandidate{
 	}
 	
 	public void clear() {
-		TrackTest.clear();
+		BMTClus.clear();
 	}
 	
 	public int size() {
-		return TrackTest.size();
+		return BMTClus.size();
 	}
 	
 	
@@ -239,35 +242,35 @@ public class TrackCandidate{
 	public boolean IsFittable() {
 		boolean fit=true;
 		if (nz<2||nc<2) fit=false;
-		for (int i=0;i<TrackTest.size();i++) {
+		for (int i=0;i<BMTClus.size();i++) {
 			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
 			double ix=mean_X; double iy=mean_Y;
 				  
 			//Find the intersection
 			double a=sx*sx+sy*sy;
 			double b=2*(sx*ix+sy*iy);
-			double c=ix*ix+iy*iy-TrackTest.get(i).getRadius()*TrackTest.get(i).getRadius();
+			double c=ix*ix+iy*iy-BMTClus.get(i).getRadius()*BMTClus.get(i).getRadius();
 				 
 			double delta=b*b-4*a*c;
 			if (delta<0) fit=false;
 			if (delta==0) {
 			    double lambda=-b/2./a;
 			   Vector3D inter=new Vector3D(sx*lambda+ix,sy*lambda+iy,0);
-			    if (BMT.getGeometry().isinsector(inter)!=TrackTest.get(i).getSector()) fit=false;
+			    if (BMT.getGeometry().isinsector(inter)!=BMTClus.get(i).getSector()) fit=false;
 			}
 			if (delta>0) {
 				double lambda_a=(-b+Math.sqrt(delta))/2./a;
 			    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 			    Vector3D inter_a=new Vector3D(sx*lambda_a+ix,sy*lambda_a+iy,0);
 			    Vector3D inter_b=new Vector3D(sx*lambda_b+ix,sy*lambda_b+iy,0);
-				if (BMT.getGeometry().isinsector(inter_a)!=TrackTest.get(i).getSector()&&BMT.getGeometry().isinsector(inter_b)!=TrackTest.get(i).getSector()) fit=false;
+				if (BMT.getGeometry().isinsector(inter_a)!=BMTClus.get(i).getSector()&&BMT.getGeometry().isinsector(inter_b)!=BMTClus.get(i).getSector()) fit=false;
 			}
 		}
 		return fit;
 	}
 	
 	public BMT_struct.Cluster GetBMTCluster(int i) {
-		return TrackTest.get(i);
+		return BMTClus.get(i);
 	}
 	
 	public double getResidual(int i) {
@@ -397,19 +400,8 @@ public class TrackCandidate{
 		StraightLine track=new StraightLine();
 		track.setPoint_XYZ(point_track.x(),point_track.y() , point_track.z());
 		track.setSlope_XYZ(vec_track.x(),vec_track.y() , vec_track.z());
-		if (main.constant.IdealBeam.getDistanceToLine(track)<12&&Math.abs(main.constant.IdealBeam.getClosestPointToLine(track).z())<40) FromTarget=true;
-//		double target_end=50;;
-//		double theta_begin=Math.acos((point_track.z()+target_end)/Math.sqrt((point_track.z()+target_end)*(point_track.z()+target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
-//		double theta_end=Math.acos((point_track.z()-target_end)/Math.sqrt((point_track.z()-target_end)*(point_track.z()-target_end)+point_track.y()*point_track.y()+point_track.x()*point_track.x()));
-//		double delta_phi=Math.atan2(point_track.y(), point_track.x())-Math.atan2(vec_track.y(),vec_track.x());
-//		while (delta_phi>Math.PI) {
-//			delta_phi-=2*Math.PI;
-//		}
-//		while (delta_phi<-Math.PI) {
-//			delta_phi+=2*Math.PI;
-//		}
-//		if (Math.acos(vec_track.z())>theta_begin&&Math.acos(vec_track.z())<theta_end&&Math.abs(delta_phi)<Math.toRadians(5)) FromTarget=true;
-		//System.out.println(theta_begin+" "+Math.acos(vec_track.z())+" "+theta_end+" "+Math.toDegrees(delta_phi));
+		if (main.constant.IdealBeam.getDistanceToLine(track)<12&&Math.abs(main.constant.IdealBeam.getClosestPointToLine(track).z())<80) FromTarget=true;
+
 		return FromTarget;
 	}
 	
@@ -420,5 +412,6 @@ public class TrackCandidate{
 	public Vector3D getVertex() {
 		return vertex;
 	}
+	
 
 }

@@ -56,6 +56,7 @@ public class TrackAna {
 		 theta.draw(Theta_track);
 		 TCanvas phi = new TCanvas("phi", 1100, 700);
 		 phi.draw(Phi_track);
+		 //phi.draw(Chi2_track);
 		 TCanvas z_res = new TCanvas("Z layers", 1100, 700);
 		 z_res.divide(3, 3);
 		 TCanvas c_res = new TCanvas("C_layers", 1100, 700);

@@ -18,7 +18,7 @@ public class MCAna {
 		
 		public void analyze(ParticleEvent MCParticle, TrackCandidate cand) {
 			//Try to find the particles and look if the track is reconstructed
-			if (cand.IsVeryGoodCandidate()) {
+			if (cand.IsGoodCandidate()) {
 				for (int i=0; i< MCParticle.getParticles().size();i++) {
 					double phi_part=Math.atan2(MCParticle.getParticles().get(i).getPy(),MCParticle.getParticles().get(i).getPx());
 					double theta_part=Math.acos(MCParticle.getParticles().get(i).getPz()/MCParticle.getParticles().get(i).getMomentum().mag());
@@ -26,6 +26,11 @@ public class MCAna {
 					Theta_res.fill(theta_part-Math.acos(cand.get_VectorTrack().z()));
 				}
 			}
+			
+//			if (Math.acos(MCParticle.getParticles().get(0).getPz()/MCParticle.getParticles().get(0).getMomentum().mag())>Math.toRadians(40)&&Math.acos(MCParticle.getParticles().get(0).getPz()/MCParticle.getParticles().get(0).getMomentum().mag())<Math.toRadians(60)) {
+//				System.out.println(cand.get_Nc()+" "+Math.acos(MCParticle.getParticles().get(0).getPz()/MCParticle.getParticles().get(0).getMomentum().mag()));
+//			}
+			
 		}
 		
 		public void draw() {

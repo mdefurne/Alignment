@@ -26,10 +26,9 @@ public class Fitter {
 			  	upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(10));
 			    upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(10));
 			    upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/8.);
-			    upar.add("point_z", Candidates.get(num_cand+1).getZMean(), 200.,Candidates.get(num_cand+1).getZMean()-100.,Candidates.get(num_cand+1).getZMean()+100.);
-			    
-			    //System.out.println(upar);
-			    
+			    upar.add("point_z", Candidates.get(num_cand+1).getZMean(), 600.,Candidates.get(num_cand+1).getZMean()-300.,Candidates.get(num_cand+1).getZMean()+300.);
+			  		    
+			  	    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
 			    
@@ -63,9 +62,7 @@ public class Fitter {
 				    }
 					Candidates.get(num_cand+1).set_chi2(min.fval());
 			   	}
-			    //Get parameters
-			    //System.out.println(Math.toDegrees(res[0])+" "+Math.toDegrees(res[1])+" "+Math.toDegrees(res[2])+" "+res[3]);
-		        //System.out.println(Math.toDegrees( Candidates.get(num_cand+1).getPhiMean()));
+
 			}
 		}
 		
