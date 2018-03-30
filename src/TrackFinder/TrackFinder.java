@@ -57,13 +57,13 @@ public class TrackFinder {
 						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
 							//If we have a match in time and will add a new layer
 							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								Candidates.get(num_cand+1).add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								IsAttributed=true;
 							}
 						}
 						if (!IsAttributed) {
 							TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
-							cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+							cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 							Candidates.put(Candidates.size()+1, cand);
 						}
 					}
@@ -80,12 +80,28 @@ public class TrackFinder {
 					//Create a new Track Candidate for each cluster of first layer
 					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
 						TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
-						cand.add(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+						cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 						Candidates.put(Candidates.size()+1, cand);
 						noHit_yet_sector=false;
 					}
 				}
 			}	
+		}
+		
+		//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
+		if (main.constant.IsWithSVT()) {
+			for (int ray=0; ray<Candidates.size();ray++) {
+				for (int lay=6; lay>0;lay--) {
+					int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+					if (sec!=-1) {
+						Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+						for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
+							double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
+							if (Math.abs(delta)<3) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+						}
+					}
+				}
+			}
 		}
 		
 	}

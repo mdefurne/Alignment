@@ -8,6 +8,7 @@ public class constant {
 	public static boolean isLoaded=false;
 	public static boolean isMC=false;
 	public static boolean isCosmic=false;
+	private static boolean WithSVT=false;
 	public static StraightLine IdealBeam;
 	
 	public static double getSolenoidscale() {
@@ -39,6 +40,14 @@ public class constant {
 	
 	public static void setCosmic(boolean is) {
 		isCosmic=is;
+	}
+	
+	public static void IncludeSVT(boolean is) {
+		WithSVT=is;
+	}
+	
+	public static boolean IsWithSVT() {
+		return WithSVT;
 	}
 	
 }

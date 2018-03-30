@@ -31,9 +31,11 @@ public class alignement {
 		
 		alignement MVTAli=new alignement();
 		
+		main.constant.IncludeSVT(true);
+		
 		String fileName;
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
@@ -41,11 +43,11 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()) {
+		while(reader.hasEvent()&&count<20000) {
 			DataEvent event = reader.getNextEvent();
 			 
 			//DataEvent event = reader.gotoEvent(19476);	
-		    //count++;
+		    count++;
 		    //System.out.println(count);
 		  
 		    //Load all the constant needed but only for the first event

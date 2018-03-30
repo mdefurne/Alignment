@@ -18,7 +18,7 @@ public class BeamAna {
 	
 	public BeamAna() {
 		
-		vz=new H1F("Z-vertex","Z-vertex",150,-50,50);
+		vz=new H1F("Z-vertex","Z-vertex",120,-40,80);
 		vy=new H1F("Y-vertex","Y-vertex",150,-25,25);
 		vx=new H1F("X-vertex","X-vertex",150,-25,25);
 		

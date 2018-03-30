@@ -10,6 +10,7 @@ import org.jlab.geom.prim.Vector3D;
 public class BSTAna {
 	H1F[][] SVT_residual=new H1F[6][18];
 	H2F[][] residual_vs_z=new H2F[6][18];
+	H1F SVT_LayerHit;
 	
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
@@ -18,6 +19,7 @@ public class BSTAna {
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
 			}
 		}
+		SVT_LayerHit=new H1F("Total number of hit per track candidate","Total number of hit per track candidate",12,0,12);
 	}
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
@@ -33,16 +35,19 @@ public class BSTAna {
 						//System.out.println(BST.getModule(lay, sec).getClusters().size()+" ");
 						if (Math.abs(BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid()-strip)<Math.abs(ClosestStrip-strip)) ClosestStrip=BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid();
 					}
-					double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), (int)ClosestStrip, inter);
+					double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), ClosestStrip, inter);
 					SVT_residual[lay-1][sec-1].fill(residual);
 					residual_vs_z[lay-1][sec-1].fill(inter.z(),residual);
 				}
 				//System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
 			}
+			SVT_LayerHit.fill(cand.BSTsize());
 		}
 	}
 	
 	public void draw() {
+		 TCanvas SVTHit = new TCanvas("SVT Layer Hit", 1100, 700);
+		 SVTHit.draw(SVT_LayerHit);
 		 TCanvas[] residual = new TCanvas[6];
 		 for (int lay=0;lay<6;lay++) {
 		 residual[lay]= new TCanvas("Residual for layer "+(lay+1), 1100, 700);

@@ -127,7 +127,7 @@ public class TrackCandidate{
 		return point_track;
 	}
 	
-	public void add(BMT_struct.Cluster clus) {
+	public void addBMT(BMT_struct.Cluster clus) {
 		layer_hit.add(clus.getLayer());
 		sector_hit.add(clus.getSector());
 		BMTClus.add(clus);
@@ -180,6 +180,14 @@ public class TrackCandidate{
 		
 			nc++;
 		}
+		double Rphi=Math.sqrt(mean_X*mean_X+mean_Y*mean_Y);
+		
+		if (theta_seed==Math.PI/2.) point_track.setXYZ(mean_X, mean_Y, mean_Z);
+		if (theta_seed!=Math.PI/2.) point_track.setXYZ(mean_X, mean_Y, (Rphi-mean_R)/Math.tan(theta_seed)+mean_Z);
+	}
+	
+	public void addBST(BST_struct.Cluster clus) {
+		BSTClus.add(clus);
 	}
 	
 	public void clear() {
@@ -188,6 +196,10 @@ public class TrackCandidate{
 	
 	public int size() {
 		return BMTClus.size();
+	}
+	
+	public int BSTsize() {
+		return BSTClus.size();
 	}
 	
 	
@@ -284,7 +296,7 @@ public class TrackCandidate{
 	public TrackCandidate Duplicate() {
 		TrackCandidate temp=new TrackCandidate(BMT, BST);
 		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
-			temp.add(this.GetBMTCluster(dup));
+			temp.addBMT(this.GetBMTCluster(dup));
 		}
 		return temp;
 	}
