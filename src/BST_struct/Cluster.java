@@ -16,9 +16,11 @@ public class Cluster {
 	private double z_mid;
 	private double err_phi_mid;
 	private double err_z_mid;
+	private int layer;
+	private int sector;
 	private ArrayList<Integer> hit_id;
 	
-	public Cluster() {
+	public Cluster(int lay, int sec) {
 		size=0;
 		Edep=0;
 		centroid=0;
@@ -27,6 +29,8 @@ public class Cluster {
 		err_phi_mid=0;
 		err_z_mid=0;
 		hit_id= new ArrayList();
+		layer=lay;
+		sector=sec;
 	}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -69,6 +73,14 @@ public class Cluster {
 	
 	public double getCentroid() {
 		return centroid;
+	}
+	
+	public int getLayer() {
+		return layer;
+	}
+	
+	public int getSector() {
+		return sector;
 	}
 	
 }

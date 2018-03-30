@@ -69,10 +69,10 @@ public class TrackFinder {
 					}
 					
 					//Need to transfer duplicated track candidate from the buffer to the Candidates map and then empty buffer list
-					for (int buf=0;buf<BufferLayer.size();buf++) {
-						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
-					}
-					BufferLayer.clear();
+//					for (int buf=0;buf<BufferLayer.size();buf++) {
+//						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
+//					}
+//					BufferLayer.clear();
 				}	
 				
 				//We just enter the sector
@@ -90,18 +90,33 @@ public class TrackFinder {
 		
 		//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
 		if (main.constant.IsWithSVT()) {
-			for (int ray=0; ray<Candidates.size();ray++) {
-				for (int lay=6; lay>0;lay--) {
+			for (int lay=6; lay>0;lay--) {
+				for (int ray=0; ray<Candidates.size();ray++) {
 					int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 					if (sec!=-1) {
 						Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 						for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
 							double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
-							if (Math.abs(delta)<3) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+							if (Math.abs(delta)<3) {
+								if (Candidates.get(ray+1).BSTsize()!=0) {
+									if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
+										TrackCandidate cand=Candidates.get(ray+1).Duplicate();
+										cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+										BufferLayer.add(cand);
+									}
+									if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+								}
+								if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+							}
 						}
 					}
 				}
+				for (int buf=0;buf<BufferLayer.size();buf++) {
+					Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
+				}
+				BufferLayer.clear();
 			}
+			
 		}
 		
 	}

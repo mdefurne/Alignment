@@ -6,6 +6,7 @@ import Trajectory.StraightLine;
 import TrackFinder.Fitter;
 import BMT_struct.*;
 import BST_struct.*;
+import org.jlab.geom.prim.Vector3D;
 
 public class FCNChi2 implements FCNBase {
 
@@ -27,6 +28,14 @@ public class FCNChi2 implements FCNBase {
 	      
 	      for (int clus=0;clus<ToFit.size();clus++) {
 	    	  if (ToFit.GetBMTCluster(clus).IsInFit()) val+=Math.pow(BMT.getGeometry().getResidual_line(ToFit.GetBMTCluster(clus),line.getSlope(),line.getPoint())/ToFit.GetBMTCluster(clus).getErr(),2);
+	      }
+	      
+	      if (main.constant.IsWithSVT()) {
+	    	  for (int clus=0;clus<ToFit.BSTsize();clus++) {
+	    		  Vector3D inter=BST.getGeometry().getIntersectWithRay(ToFit.GetBSTCluster(clus).getLayer(), line.getSlope(), line.getPoint());
+	    		  if (!Double.isNaN(inter.x())) val+=Math.pow(BST.getGeometry().getResidual_line(ToFit.GetBSTCluster(clus).getLayer(),ToFit.GetBSTCluster(clus).getSector(),ToFit.GetBSTCluster(clus).getCentroid(),inter)
+	    				  /BST.getGeometry().getSingleStripResolution(ToFit.GetBSTCluster(clus).getLayer(), (int)ToFit.GetBSTCluster(clus).getCentroid(), inter.z()),2);
+	    	  }
 	      }
 	     
 	      return val;

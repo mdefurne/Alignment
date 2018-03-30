@@ -56,7 +56,7 @@ public class Module {
 		    		last_time=hitmap.get(last_hit).getTime();
 		    	}	
 		       	if (m.getKey()-last_hit>2) {
-		    		Cluster clus=new Cluster();
+		    		Cluster clus=new Cluster(layer_id,sector_id);
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}

@@ -253,7 +253,8 @@ public class TrackCandidate{
 	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
-		if (nz<2||nc<2) fit=false;
+		if ((nz<2||nc<2)&&!main.constant.IsWithSVT()) fit=false;
+		if ((nz==0||nc==0||BSTClus.size()<4)&&main.constant.IsWithSVT()) fit=false;
 		for (int i=0;i<BMTClus.size();i++) {
 			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
 			double ix=mean_X; double iy=mean_Y;
@@ -285,6 +286,10 @@ public class TrackCandidate{
 		return BMTClus.get(i);
 	}
 	
+	public BST_struct.Cluster GetBSTCluster(int i) {
+		return BSTClus.get(i);
+	}
+	
 	public double getResidual(int i) {
 		return TrackResidual.get(i);
 	}
@@ -295,8 +300,11 @@ public class TrackCandidate{
 	
 	public TrackCandidate Duplicate() {
 		TrackCandidate temp=new TrackCandidate(BMT, BST);
-		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
+		for (int dup=0;dup<this.size();dup++) {//Do not want the last cluster since on the same layer
 			temp.addBMT(this.GetBMTCluster(dup));
+		}
+		for (int dup=0;dup<this.BSTsize()-1;dup++) {//Do not want the last cluster since on the same layer
+			temp.addBST(this.GetBSTCluster(dup));
 		}
 		return temp;
 	}
@@ -425,5 +433,7 @@ public class TrackCandidate{
 		return vertex;
 	}
 	
-
+	public int getLastBSTLayer() {
+		return BSTClus.get(BSTClus.size()-1).getLayer();
+	}
 }
