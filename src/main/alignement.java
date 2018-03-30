@@ -46,7 +46,7 @@ public class alignement {
 			 
 			//DataEvent event = reader.gotoEvent(19476);	
 		    //count++;
-		    System.out.println(count);
+		    //System.out.println(count);
 		  
 		    //Load all the constant needed but only for the first event
 		    if (!main.constant.isLoaded) {
