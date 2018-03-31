@@ -51,24 +51,31 @@ public class Geometry {
 
     //*** 
     public int findSectorFromAngle(int layer, Vector3D trkPoint) {
-        int Sect = -1;
-        for (int s = 0; s < Constants.NSECT[layer - 1]; s++) {
-            int sector = s + 1;
-            Vector3D orig = new Vector3D(getPlaneModuleOrigin(sector, layer).x(), getPlaneModuleOrigin(sector, layer).y(), 0);
-            Vector3D end = new Vector3D(getPlaneModuleEnd(sector, layer).x(), getPlaneModuleEnd(sector, layer).y(), 0);
-            Vector3D trk = new Vector3D(trkPoint.x(), trkPoint.y(), 0);
-            orig.unit();
-            end.unit();
-            trk.unit();
-
-            double phi1 = orig.dot(trk);
-            double phi2 = trk.dot(end);
-            double phiRange = orig.dot(end);
-
-            if (Math.acos(phi1) < Math.acos(phiRange) && Math.acos(phi2) < Math.acos(phiRange)) {
-                Sect = sector;
-            }
-        }
+//        int Sect = -1;
+//        for (int s = 0; s < Constants.NSECT[layer - 1]; s++) {
+//            int sector = s + 1;
+//            Vector3D orig = new Vector3D(getPlaneModuleOrigin(sector, layer).x(), getPlaneModuleOrigin(sector, layer).y(), 0);
+//            Vector3D end = new Vector3D(getPlaneModuleEnd(sector, layer).x(), getPlaneModuleEnd(sector, layer).y(), 0);
+//            Vector3D trk = new Vector3D(trkPoint.x(), trkPoint.y(), 0);
+//            orig.unit();
+//            end.unit();
+//            trk.unit();
+//
+//            double phi1 = orig.dot(trk);
+//            double phi2 = trk.dot(end);
+//            double phiRange = orig.dot(end);
+//
+//            if (Math.acos(phi1) < Math.acos(phiRange) && Math.acos(phi2) < Math.acos(phiRange)) {
+//                Sect = sector;
+//            }
+//        }
+    	double step=2*Math.PI/((double)Constants.NSECT[layer - 1]);
+    	double ang=Math.atan2(trkPoint.y(), trkPoint.x());
+    	ang=-(ang+Math.PI/2.-step/2.);
+    	if (ang<0) ang+=2*Math.PI;
+    	int Sect= (int)(ang/step) +1;
+    	if (Sect>Constants.NSECT[layer - 1]) Sect=1;
+    	if (Sect<1) Sect=Constants.NSECT[layer - 1];
         return Sect;
     }
 

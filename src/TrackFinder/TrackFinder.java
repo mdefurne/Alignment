@@ -98,6 +98,7 @@ public class TrackFinder {
 						for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
 							double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
 							if (Math.abs(delta)<3) {
+							//if (Math.abs(delta)<10) {
 								if (Candidates.get(ray+1).BSTsize()!=0) {
 									if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
 										TrackCandidate cand=Candidates.get(ray+1).Duplicate();

@@ -17,7 +17,7 @@ public class TrackAna {
 		Clusty=new ClusterAna();
 		Theta_track=new H1F("Theta angle of track","Theta angle for track",90,0,180);
 		Phi_track=new H1F("Phi angle of track","Phi angle for track",90,-180,180);
-		Chi2_track=new H1F("Chi2 of track","Chi2 angle for track",90,0,100);
+		Chi2_track=new H1F("Chi2 of track","Chi2 angle for track",90,0,500);
 		for (int lay=0;lay<3;lay++) {
 			for (int sec=0;sec<3;sec++) {
 				Z_residual[lay][sec]=new H1F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
@@ -31,7 +31,8 @@ public class TrackAna {
 		if (cand.get_FitStatus()) {
 			Theta_track.fill(Math.toDegrees(Math.acos(cand.get_VectorTrack().z())));
 			Phi_track.fill(Math.toDegrees(Math.atan2(cand.get_VectorTrack().y(),cand.get_VectorTrack().x())));
-			if (cand.get_Nc()==3&&cand.get_Nz()==3) Chi2_track.fill(cand.get_chi2());
+			//if (cand.get_Nc()==3&&cand.get_Nz()==3) Chi2_track.fill(cand.get_chi2());
+			Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
 				if (cand.get_Nc()==3&&cand.IsVeryGoodCandidate()) {
@@ -55,8 +56,8 @@ public class TrackAna {
 		 TCanvas theta = new TCanvas("theta", 1100, 700);
 		 theta.draw(Theta_track);
 		 TCanvas phi = new TCanvas("phi", 1100, 700);
-		 phi.draw(Phi_track);
-		 //phi.draw(Chi2_track);
+		 //phi.draw(Phi_track);
+		 phi.draw(Chi2_track);
 		 TCanvas z_res = new TCanvas("Z layers", 1100, 700);
 		 z_res.divide(3, 3);
 		 TCanvas c_res = new TCanvas("C_layers", 1100, 700);

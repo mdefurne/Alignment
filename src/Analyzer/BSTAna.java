@@ -15,7 +15,7 @@ public class BSTAna {
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
-				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",200,-10,10);
+				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",200,-40,40);
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
 			}
 		}

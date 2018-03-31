@@ -399,18 +399,30 @@ public class TrackCandidate{
 	
 	public boolean IsGoodCandidate() {
 		boolean good=true;
-		if (chi2>50) good=false;
-		if (nz<2) good=false;
-		if (nc<2) good=false;
+		if (!main.constant.IsWithSVT()) {
+			if (chi2>50) good=false;
+			if (nz<2) good=false;
+			if (nc<2) good=false;
+		}
+		if (main.constant.IsWithSVT()) {
+			if (chi2>200) good=false;
+			if (nz==0||nc==0||BSTClus.size()<4) good=false;
+		}
 		if (!fit_status) good=false;
 		return good;
 	}
 	
 	public boolean IsVeryGoodCandidate() {
 		boolean good=true;
-		if (chi2>10) good=false;
-		if (nz<3) good=false;
-		if (nc<3) good=false;
+		if (!main.constant.IsWithSVT()) {
+			if (chi2>10) good=false;
+			if (nz<3) good=false;
+			if (nc<3) good=false;
+		}
+		if (main.constant.IsWithSVT()) {
+			if (chi2>100) good=false;
+			if (nz>=2&&nc>=2&&BSTClus.size()>=4) good=false;
+		}
 		if (!fit_status) good=false;
 		return good;
 	}

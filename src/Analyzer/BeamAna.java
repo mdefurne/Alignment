@@ -29,6 +29,10 @@ public class BeamAna {
 	}
 	
 	public void Analyze(StraightLine Beam, HashMap<Integer, ArrayList<TrackCandidate> > Events) {
+
+		xy_beam.fill(Beam.getPoint().x(), Beam.getPoint().y());
+		xz_beam.fill(Math.toDegrees(Math.atan(Beam.getSlope().x())));
+		yz_beam.fill(Math.toDegrees(Math.atan(Beam.getSlope().y())));
 		
 		for (int i=0; i<Events.size();i++) {
 			 for (int j=0; j<Events.get(i+1).size();j++) {
@@ -37,9 +41,6 @@ public class BeamAna {
 					vy.fill(Events.get(i+1).get(j).getVertex().y());
 					vx.fill(Events.get(i+1).get(j).getVertex().x());
 					
-					xy_beam.fill(Beam.getPoint().x(), Beam.getPoint().y());
-					xz_beam.fill(Math.toDegrees(Math.atan(Beam.getSlope().x())));
-					yz_beam.fill(Math.toDegrees(Math.atan(Beam.getSlope().y())));
 				}
 			 }
 		}

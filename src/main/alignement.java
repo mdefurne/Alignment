@@ -9,7 +9,7 @@ import BST_struct.Barrel_SVT;
 import TrackFinder.*;
 import Particles.*;
 import PostProcessor.*;
-import Trajectory.*;
+
 
 public class alignement {
 	static Barrel BMT;
@@ -34,8 +34,8 @@ public class alignement {
 		main.constant.IncludeSVT(true);
 		
 		String fileName;
-		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
