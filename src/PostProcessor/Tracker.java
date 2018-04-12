@@ -31,7 +31,7 @@ public class Tracker {
 		
 		//Load the events and store them until enough statistics to find beam
 		for (int i=0;i<TrackList.size();i++) {
-				if (TrackList.get(i+1).IsFromTarget()) ntarget++;
+				if (TrackList.get(i).IsFromTarget()) ntarget++;
 			}
 			
 		Events.put(Events.size()+1,TrackList);
@@ -50,6 +50,7 @@ public class Tracker {
 	private ArrayList<TrackCandidate> DuplicateRemoval(HashMap<Integer,TrackCandidate> cand){
 		ArrayList<TrackCandidate> Temp_good=new ArrayList<TrackCandidate>();
 		ArrayList<TrackCandidate> good=new ArrayList<TrackCandidate>();
+		
 		//Keep first only good tracks
 		for (int i=0;i<cand.size();i++) {
 			if (cand.get(i+1).IsGoodCandidate()) {
@@ -60,7 +61,7 @@ public class Tracker {
 		for (int i=0;i<Temp_good.size();i++) {
 			good.add(Temp_good.get(i));
 			for (int j=i+1;j<Temp_good.size();j++) {
-				if (good.get(good.size()-1).IsSimilar(Temp_good.get(j))&&good.get(good.size()-1).get_chi2()>Temp_good.get(j).get_chi2()) {
+				if (good.get(good.size()-1).IsSimilar(Temp_good.get(j))&&good.get(good.size()-1).get_chi2()/(2*good.get(good.size()-1).size()+2*good.get(good.size()-1).BSTsize()-4)>Temp_good.get(j).get_chi2()/(2*Temp_good.get(j).size()+2*Temp_good.get(j).BSTsize()-4)) {
 					good.remove(good.size()-1);
 					good.add(Temp_good.get(j));
 				}

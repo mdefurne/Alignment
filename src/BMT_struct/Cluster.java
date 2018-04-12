@@ -174,7 +174,7 @@ public class Cluster {
 	}
 	
 	public void close(int mode) {
-		if (mode==1) {
+		if (mode==1&&!main.constant.isMC) {
 			centroid=(double) hit_id.get(first_tmin);
 			if (first_tmin!=0) {
 				centroid=(hit_list.get(first_tmin).getADC()*((double) hit_id.get(first_tmin))+hit_list.get(second_tmin).getADC()*((double) hit_id.get(second_tmin)))

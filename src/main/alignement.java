@@ -34,8 +34,8 @@ public class alignement {
 		main.constant.IncludeSVT(true);
 		
 		String fileName;
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
@@ -43,7 +43,7 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		while(reader.hasEvent()) {
+		while(reader.hasEvent()&&count<30000) {
 			DataEvent event = reader.getNextEvent();
 			 
 			//DataEvent event = reader.gotoEvent(19476);	
@@ -54,6 +54,7 @@ public class alignement {
 		    if (!main.constant.isLoaded) {
 		    	if (event.hasBank("MC::Particle")) {
 		    		main.constant.setMC(true);
+		    		if (main.constant.isMC&&BMT.getTile(1, 1).getClusteringMode()==1) System.out.println("Mode 1 is not available for MC data");
 		    	}
 		    
 		    	if (event.hasBank("RUN::config")) {

@@ -93,6 +93,10 @@ public class Tile {
 		mode=clus_mode;
 	}
 	
+	public int getClusteringMode() {
+		return mode;
+	}
+	
 	public HashMap<Integer, Cluster> getClusters(){
 		return clustermap;
 	}
