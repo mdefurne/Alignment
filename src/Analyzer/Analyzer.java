@@ -29,8 +29,8 @@ public class Analyzer {
 	
 	public void draw() {
 		Trackmeter.draw();
-		Simeter.draw();
-		//MCmeter.draw();
+		//Simeter.draw();
+		MCmeter.draw();
 	}
 	
 }

@@ -1,6 +1,9 @@
 package Analyzer;
 
 import org.jlab.groot.data.*;
+import org.jlab.groot.fitter.DataFitter;
+import org.jlab.groot.math.F1D;
+
 import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
 import BST_struct.*;
@@ -11,15 +14,17 @@ public class BSTAna {
 	H1F[][] SVT_residual=new H1F[6][18];
 	H2F[][] residual_vs_z=new H2F[6][18];
 	H1F SVT_LayerHit;
+	F1D funcres;
 	
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
-				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",200,-40,40);
+				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
 			}
 		}
 		SVT_LayerHit=new H1F("Total number of hit per track candidate","Total number of hit per track candidate",12,0,12);
+		funcres=new F1D("resolution", "gaus",-1.0,1.0);
 	}
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
@@ -54,7 +59,9 @@ public class BSTAna {
 		 residual[lay].divide(4, 5);
 		 for (int sec=0;sec<18;sec++) {
 					residual[lay].cd(sec);
+					//DataFitter.fit(funcres, SVT_residual[lay][sec], "test");
 					residual[lay].draw(SVT_residual[lay][sec]);
+					//residual[lay].draw(funcres);
 					//residual[lay].draw(residual_vs_z[lay][sec]);
 					
 		 	}

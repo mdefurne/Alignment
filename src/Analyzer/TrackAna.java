@@ -35,11 +35,11 @@ public class TrackAna {
 			Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
-				if (cand.get_Nc()==3&&cand.IsVeryGoodCandidate()) {
+				if (cand.get_Nc()==3&&cand.IsGoodCandidate()) {
 					
 					Clusty.analyze(cand);
 					
-				if (cand.get_Nz()==3&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
+				if (cand.get_Nz()>=2&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 					}
 					
@@ -56,8 +56,8 @@ public class TrackAna {
 		 TCanvas theta = new TCanvas("theta", 1100, 700);
 		 theta.draw(Theta_track);
 		 TCanvas phi = new TCanvas("phi", 1100, 700);
-		 //phi.draw(Phi_track);
-		 phi.draw(Chi2_track);
+		 phi.draw(Phi_track);
+		 //phi.draw(Chi2_track);
 		 TCanvas z_res = new TCanvas("Z layers", 1100, 700);
 		 z_res.divide(3, 3);
 		 TCanvas c_res = new TCanvas("C_layers", 1100, 700);

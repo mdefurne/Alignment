@@ -623,7 +623,7 @@ public class Geometry {
     	double r=0;
     	if (getZorC(layer)==1) r=BMT_geo.Constants.getCRZRADIUS()[num_region];
     	if (getZorC(layer)==0) r=BMT_geo.Constants.getCRCRADIUS()[num_region];
-    	r=r+BMT_geo.Constants.hStrip2Det;
+    	//r=r+BMT_geo.Constants.hStrip2Det;
     	return r;
     }
     

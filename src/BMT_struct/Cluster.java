@@ -22,10 +22,13 @@ public class Cluster {
 	private int size;
 	private int Edep;
 	private ArrayList<Integer> hit_id;
+	private ArrayList<BMT_struct.Hit> hit_list;
 	private double Err;
 	private int layer_clus;
 	private int sector_clus;
 	boolean InTheFit;
+	private int first_tmin;
+	private int second_tmin;
 		
 	public Cluster() {
 		t_min=0;
@@ -38,36 +41,50 @@ public class Cluster {
 		centroid_z=0;
 		size=0;
 		Edep=0;
-		hit_id=new ArrayList();
+		hit_id=new ArrayList<Integer>();
+		hit_list=new ArrayList<BMT_struct.Hit>();
 		Err=0.0;//mm
 		InTheFit=true;
+		first_tmin=0;
+		second_tmin=0;
 		}
 	
 	public void add(int id_hit, Hit aHit) {
+		//By default, everything is computed in mode 0. If mode 1, everything is computed again in close method
 		if (hit_id.size()==0) {
 			t_min=aHit.getTime();
 			t_max=aHit.getTime();
+			first_tmin=hit_id.size();
+			second_tmin=hit_id.size();
 		}
-		hit_id.add(id_hit);
-		if (t_min>aHit.getTime()) t_min=aHit.getTime();
+		
+		if (t_min>=aHit.getTime()) {
+			t_min=aHit.getTime();
+			second_tmin=first_tmin;
+			first_tmin=hit_id.size();
+		}
 		if (t_max<aHit.getTime()) t_max=aHit.getTime();
 		
-		centroid_r=aHit.getRadius();
+		hit_id.add(id_hit);
+		hit_list.add(aHit);
+		
+		centroid_r=aHit.getRadius()+BMT_geo.Constants.hStrip2Det;
 		Err=Edep*Err+aHit.getADC()*aHit.getErr();
 		
 		if(!Double.isNaN(aHit.getPhi())) {
-			centroid_phi=Edep*centroid_phi+aHit.getADC()*aHit.getPhi();
 			centroid_x=Edep*centroid_x+centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
 			centroid_y=Edep*centroid_y+centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
 			Edep+=aHit.getADC();
-			centroid_phi=centroid_phi/Edep;
 			centroid_x=centroid_x/Edep;
 			centroid_y=centroid_y/Edep;
 			centroid_z=Double.NaN;
+			centroid_phi=Math.atan2(centroid_y, centroid_x);
+			if (centroid_phi<0) centroid_phi+=2*Math.PI;
 		}
 		if(!Double.isNaN(aHit.getZ())) {
 			centroid_x=Double.NaN;
 			centroid_y=Double.NaN;
+			centroid_phi=Double.NaN;
 			centroid_z=Edep*centroid_z+aHit.getADC()*aHit.getZ();
 			Edep+=aHit.getADC();
 			centroid_z=centroid_z/Edep;
@@ -154,6 +171,41 @@ public class Cluster {
 	
 	public boolean IsInFit() {
 		return InTheFit;
+	}
+	
+	public void close(int mode) {
+		if (mode==1) {
+			centroid=(double) hit_id.get(first_tmin);
+			if (first_tmin!=0) {
+				centroid=(hit_list.get(first_tmin).getADC()*((double) hit_id.get(first_tmin))+hit_list.get(second_tmin).getADC()*((double) hit_id.get(second_tmin)))
+							/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
+			}
+			centroid_phi=0;
+			centroid_r=centroid_r-BMT_geo.Constants.hStrip2Det/2.; //To get the centroid at Radius+hStrip2Det/4.
+			centroid_x=0;
+			centroid_y=0;
+			centroid_z=0;
+			if (Double.isNaN(hit_list.get(first_tmin).getPhi())){
+				centroid_x=Double.NaN;
+				centroid_y=Double.NaN;
+				centroid_phi=Double.NaN;
+				centroid_z=hit_list.get(first_tmin).getZ();
+				if (first_tmin!=0) centroid_z=(hit_list.get(first_tmin).getADC()*hit_list.get(first_tmin).getZ()+hit_list.get(second_tmin).getADC()*hit_list.get(second_tmin).getZ())
+						/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
+			}
+			if (Double.isNaN(hit_list.get(first_tmin).getZ())){
+				centroid_phi=hit_list.get(first_tmin).getPhi();
+				centroid_z=Double.NaN;
+				if (first_tmin!=0) {
+					centroid_x=centroid_r*(hit_list.get(first_tmin).getADC()*Math.cos(hit_list.get(first_tmin).getPhi())+hit_list.get(second_tmin).getADC()*Math.cos(hit_list.get(second_tmin).getPhi()))
+							/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
+					centroid_y=centroid_r*(hit_list.get(first_tmin).getADC()*Math.sin(hit_list.get(first_tmin).getPhi())+hit_list.get(second_tmin).getADC()*Math.sin(hit_list.get(second_tmin).getPhi()))
+							/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
+					centroid_phi=Math.atan2(centroid_y, centroid_x);
+					if (centroid_phi<0) centroid_phi+=2*Math.PI;
+				}
+			}
+		}
 	}
 				
 }
