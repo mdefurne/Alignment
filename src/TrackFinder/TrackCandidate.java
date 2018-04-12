@@ -448,4 +448,24 @@ public class TrackCandidate{
 	public int getLastBSTLayer() {
 		return BSTClus.get(BSTClus.size()-1).getLayer();
 	}
+	
+	public boolean IsSimilar(TrackCandidate ToTest) {
+		boolean IsSame=false;
+		int InCommon=0;
+		for (int clus=0; clus<ToTest.size(); clus++) {
+			for (int clusb=0; clusb<this.size(); clusb++) {
+			if (ToTest.GetBMTCluster(clus).getCentroid()==this.GetBMTCluster(clusb).getCentroid()&&ToTest.GetBMTCluster(clus).getLayer()==this.GetBMTCluster(clusb).getLayer()&&ToTest.GetBMTCluster(clus).getSector()==this.GetBMTCluster(clusb).getSector()) InCommon++;
+			}
+		}
+		
+		for (int clus=0; clus<ToTest.BSTsize(); clus++) {
+			for (int clusb=0; clusb<this.BSTsize(); clusb++) {
+			if (ToTest.GetBSTCluster(clus).getCentroid()==this.GetBSTCluster(clusb).getCentroid()&&ToTest.GetBSTCluster(clus).getLayer()==this.GetBSTCluster(clusb).getLayer()&&ToTest.GetBSTCluster(clus).getSector()==this.GetBSTCluster(clusb).getSector()) InCommon++;
+			}
+		}
+		
+		if (InCommon>2) IsSame=true;
+		
+		return IsSame;
+	}
 }
