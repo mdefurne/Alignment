@@ -22,7 +22,7 @@ public class CCDBConstantsLoader {
     public static final synchronized void Load(DatabaseConstantProvider dbprovider) {
         // initialize the constants
         //Z detector characteristics
-        int NREGIONS = 3;
+    	int NREGIONS = 3;
         double[] CRZRADIUS = new double[NREGIONS]; 		// the radius of the Z detector in mm
         int[] CRZNSTRIPS = new int[NREGIONS]; 			// the number of strips
         double[] CRZSPACING = new double[NREGIONS]; 	// the strip spacing in mm
@@ -67,7 +67,7 @@ public class CCDBConstantsLoader {
         // new
         // run
         // load the geometry tables
-        dbprovider.loadTable("/geometry/cvt/mvt/bmt_layer");
+        dbprovider.loadTable("/geometry/cvt/mvt/bmt_layer_noshim");
         dbprovider.loadTable("/geometry/cvt/mvt/bmt_strip_L1");
         dbprovider.loadTable("/geometry/cvt/mvt/bmt_strip_L2");
         dbprovider.loadTable("/geometry/cvt/mvt/bmt_strip_L3");
@@ -109,20 +109,20 @@ public class CCDBConstantsLoader {
 
         // Getting the Constants
         // 2) Layer info 
-        for (int i = 0; i < dbprovider.length("/geometry/cvt/mvt/bmt_layer/Layer"); i++) {
+        for (int i = 0; i < dbprovider.length("/geometry/cvt/mvt/bmt_layer_noshim/Layer"); i++) {
 
-            int layer = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer/Layer", i);
+            int layer = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer_noshim/Layer", i);
             int region = (int) ((layer + 1) / 2);
 
-            double radius = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Radius", i);
-            double Zmin = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Zmin", i);
-            double Zmax = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Zmax", i);
-            double spacing = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Interstrip", i);
-            int axis = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer/Axis", i);
-            int Nstrips = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer/Nstrip", i);
+            double radius = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Radius", i);
+            double Zmin = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Zmin", i);
+            double Zmax = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Zmax", i);
+            double spacing = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Interstrip", i);
+            int axis = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer_noshim/Axis", i);
+            int Nstrips = dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer_noshim/Nstrip", i);
 
-            double Phi_min = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Phi_min", i);
-            double Phi_max = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer/Phi_max", i);
+            double Phi_min = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Phi_min", i);
+            double Phi_max = dbprovider.getDouble("/geometry/cvt/mvt/bmt_layer_noshim/Phi_max", i);
 
             //sector clocking fix data
             double[] EDGE1 = new double[]{Math.toRadians(Phi_min + 120), Math.toRadians(Phi_min), Math.toRadians(Phi_min + 240)};
@@ -227,8 +227,8 @@ public class CCDBConstantsLoader {
          
         for (int i = 0; i<2*NREGIONS; i++) {
           	for (int j=0; j<3; j++) {
-          		if (dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer/Axis", i)==0) HV_DRIFT[i][j]=1500;
-              		if (dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer/Axis", i)==1) HV_DRIFT[i][j]=1500;
+          		if (dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer_noshim/Axis", i)==0) HV_DRIFT[i][j]=1500;
+              		if (dbprovider.getInteger("/geometry/cvt/mvt/bmt_layer_noshim/Axis", i)==1) HV_DRIFT[i][j]=1500;
                 }
         }
         

@@ -28,8 +28,8 @@ public class ClusterAna {
 			for (int sec=0;sec<3;sec++) {
 				Z_size[lay][sec]=new H2F("Size as a function of Phi Track "+(lay+1)+" S"+(sec+1)+" in mm",50,-Math.PI,Math.PI,15,1,16);
 				C_size[lay][sec]=new H2F("Size as a function of Theta Track "+(lay+1)+" S"+(sec+1)+" in mm",30,0,Math.PI,15,1,16);
-				Z_Edep[lay][sec]=new H2F("ADC sum as a function of Phi Track "+(lay+1)+" S"+(sec+1)+" in mm",50,-Math.PI,Math.PI,15,1,16);
-				C_Edep[lay][sec]=new H2F("ADC sum as a function of Theta Track "+(lay+1)+" S"+(sec+1)+" in mm",30,0,Math.PI,15,1,16);
+				Z_Edep[lay][sec]=new H2F("ADC sum as a function of Phi Track "+(lay+1)+" S"+(sec+1)+" in mm",50,-Math.PI,Math.PI,100,1,16000);
+				C_Edep[lay][sec]=new H2F("ADC sum as a function of Phi Track "+(lay+1)+" S"+(sec+1)+" in mm",30,-Math.PI,Math.PI,100,1,16000);
 				Z_Time[lay][sec]=new H2F("Time Spread as a function of Phi Track "+(lay+1)+" S"+(sec+1)+" in mm",50,0,240,15,1,16);
 				C_Time[lay][sec]=new H2F("Time Spread as a function of Theta Track "+(lay+1)+" S"+(sec+1)+" in mm",30,0,240,15,1,16);
 			}
@@ -63,24 +63,24 @@ public class ClusterAna {
 			Z_size[(lay-1)/2][sec].fill(cand.getPhi(),cand.GetBMTCluster(clus).getSize());
 			C_size[(lay-1)/2][sec].fill(cand.getTheta(),cand.GetBMTCluster(clus).getSize());
 			Z_Edep[(lay-1)/2][sec].fill(cand.getPhi(),cand.GetBMTCluster(clus).getEdep());
-			C_Edep[(lay-1)/2][sec].fill(cand.getTheta(),cand.GetBMTCluster(clus).getEdep());
+			C_Edep[(lay-1)/2][sec].fill(cand.getPhi(),cand.GetBMTCluster(clus).getEdep());
 			Z_Time[(lay-1)/2][sec].fill(cand.getPhi(),cand.GetBMTCluster(clus).getT_max()-cand.GetBMTCluster(clus).getT_min());
 			C_Time[(lay-1)/2][sec].fill(cand.getTheta(),cand.GetBMTCluster(clus).getT_max()-cand.GetBMTCluster(clus).getT_min());
 		}
 	}
 	
 	public void draw() {
-		if (false) {
-			cZ_size = new TCanvas("Size versus Phi", 1100, 700);
+		if (true) {
+			cZ_size = new TCanvas("Edep versus Phi for Z", 1100, 700);
 			cZ_size.divide(3, 3);
-			cC_size = new TCanvas("Size versus Theta", 1100, 700);
+			cC_size = new TCanvas("Edep versus Phi for C", 1100, 700);
 			cC_size.divide(3, 3);
 			for (int lay=0;lay<3;lay++) {
 				for (int sec=0;sec<3;sec++) {
 					cZ_size.cd(3*lay+sec);
-					cZ_size.draw(Z_size[lay][sec]);
+					cZ_size.draw(Z_Edep[lay][sec]);
 					cC_size.cd(3*lay+sec);
-					cC_size.draw(C_size[lay][sec]);
+					cC_size.draw(C_Edep[lay][sec]);
 					}
 			}
 		}

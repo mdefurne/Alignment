@@ -1,4 +1,10 @@
+/Analyzer/
+/BMT_geo/
+/BMT_struct/
+/BST_geo/
+/BST_struct/
+/Particles/
 /PostProcessor/
 /TrackFinder/
-/BMT_struct/
+/Trajectory/
 /main/

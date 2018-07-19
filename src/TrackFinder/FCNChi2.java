@@ -22,21 +22,7 @@ public class FCNChi2 implements FCNBase {
 		  		  		  
 		  line.setPoint_XYZ(radius*Math.cos(par[2]), radius*Math.sin(par[2]), par[3]);
 		  
-	      double val=0;
-	    
-	      if (ToFit.size()==0) return val;
-	      
-	      for (int clus=0;clus<ToFit.size();clus++) {
-	    	  if (ToFit.GetBMTCluster(clus).IsInFit()) val+=Math.pow(BMT.getGeometry().getResidual_line(ToFit.GetBMTCluster(clus),line.getSlope(),line.getPoint())/ToFit.GetBMTCluster(clus).getErr(),2);
-	      }
-	      
-	      if (main.constant.IsWithSVT()) {
-	    	  for (int clus=0;clus<ToFit.BSTsize();clus++) {
-	    		  Vector3D inter=BST.getGeometry().getIntersectWithRay(ToFit.GetBSTCluster(clus).getLayer(), line.getSlope(), line.getPoint());
-	    		  if (!Double.isNaN(inter.x())) val+=Math.pow(BST.getGeometry().getResidual_line(ToFit.GetBSTCluster(clus).getLayer(),ToFit.GetBSTCluster(clus).getSector(),ToFit.GetBSTCluster(clus).getCentroid(),inter)
-	    				  /BST.getGeometry().getSingleStripResolution(ToFit.GetBSTCluster(clus).getLayer(), (int)ToFit.GetBSTCluster(clus).getCentroid(), inter.z()),2);
-	    	  }
-	      }
+	      double val=ToFit.ComputeChi2(line);
 	     
 	      return val;
 	   }

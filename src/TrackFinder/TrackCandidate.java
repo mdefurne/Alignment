@@ -11,6 +11,7 @@ public class TrackCandidate{
 	private ArrayList<BMT_struct.Cluster> BMTClus;
 	private ArrayList<BST_struct.Cluster> BSTClus;
 	private ArrayList<Double> TrackResidual;
+	private ArrayList<Double> LocalDerivative; //Store local derivative for alignment purposes
 	private float mean_time;
 	private double mean_Phi;
 	private double chi2;
@@ -58,7 +59,8 @@ public class TrackCandidate{
 	public TrackCandidate(Barrel BMT_det, Barrel_SVT BST_det){
 		BMTClus=new ArrayList<BMT_struct.Cluster>();
 		BSTClus=new ArrayList<BST_struct.Cluster>();
-		TrackResidual=new ArrayList();
+		TrackResidual=new ArrayList<Double>();
+		LocalDerivative=new ArrayList<Double>();
 		mean_time=0;
 		cand_prim=-1;
 		is_secondary_track=false;
@@ -397,6 +399,25 @@ public class TrackCandidate{
 		return theta_max;
 	}
 	
+	public double ComputeChi2(StraightLine line) {
+		double chi=0;
+		if (this.size()==0) return chi;
+	      
+	      for (int clus=0;clus<this.size();clus++) {
+	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line.getSlope(),line.getPoint())/this.GetBMTCluster(clus).getErr(),2);
+	      }
+	      
+	      if (main.constant.IsWithSVT()) {
+	    	  for (int clus=0;clus<this.BSTsize();clus++) {
+	    		  Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), line.getSlope(), line.getPoint());
+	    		  if (!Double.isNaN(inter.x())) chi+=Math.pow(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+	    				  /BST.getGeometry().getSingleStripResolution(this.GetBSTCluster(clus).getLayer(), (int)this.GetBSTCluster(clus).getCentroid(), inter.z()),2);
+	    	  }
+	      }
+	     
+	   return chi;
+	}
+	
 	public boolean IsGoodCandidate() {
 		boolean good=true;
 		if (!main.constant.IsWithSVT()) {
@@ -467,5 +488,43 @@ public class TrackCandidate{
 		if (InCommon>2) IsSame=true;
 		
 		return IsSame;
+	}
+	
+	public void ComputeLocalDerivative(double[] par, double[] errpar) {
+		StraightLine line_plus=new StraightLine();
+		StraightLine line_minus=new StraightLine();
+		
+		double[] h_deriv=new double[4];
+		for (int i=0;i<4;i++) {
+			h_deriv[i]=0.1*errpar[i]; //0.1 has been tuned so that derivative values are stable within 1% when decreasing h_deriv by a factor 10.
+		}
+		
+		//First derivative wrt to phi for track direction
+		line_plus.setSlope_XYZ(Math.cos(par[0]+h_deriv[0]/2.)*Math.sin(par[1]),Math.sin(par[0]+h_deriv[0]/2.)*Math.sin(par[1]),Math.cos(par[1]));
+		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
+		line_minus.setSlope_XYZ(Math.cos(par[0]-h_deriv[0]/2.)*Math.sin(par[1]),Math.sin(par[0]-h_deriv[0]/2.)*Math.sin(par[1]),Math.cos(par[1]));
+		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
+		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[0]);
+		
+		//Second derivative wrt to theta for track direction
+		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]+h_deriv[1]/2.),Math.sin(par[0])*Math.sin(par[1]+h_deriv[1]/2.),Math.cos(par[1]+h_deriv[1]/2.));
+		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
+		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]-h_deriv[1]/2.),Math.sin(par[0])*Math.sin(par[1]-h_deriv[1]/2.),Math.cos(par[1]-h_deriv[1]/2.));
+		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
+		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[1]);
+		
+		//Third derivative wrt to phi point
+		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
+		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]+h_deriv[2]/2.), Constant.getPointRadius()*Math.sin(par[2]+h_deriv[2]/2.), par[3]);
+		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
+		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]-h_deriv[2]/2.), Constant.getPointRadius()*Math.sin(par[2]-h_deriv[2]/2.), par[3]);
+		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[2]);
+		
+		//Fourth derivative wrt to z point
+		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
+		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]+h_deriv[3]/2.);
+		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
+		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]-h_deriv[3]/2.);
+		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[3]);
 	}
 }
