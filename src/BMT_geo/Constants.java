@@ -106,220 +106,220 @@ public class Constants {
         return ThetaL;
     }
 
-    public static synchronized void setThetaL(int layer, int sector) {
+    public static void setThetaL(int layer, int sector) {
         ThetaL = Math.toRadians(BMT_geo.Lorentz.GetLorentzAngle(E_DRIFT[layer-1][sector-1],Math.abs(main.constant.getSolenoidscale()*50)));
         if (main.constant.getSolenoidscale()<0) ThetaL=-ThetaL; 
     }
 
-    public static synchronized double[] getCRZRADIUS() {
+    public static double[] getCRZRADIUS() {
         return CRZRADIUS;
     }
 
-    public static synchronized void setCRZRADIUS(double[] cRZRADIUS) {
+    public static void setCRZRADIUS(double[] cRZRADIUS) {
         CRZRADIUS = cRZRADIUS;
     }
 
-    public static synchronized int[] getCRZNSTRIPS() {
+    public static int[] getCRZNSTRIPS() {
         return CRZNSTRIPS;
     }
 
-    public static synchronized void setCRZNSTRIPS(int[] cRZNSTRIPS) {
+    public static void setCRZNSTRIPS(int[] cRZNSTRIPS) {
         CRZNSTRIPS = cRZNSTRIPS;
     }
 
-    public static synchronized double[] getCRZSPACING() {
+    public static double[] getCRZSPACING() {
         return CRZSPACING;
     }
 
-    public static synchronized void setCRZSPACING(double[] cRZSPACING) {
+    public static void setCRZSPACING(double[] cRZSPACING) {
         CRZSPACING = cRZSPACING;
     }
 
-    public static synchronized double[] getCRZWIDTH() {
+    public static double[] getCRZWIDTH() {
         return CRZWIDTH;
     }
 
-    public static synchronized void setCRZWIDTH(double[] cRZWIDTH) {
+    public static void setCRZWIDTH(double[] cRZWIDTH) {
         CRZWIDTH = cRZWIDTH;
     }
 
-    public static synchronized double[] getCRZLENGTH() {
+    public static double[] getCRZLENGTH() {
         return CRZLENGTH;
     }
 
-    public static synchronized void setCRZLENGTH(double[] cRZLENGTH) {
+    public static void setCRZLENGTH(double[] cRZLENGTH) {
         CRZLENGTH = cRZLENGTH;
     }
 
-    public static synchronized double[] getCRZZMIN() {
+    public static double[] getCRZZMIN() {
         return CRZZMIN;
     }
 
-    public static synchronized void setCRZZMIN(double[] cRZZMIN) {
+    public static void setCRZZMIN(double[] cRZZMIN) {
         CRZZMIN = cRZZMIN;
     }
 
-    public static synchronized double[] getCRZZMAX() {
+    public static double[] getCRZZMAX() {
         return CRZZMAX;
     }
 
-    public static synchronized void setCRZZMAX(double[] cRZZMAX) {
+    public static void setCRZZMAX(double[] cRZZMAX) {
         CRZZMAX = cRZZMAX;
     }
 
-    public static synchronized double[] getCRZOFFSET() {
+    public static double[] getCRZOFFSET() {
         return CRZOFFSET;
     }
 
-    public static synchronized void setCRZOFFSET(double[] cRZOFFSET) {
+    public static void setCRZOFFSET(double[] cRZOFFSET) {
         CRZOFFSET = cRZOFFSET;
     }
 
-    public static synchronized double[][] getCRZEDGE1() {
+    public static double[][] getCRZEDGE1() {
         return CRZEDGE1;
     }
 
-    public static synchronized void setCRZEDGE1(double[][] cRZEDGE1) {
+    public static void setCRZEDGE1(double[][] cRZEDGE1) {
         CRZEDGE1 = cRZEDGE1;
     }
 
-    public static synchronized double[][] getCRZEDGE2() {
+    public static double[][] getCRZEDGE2() {
         return CRZEDGE2;
     }
 
-    public static synchronized void setCRZEDGE2(double[][] cRZEDGE2) {
+    public static void setCRZEDGE2(double[][] cRZEDGE2) {
         CRZEDGE2 = cRZEDGE2;
     }
 
-    public static synchronized double[] getCRZXPOS() {
+    public static double[] getCRZXPOS() {
         return CRZXPOS;
     }
 
-    public static synchronized void setCRZXPOS(double[] cRZXPOS) {
+    public static void setCRZXPOS(double[] cRZXPOS) {
         CRZXPOS = cRZXPOS;
     }
 
-    public static synchronized double[] getCRCRADIUS() {
+    public static double[] getCRCRADIUS() {
         return CRCRADIUS;
     }
 
-    public static synchronized void setCRCRADIUS(double[] cRCRADIUS) {
+    public static void setCRCRADIUS(double[] cRCRADIUS) {
         CRCRADIUS = cRCRADIUS;
     }
 
-    public static synchronized int[] getCRCNSTRIPS() {
+    public static int[] getCRCNSTRIPS() {
         return CRCNSTRIPS;
     }
 
-    public static synchronized void setCRCNSTRIPS(int[] cRCNSTRIPS) {
+    public static void setCRCNSTRIPS(int[] cRCNSTRIPS) {
         CRCNSTRIPS = cRCNSTRIPS;
     }
 
-    public static synchronized double[] getCRCSPACING() {
+    public static double[] getCRCSPACING() {
         return CRCSPACING;
     }
 
-    public static synchronized void setCRCSPACING(double[] cRCSPACING) {
+    public static void setCRCSPACING(double[] cRCSPACING) {
         CRCSPACING = cRCSPACING;
     }
 
-    public static synchronized double[] getCRCLENGTH() {
+    public static double[] getCRCLENGTH() {
         return CRCLENGTH;
     }
 
-    public static synchronized void setCRCLENGTH(double[] cRCLENGTH) {
+    public static void setCRCLENGTH(double[] cRCLENGTH) {
         CRCLENGTH = cRCLENGTH;
     }
 
-    public static synchronized double[] getCRCZMIN() {
+    public static double[] getCRCZMIN() {
         return CRCZMIN;
     }
 
-    public static synchronized void setCRCZMIN(double[] cRCZMIN) {
+    public static void setCRCZMIN(double[] cRCZMIN) {
         CRCZMIN = cRCZMIN;
     }
 
-    public static synchronized double[] getCRCZMAX() {
+    public static double[] getCRCZMAX() {
         return CRCZMAX;
     }
 
-    public static synchronized void setCRCZMAX(double[] cRCZMAX) {
+    public static void setCRCZMAX(double[] cRCZMAX) {
         CRCZMAX = cRCZMAX;
     }
 
-    public static synchronized double[] getCRCOFFSET() {
+    public static double[] getCRCOFFSET() {
         return CRCOFFSET;
     }
 
-    public static synchronized void setCRCOFFSET(double[] cRCOFFSET) {
+    public static void setCRCOFFSET(double[] cRCOFFSET) {
         CRCOFFSET = cRCOFFSET;
     }
 
-    public static synchronized int[][] getCRCGROUP() {
+    public static int[][] getCRCGROUP() {
         return CRCGROUP;
     }
 
-    public static synchronized void setCRCGROUP(int[][] cRCGROUP) {
+    public static void setCRCGROUP(int[][] cRCGROUP) {
         CRCGROUP = cRCGROUP;
     }
 
-    public static synchronized double[][] getCRCWIDTH() {
+    public static double[][] getCRCWIDTH() {
         return CRCWIDTH;
     }
 
-    public static synchronized void setCRCWIDTH(double[][] cRCWIDTH) {
+    public static void setCRCWIDTH(double[][] cRCWIDTH) {
         CRCWIDTH = cRCWIDTH;
     }
 
-    public static synchronized double[][] getCRCEDGE1() {
+    public static double[][] getCRCEDGE1() {
         return CRCEDGE1;
     }
 
-    public static synchronized void setCRCEDGE1(double[][] cRCEDGE1) {
+    public static void setCRCEDGE1(double[][] cRCEDGE1) {
         CRCEDGE1 = cRCEDGE1;
     }
 
-    public static synchronized double[][] getCRCEDGE2() {
+    public static double[][] getCRCEDGE2() {
         return CRCEDGE2;
     }
 
-    public static synchronized void setCRCEDGE2(double[][] cRCEDGE2) {
+    public static void setCRCEDGE2(double[][] cRCEDGE2) {
         CRCEDGE2 = cRCEDGE2;
     }
 
-    public static synchronized double[] getCRCXPOS() {
+    public static double[] getCRCXPOS() {
         return CRCXPOS;
     }
 
-    public static synchronized void setCRCXPOS(double[] cRCXPOS) {
+    public static void setCRCXPOS(double[] cRCXPOS) {
         CRCXPOS = cRCXPOS;
     }
 
-    public static synchronized double[] getEFF_Z_OVER_A() {
+    public static double[] getEFF_Z_OVER_A() {
         return EFF_Z_OVER_A;
     }
-    public static synchronized void setEFF_Z_OVER_A(double[] eFF_Z_OVER_A) {
+    public static void setEFF_Z_OVER_A(double[] eFF_Z_OVER_A) {
         EFF_Z_OVER_A = eFF_Z_OVER_A;
     }
     
-    public static synchronized double[] get_T_OVER_X0() {
+    public static double[] get_T_OVER_X0() {
         return T_OVER_X0;
     }
-    public static synchronized void set_T_OVER_X0(double[] t_OVER_X0) {
+    public static void set_T_OVER_X0(double[] t_OVER_X0) {
         T_OVER_X0 = t_OVER_X0;
     }
     
     
-    public static synchronized void setTHETAL_grid(double[] cThetaL_grid) {
+    public static void setTHETAL_grid(double[] cThetaL_grid) {
   	ThetaL_grid  = cThetaL_grid;
    }
-   public static synchronized void setE_grid(double[] cE_grid) {
+   public static void setE_grid(double[] cE_grid) {
    	E_grid  = cE_grid;
    }
-   public static synchronized void setB_grid(double[] cB_grid) {
+   public static void setB_grid(double[] cB_grid) {
    	B_grid  = cB_grid;
    }
-   public static synchronized void setPar_grid() {
+   public static void setPar_grid() {
     double pe=0;
     double pb=0;
 
@@ -350,29 +350,59 @@ public class Constants {
            pb = B_grid[j] ;
         }
    }
-   public static synchronized void setE_drift(double[][] cHV_drift) {
+   public static void setE_drift(double[][] cHV_drift) {
    	for (int i=0; i<2*NREGIONS;i++) {
    		for (int j=0; j<3;j++) {	
    			E_DRIFT[i][j]  = 10*cHV_drift[i][j]/hDrift;
    		}	
    	}
   }
-  public static synchronized void setRx(int layer, int sector, double cRx) {
+  public static void setRx(int layer, int sector, double cRx) {
    	Rx[layer-1][sector-1]  = cRx;
   }
-  public static synchronized void setRy(int layer, int sector, double cRy) {
+  
+  public static double getRx(int layer, int sector) {
+	   	return Rx[layer-1][sector-1];
+  }
+  
+  public static void setRy(int layer, int sector, double cRy) {
   		Ry[layer-1][sector-1]  = cRy;
   }
-  public static synchronized void setRz(int layer, int sector, double cRz) {
+  
+  public static double getRy(int layer, int sector) {
+	   	return Ry[layer-1][sector-1];
+  }
+  
+  public static void setRz(int layer, int sector, double cRz) {
  	   	Rz[layer-1][sector-1]  = cRz;
   }
-  public static synchronized void setCx(int layer, int sector, double cCx) {
+  
+  public static double getRz(int layer, int sector) {
+	   	return Rz[layer-1][sector-1];
+  }
+  
+  public static void setCx(int layer, int sector, double cCx) {
   		Cx[layer-1][sector-1]  = cCx;
   }
-  public static synchronized void setCy(int layer, int sector, double cCy) {
+  
+  public static double getCx(int layer, int sector) {
+		return Cx[layer-1][sector-1];
+  }
+  
+  public static void setCy(int layer, int sector, double cCy) {
  		Cy[layer-1][sector-1]  = cCy;
  }
- public static synchronized void setCz(int layer, int sector, double cCz) {
+  
+  public static double getCy(int layer, int sector) {
+		return Cy[layer-1][sector-1];
+  }
+  
+ public static void setCz(int layer, int sector, double cCz) {
  	   	Cz[layer-1][sector-1]  = cCz;
  }
+ 
+ public static double getCz(int layer, int sector) {
+		return Cz[layer-1][sector-1];
+ }
+ 
 }
