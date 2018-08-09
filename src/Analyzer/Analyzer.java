@@ -19,7 +19,7 @@ public class Analyzer {
 	
 	public void analyze(Barrel_SVT BST , HashMap<Integer,TrackCandidate> candidates, ParticleEvent MCParticle) {
 		for (int i=0;i<candidates.size();i++) {
-			if (candidates.get(i+1).IsGoodCandidate()) {
+			if (candidates.get(i+1).IsVeryGoodCandidate()) {
 				Trackmeter.analyze(candidates.get(i+1));
 				Simeter.analyze(BST, candidates.get(i+1));
 				MCmeter.analyze(MCParticle,candidates.get(i+1));

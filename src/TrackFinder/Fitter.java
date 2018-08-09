@@ -23,11 +23,20 @@ public class Fitter {
 								
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
-			  	upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(10));
-			    upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(10));
-			    upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/8.);
-			    upar.add("point_z", Candidates.get(num_cand+1).getZMean(), 600.,Candidates.get(num_cand+1).getZMean()-300.,Candidates.get(num_cand+1).getZMean()+300.);
-			  		    
+				 if (!main.constant.isCosmic) {
+					 upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(10));
+					 upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(20), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(10), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(10));
+					 upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getYMean(),Candidates.get(num_cand+1).getXMean())+Math.PI/8.);
+					 upar.add("point_z", Candidates.get(num_cand+1).getZMean(), 600.,Candidates.get(num_cand+1).getZMean()-300.,Candidates.get(num_cand+1).getZMean()+300.);
+				 }
+				 
+				 if (main.constant.isCosmic) {
+					 upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(90), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(45), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(45));
+					 upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(90), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(45), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(45));
+					 upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())+Math.PI/8.);
+					 upar.add("point_z", Candidates.get(num_cand+1).getLastZ(), 600.,Candidates.get(num_cand+1).getZMean()-150.,Candidates.get(num_cand+1).getZMean()+150.);
+				 }
+					   
 			  	    
 			    //Create function to minimize
 			    FCNChi2 Straight=new FCNChi2();
@@ -40,8 +49,7 @@ public class Fitter {
 			    
 			    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
 			    FunctionMinimum min = migrad.minimize();
-			    			    
-			    //If fit is valid, then compute the residuals
+			   
 			    if (min.isValid()) {
 			    	Candidates.get(num_cand+1).set_FitStatus(min.isValid());
 			    	double[] res=migrad.params(); //res[0] and res[1] are phi and theta for vec, res[2] is phi for intersection point on cylinder and  res[3] is z_inter

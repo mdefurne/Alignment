@@ -23,7 +23,7 @@ public class FCNChi2 implements FCNBase {
 		  line.setPoint_XYZ(radius*Math.cos(par[2]), radius*Math.sin(par[2]), par[3]);
 		  
 	      double val=ToFit.ComputeChi2(line);
-	     
+	     //System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]+" "+val);
 	      return val;
 	   }
 	

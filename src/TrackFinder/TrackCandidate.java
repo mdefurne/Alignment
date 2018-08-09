@@ -402,7 +402,7 @@ public class TrackCandidate{
 	public double ComputeChi2(StraightLine line) {
 		double chi=0;
 		if (this.size()==0) return chi;
-	      
+		
 	      for (int clus=0;clus<this.size();clus++) {
 	    	  StraightLine lineBMT=line.InTileFrame(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector());
 	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),lineBMT.getSlope(),lineBMT.getPoint())/this.GetBMTCluster(clus).getErr(),2);

@@ -120,7 +120,7 @@ public class StraightLine {
 	public StraightLine InTileFrame(int layer, int sector) {
 		StraightLine new_line=new StraightLine();
 		Vector3D new_slope=this.getSlope();
-		Vector3D new_point=this.getSlope();
+		Vector3D new_point=this.getPoint();
 		new_slope.rotateX(BMT_geo.Constants.getRx(layer,sector));
 		new_slope.rotateY(BMT_geo.Constants.getRy(layer,sector));
 		new_slope.rotateZ(BMT_geo.Constants.getRz(layer,sector));
@@ -133,7 +133,9 @@ public class StraightLine {
 		
 		new_line.setSlope_XYZ(new_slope.x(), new_slope.y(), new_slope.z());
 		new_line.setPoint_XYZ(new_point.x(), new_point.y(), new_point.z());
+		
 		return new_line;
+			
 	}
 	
 	public void Print() {
