@@ -31,7 +31,7 @@ public class alignement {
 		
 		alignement MVTAli=new alignement();
 		
-		main.constant.IncludeSVT(false);
+		main.constant.IncludeSVT(true);
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cos148.hipo";
@@ -63,6 +63,7 @@ public class alignement {
 		    	
 		    	if (!event.hasBank("RUN::rf")) {
 		    		main.constant.setCosmic(true);
+		    		if (main.constant.IsWithSVT()) main.constant.IncludeSVT(false);
 		    	}
 		    	
 		    	main.constant.setLoaded(true);
