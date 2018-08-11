@@ -269,6 +269,7 @@ public class ParticleEvent {
 					newParticle = new PionPlus();
 				} else {
 					newParticle = new Particle();
+					newParticle.setPid(pid);
 				}
 				
 				newParticle.setVertex(bankParticle.getFloat("vx", particleIterator),

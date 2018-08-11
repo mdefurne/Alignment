@@ -14,6 +14,8 @@ public class Cluster {
 	private double centroid;
 	private double phi_mid;
 	private double z_mid;
+	private double x_mid;
+	private double y_mid;
 	private double err_phi_mid;
 	private double err_z_mid;
 	private int layer;
@@ -26,6 +28,8 @@ public class Cluster {
 		centroid=0;
 		phi_mid=0;
 		z_mid=0;
+		y_mid=0;
+		x_mid=0;
 		err_phi_mid=0;
 		err_z_mid=0;
 		hit_id= new ArrayList();
@@ -39,12 +43,16 @@ public class Cluster {
 		size++;
 		phi_mid=Edep*phi_mid+aHit.getPhi()*aHit.getADC();
 		z_mid=Edep*z_mid+aHit.getZ()*aHit.getADC();
+		y_mid=Edep*y_mid+aHit.getY()*aHit.getADC();
+		x_mid=Edep*x_mid+aHit.getX()*aHit.getADC();
 		err_phi_mid=Edep*err_phi_mid+aHit.getErrPhi()*aHit.getADC();
 		err_z_mid=Edep*err_z_mid+aHit.getErrZ()*aHit.getADC();
 		Edep+=aHit.getADC();
 		if (Edep!=0) {
 			phi_mid=phi_mid/Edep;
 			z_mid=z_mid/Edep;
+			y_mid=y_mid/Edep;
+			x_mid=x_mid/Edep;
 			err_phi_mid=err_phi_mid/Edep;
 			err_z_mid=err_z_mid/Edep;
 			centroid=centroid/Edep;
@@ -65,6 +73,14 @@ public class Cluster {
 	
 	public double getZ() {
 		return z_mid;
+	}
+	
+	public double getY() {
+		return y_mid;
+	}
+	
+	public double getX() {
+		return x_mid;
 	}
 	
 	public double getErrZ() {

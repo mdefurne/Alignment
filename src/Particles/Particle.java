@@ -43,6 +43,11 @@ public class Particle {
 	 * Particle identification chi2
 	 */
 	private double chi2pid;
+	
+	/**
+	 * Particle identification chi2
+	 */
+	private int pid;
 
 	/**
 	 * Create a new particle
@@ -282,8 +287,17 @@ public class Particle {
 	 * 
 	 * @return particle identification
 	 */
-	protected int getPid() {
-		return -1;
+	public int getPid() {
+		return pid;
+	}
+	
+	/**
+	 * Set particle identification
+	 * 
+	 * @return particle identification
+	 */
+	protected void setPid(int pid_part) {
+		pid= pid_part;
 	}
 	
 	/**

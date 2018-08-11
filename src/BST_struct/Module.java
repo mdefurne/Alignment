@@ -34,8 +34,8 @@ public class Module {
 		norm=new Vector3D();
 	}
 	
-	public void addHit(int strip, double phi, double z, double err_phi, double err_z, int adc, float time) {
-		Hit aHit=new Hit(phi, z, err_phi, err_z, adc, time);
+	public void addHit(int strip, double x, double y, double z, double phi, double err_phi, double err_z, int adc, float time) {
+		Hit aHit=new Hit(x, y, z, phi, err_phi, err_z, adc, time);
 		hitmap.put(strip, aHit);
 	}
 	
