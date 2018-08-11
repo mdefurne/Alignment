@@ -16,7 +16,8 @@ public class CentralWriter {
 	public CentralWriter() {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
-		factory.addSchema(new Schema("{1,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"));
+		factory.addSchema(new Schema("{1,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
+				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
@@ -25,7 +26,7 @@ public class CentralWriter {
 		 HipoEvent event = writer.createEvent();
 		 	 
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
-		 event.show();
+		
 		 writer.writeEvent( event );
 	}
 
@@ -49,6 +50,9 @@ public class CentralWriter {
 					bank.getNode("x").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getX());
 					bank.getNode("y").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getY());
 					bank.getNode("z").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getZ());
+					bank.getNode("err_x").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getErr());
+					bank.getNode("err_y").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getErr());
+					bank.getNode("err_z").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getErr());
 					index++;
 				}
 			}
