@@ -9,12 +9,14 @@ import BST_struct.Barrel_SVT;
 import TrackFinder.*;
 import Particles.*;
 import PostProcessor.*;
+import HipoWriter.*;
 
 
 public class alignement {
 	static Barrel BMT;
 	static Barrel_SVT BST;
 	static ParticleEvent MCParticles;
+	static CentralWriter Asimov;
 	static Analyzer Sherlock;
 	static Tracker Tracky;
 	
@@ -25,6 +27,7 @@ public class alignement {
 		MCParticles=new ParticleEvent();
 		Tracky=new Tracker();
 		Sherlock=new Analyzer();
+		Asimov=new CentralWriter();
 	}
 	
 	public static void main(String[] args) {
@@ -35,7 +38,9 @@ public class alignement {
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cos148.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
@@ -62,8 +67,8 @@ public class alignement {
 		    	}
 		    	
 		    	if (!event.hasBank("RUN::rf")) {
-		    		main.constant.setCosmic(true);
-		    		if (main.constant.IsWithSVT()) main.constant.IncludeSVT(false);
+		    		//main.constant.setCosmic(true);
+		    		//if (main.constant.IsWithSVT()) main.constant.IncludeSVT(false);
 		    	}
 		    	
 		    	main.constant.setLoaded(true);
@@ -80,9 +85,11 @@ public class alignement {
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	Tracky.addEvent(count, Lycos.get_Candidates());
 		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
+		    	Asimov.WriteEvent(Lycos.get_Candidates());
 		    }
 		   		   		         
 		}
+		Asimov.close();
 		Tracky.draw();
 		Sherlock.draw();		
 		System.out.println("Done! "+count);
