@@ -85,7 +85,7 @@ public class alignement {
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	Tracky.addEvent(count, Lycos.get_Candidates());
 		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
-		    	Asimov.WriteEvent(Lycos.get_Candidates());
+		    	Asimov.WriteEvent(BMT, BST, Lycos.get_Candidates());
 		    }
 		   		   		         
 		}

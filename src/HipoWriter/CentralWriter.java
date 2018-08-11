@@ -21,34 +21,39 @@ public class CentralWriter {
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
 	
-	public void WriteEvent(HashMap<Integer,TrackCandidate> candidates) {
+	public void WriteEvent(Barrel BMT ,Barrel_SVT BST ,HashMap<Integer,TrackCandidate> candidates) {
 		 HipoEvent event = writer.createEvent();
-		 
-		 int groupsize=0;
-		 for (int i=0; i<candidates.size();i++) {
-			 groupsize+=candidates.get(i+1).size();
-		 }
-		 
-		 HipoGroup bank = writer.getSchemaFactory().getSchema("BMTRec::Crosses").createGroup(groupsize);
-		 for (int i=0;i<candidates.size();i++) {
-			 this.fillBMTCrossesBank(bank, candidates.get(i+1));
-		 }
-		 event.writeGroup(bank);
+		 	 
+		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.show();
 		 writer.writeEvent( event );
 	}
 
-	public void fillBMTCrossesBank(HipoGroup bank, TrackCandidate cand) {
-               
-        for (int j = 0; j < cand.size(); j++) {
-            bank.getNode("ID").setShort(j, (short) j);
-            bank.getNode("sector").setByte(j, (byte) cand.GetBMTCluster(j).getSector());
-            bank.getNode("region").setByte(j , (byte) ((cand.GetBMTCluster(j).getLayer()-1)/2));
-            bank.getNode("x").setFloat(j, (float) cand.GetBMTCluster(j).getX());
-            bank.getNode("y").setFloat(j, (float) cand.GetBMTCluster(j).getY());
-            bank.getNode("z").setFloat(j, (float) cand.GetBMTCluster(j).getZ());
-        }
-        
+	public HipoGroup fillBMTCrossesBank(Barrel BMT) {
+		int groupsize=0;
+		for (int lay=0; lay<6; lay++) {
+			for (int sec=0; sec<3; sec++) {
+			groupsize+=BMT.getTile(lay,sec).getClusters().size();
+			}
+		}
+		
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BMTRec::Crosses").createGroup(groupsize);
+		int index=0;
+		
+		for (int lay=0; lay<6; lay++) {
+			for (int sec=0; sec<3; sec++) {
+				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
+					bank.getNode("ID").setShort(index, (short) index);
+					bank.getNode("sector").setByte(index, (byte) (sec+1));
+					bank.getNode("region").setByte(index, (byte) (lay/2));
+					bank.getNode("x").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getX());
+					bank.getNode("y").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getY());
+					bank.getNode("z").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getZ());
+					index++;
+				}
+			}
+		}
+        return bank;
 	}
 	
 	public void close() {
