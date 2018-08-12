@@ -9,6 +9,7 @@ import Particles.*;
 import BMT_struct.*;
 import TrackFinder.*;
 import java.util.*;
+import org.jlab.geom.prim.Vector3D;
 
 public class CentralWriter {
 	HipoWriter writer;
@@ -36,7 +37,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
-		
+		 event.writeGroup(this.fillCosmicRecBank(candidates));
 		 writer.writeEvent( event );
 	}
 
@@ -135,12 +136,16 @@ public class CentralWriter {
 		
 		int index=0;
 		for (int i=0; i<groupsize; i++) {
-			
+			Vector3D inter=candidates.get(i).getLine().IntersectWithPlaneY();
 			bank.getNode("ID").setShort(index, (short) index);
 			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yx_interc").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yx_interc").setFloat(index, (float) inter.x());
 			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yz_interc").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yz_interc").setFloat(index, (float) inter.z());
+			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
+			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
+			bank.getNode("chi2").setFloat(index, (float) Math.toDegrees((candidates.get(i).get_chi2())));
+			index++;
 		}
 		
 		return bank;
