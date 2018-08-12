@@ -22,11 +22,15 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{2,BSTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
+		factory.addSchema(new Schema("{4,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
+				+ "[8,chi2,FLOAT][9,ndf,SHORT][10,Cross1_ID,SHORT][11,Cross2_ID,SHORT][12,Cross3_ID,SHORT][13,Cross4_ID,SHORT][14,Cross5_ID,SHORT][14,Cross5_ID,SHORT][15,Cross6_ID,SHORT]"
+				+ "[16,Cross7_ID,SHORT][17,Cross8_ID,SHORT][18,Cross9_ID,SHORT][19,Cross10_ID,SHORT][20,Cross11_ID,SHORT][21,Cross12_ID,SHORT][22,Cross13_ID,SHORT][23,Cross14_ID,SHORT]"
+				+ "[24,Cross15_ID,SHORT][25,Cross16_ID,SHORT][26,Cross17_ID,SHORT][27,Cross18_ID,SHORT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
 	
-	public void WriteEvent(Barrel BMT ,Barrel_SVT BST ,HashMap<Integer,TrackCandidate> candidates, ParticleEvent MCParticles) {
+	public void WriteEvent(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
 		 HipoEvent event = writer.createEvent();
 		 	 
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
@@ -119,6 +123,24 @@ public class CentralWriter {
 			bank.getNode("vy").setFloat(index, (float) MCParticles.getParticles().get(i).getVy());
 			bank.getNode("vz").setFloat(index, (float) MCParticles.getParticles().get(i).getVz());
 			index++;
+		}
+		
+		return bank;
+	}
+	
+	public HipoGroup fillCosmicRecBank(ArrayList<TrackCandidate> candidates) {
+		int groupsize=candidates.size();
+				
+		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Cosmics").createGroup(groupsize);
+		
+		int index=0;
+		for (int i=0; i<groupsize; i++) {
+			
+			bank.getNode("ID").setShort(index, (short) index);
+			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yx_interc").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yz_interc").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
 		}
 		
 		return bank;

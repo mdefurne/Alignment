@@ -138,6 +138,18 @@ public class StraightLine {
 			
 	}
 	
+	public Vector3D IntersectWithPlaneY() {
+		
+		if (slope.y()==0||Double.isNaN(slope.y())) {
+			Vector3D intersect=new Vector3D();
+			intersect.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		}
+		
+		double lambda_y=-point.y()/slope.y();
+		Vector3D intersect=this.getPointOnTrack(lambda_y);
+		return intersect;
+	}
+	
 	public void Print() {
 		System.out.println("/////////////////");
 		System.out.println(slope);

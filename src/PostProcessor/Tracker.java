@@ -47,7 +47,7 @@ public class Tracker {
 		
 	}
 	
-	private ArrayList<TrackCandidate> DuplicateRemoval(HashMap<Integer,TrackCandidate> cand){
+	public ArrayList<TrackCandidate> DuplicateRemoval(HashMap<Integer,TrackCandidate> cand){
 		ArrayList<TrackCandidate> Temp_good=new ArrayList<TrackCandidate>();
 		ArrayList<TrackCandidate> good=new ArrayList<TrackCandidate>();
 		

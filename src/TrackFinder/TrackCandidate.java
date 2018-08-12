@@ -528,4 +528,11 @@ public class TrackCandidate{
 		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]-h_deriv[3]/2.);
 		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[3]);
 	}
+	
+	public StraightLine getLine() {
+		StraightLine line=new StraightLine();
+		line.setSlope_XYZ(vec_track.x(), vec_track.y(), vec_track.z());
+		line.setPoint_XYZ(point_track.x(), point_track.y(), point_track.z());
+		return line;
+	}
 }
