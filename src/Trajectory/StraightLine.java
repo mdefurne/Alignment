@@ -143,6 +143,7 @@ public class StraightLine {
 		if (slope.y()==0||Double.isNaN(slope.y())) {
 			Vector3D intersect=new Vector3D();
 			intersect.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+			return intersect;
 		}
 		
 		double lambda_y=-point.y()/slope.y();
