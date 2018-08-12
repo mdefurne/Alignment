@@ -27,6 +27,9 @@ public class CentralWriter {
 				+ "[8,chi2,FLOAT][9,ndf,SHORT][10,Cross1_ID,SHORT][11,Cross2_ID,SHORT][12,Cross3_ID,SHORT][13,Cross4_ID,SHORT][14,Cross5_ID,SHORT][14,Cross5_ID,SHORT][15,Cross6_ID,SHORT]"
 				+ "[16,Cross7_ID,SHORT][17,Cross8_ID,SHORT][18,Cross9_ID,SHORT][19,Cross10_ID,SHORT][20,Cross11_ID,SHORT][21,Cross12_ID,SHORT][22,Cross13_ID,SHORT][23,Cross14_ID,SHORT]"
 				+ "[24,Cross15_ID,SHORT][25,Cross16_ID,SHORT][26,Cross17_ID,SHORT][27,Cross18_ID,SHORT]"));
+		factory.addSchema(new Schema("{5,CVTRec::Trajectory}[1,ID,SHORT][2,LayerTrackIntersPlane,BYTE][3,SectorTrackIntersPlane,BYTE][4,XtrackIntersPlane,FLOAT][5,YtrackIntersPlane,FLOAT][6,ZtrackIntersPlane,FLOAT]"
+				+ "[7,PhitrackIntersPlane,FLOAT][8,ThetatrackIntersPlane,FLOAT][9,trkToMPlnAngl,FLOAT],[10,CalcCentroidStrip,FLOAT]"));
+		factory.addSchema(new Schema("{6,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
@@ -38,6 +41,8 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillCosmicRecBank(candidates));
+		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
+		 event.writeGroup(this.fillRunConfig());
 		 writer.writeEvent( event );
 	}
 
@@ -138,9 +143,9 @@ public class CentralWriter {
 		for (int i=0; i<groupsize; i++) {
 			Vector3D inter=candidates.get(i).getLine().IntersectWithPlaneY();
 			bank.getNode("ID").setShort(index, (short) index);
-			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yx_slope").setFloat(index, (float) (-candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
 			bank.getNode("trkline_yx_interc").setFloat(index, (float) inter.x());
-			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yz_slope").setFloat(index, (float) (-candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
 			bank.getNode("trkline_yz_interc").setFloat(index, (float) inter.z());
 			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
 			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
@@ -148,6 +153,44 @@ public class CentralWriter {
 			index++;
 		}
 		
+		return bank;
+	}
+	
+	public HipoGroup fillRunConfig() {
+		int groupsize=1;
+				
+		HipoGroup bank = writer.getSchemaFactory().getSchema("RUN::config").createGroup(groupsize);
+		
+		
+		return bank;
+	}
+	
+	public HipoGroup fillCosmicTrajBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
+		int groupsize=12*candidates.size();
+		if (main.constant.isCosmic) groupsize=groupsize*2;
+		
+		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Trajectory").createGroup(groupsize);
+		
+		int index=0;
+		for (int track=0; track<candidates.size();track++) {
+			for (int lay=0; lay<6;lay++) {
+				Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
+				if (!Double.isNaN(inter.x())) {
+					int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
+					bank.getNode("ID").setShort(index, (short) track);
+					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
+					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (BST.getGeometry().findSectorFromAngle(lay+1, inter)));
+					bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
+					bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
+					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
+					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
+					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
+					index++;
+				}
+			}
+		}
+				
 		return bank;
 	}
 	

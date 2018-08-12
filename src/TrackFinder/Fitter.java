@@ -72,6 +72,7 @@ public class Fitter {
 					for (int clus=0;clus<Candidates.get(num_cand+1).size();clus++) {
 						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetBMTCluster(clus),line.getSlope(),line.getPoint()));
 				    }
+					
 					Candidates.get(num_cand+1).set_chi2(min.fval());
 					Candidates.get(num_cand+1).ComputeLocalDerivative(res,err_res);
 			   	}

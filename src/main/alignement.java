@@ -38,9 +38,9 @@ public class alignement {
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cos148.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
@@ -50,7 +50,7 @@ public class alignement {
 		int count=0;
 			
 		while(reader.hasEvent()) {
-		//while(count<100) {
+			//while(count<10000) {
 			DataEvent event = reader.getNextEvent();
 			 
 			count++;
@@ -67,7 +67,7 @@ public class alignement {
 		    	}
 		    	
 		    	if (!event.hasBank("RUN::rf")) {
-		    		//main.constant.setCosmic(true);
+		    		main.constant.setCosmic(true);
 		    		//if (main.constant.IsWithSVT()) main.constant.IncludeSVT(false);
 		    	}
 		    	

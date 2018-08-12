@@ -35,7 +35,7 @@ public class TrackAna {
 			Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
-				if (cand.get_Nc()==3&&cand.IsGoodCandidate()) {
+				if (cand.IsGoodCandidate()) {
 					
 					Clusty.analyze(cand);
 					
