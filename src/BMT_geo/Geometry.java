@@ -632,7 +632,7 @@ public class Geometry {
 		Vector3D point_inter=new Vector3D();
 		Vector3D point_inter_a=new Vector3D();
 		Vector3D point_inter_b=new Vector3D();
-		point_inter.setXYZ(0,0,0);
+		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
 		
 				
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
@@ -689,6 +689,40 @@ public class Geometry {
 		 
 		  		
 		return distance;
+	}
+    
+    public Vector3D getIntercept(int layer, int sector, Vector3D slope, Vector3D point) {
+		Vector3D point_inter=new Vector3D();
+		Vector3D point_inter_a=new Vector3D();
+		Vector3D point_inter_b=new Vector3D();
+		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
+		
+				
+		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
+		double sx=slope.x(); double sy=slope.y(); 
+		double ix=point.x(); double iy=point.y();
+			  
+		//Find the intersection
+		double a=sx*sx+sy*sy;
+		double b=2*(sx*ix+sy*iy);
+		double c=ix*ix+iy*iy-(this.getRadius(layer)+Constants.hStrip2Det)*(this.getRadius(layer)+Constants.hStrip2Det);
+			 
+		double delta=b*b-4*a*c;
+		if (delta==0) {
+		    double lambda=-b/2./a;
+		    point_inter.setXYZ(slope.x()*lambda+point.x(),slope.y()*lambda+point.y(),slope.z()*lambda+point.z());
+		}
+		if (delta>0) {
+			double lambda_a=(-b+Math.sqrt(delta))/2./a;
+		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
+		    point_inter_a.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
+		    point_inter_b.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
+		    if (this.isinsector(point_inter_b)==sector) point_inter=point_inter_b;
+		    if (this.isinsector(point_inter_a)==sector) point_inter=point_inter_a;
+		}
+		 
+		  		
+		return point_inter;
 	}
 	
 		

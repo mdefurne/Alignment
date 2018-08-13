@@ -173,6 +173,7 @@ public class CentralWriter {
 		
 		int index=0;
 		for (int track=0; track<candidates.size();track++) {
+			//Intercept with SVT modules
 			for (int lay=0; lay<6;lay++) {
 				Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
 				if (!Double.isNaN(inter.x())) {
@@ -187,6 +188,26 @@ public class CentralWriter {
 					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
 					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
 					index++;
+				}
+			}
+			
+			//Intercept with BMT tiles
+			for (int lay=0; lay<6;lay++) {
+				int sec=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
+				Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
+				if (!Double.isNaN(inter.x())) {
+					bank.getNode("ID").setShort(index, (short) track);
+					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
+					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
+					bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
+					bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
+					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
+					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
+					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+					inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
+					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
+					index++;
+					
 				}
 			}
 		}

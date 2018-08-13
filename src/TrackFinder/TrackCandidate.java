@@ -428,7 +428,7 @@ public class TrackCandidate{
 		}
 		if (main.constant.IsWithSVT()) {
 			if (chi2>200) good=false;
-			if (nz==0||nc==0||BSTClus.size()<4) good=false;
+			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<4) good=false;
 		}
 		if (!fit_status) good=false;
 		return good;
