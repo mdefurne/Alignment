@@ -41,85 +41,97 @@ public class TrackFinder {
 	public void BuildCandidates() {
 		boolean IsAttributed=true;
 		boolean noHit_yet_sector=true;
-		//We are looking for Straight Track
-		//We analyze each sector separately 
-		for (int sec=0;sec<3;sec++) {
-			cand_newsec=Candidates.size(); //Avoid to mix the sectors between them
-			noHit_yet_sector=true;
+		if (main.constant.isCosmic) {
+			//We are looking for Straight Track
+			//We analyze each sector separately in beam configuration
+			for (int sec=0;sec<3;sec++) {
+				cand_newsec=Candidates.size(); //Avoid to mix the sectors between them
+				noHit_yet_sector=true;
 			
-			for (int lay=5;lay>-1;lay--) {
+				for (int lay=5;lay>-1;lay--) {
 				
-				//If we have already some hit in the sector, there are track candidate to check
-				if (!noHit_yet_sector) {
-					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
-						//Here we always test if we have a match by time
-						IsAttributed=false;
-						for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
+					//If we have already some hit in the sector, there are track candidate to check
+					if (!noHit_yet_sector) {
+						for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+							//Here we always test if we have a match by time
+							IsAttributed=false;
+							for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
 							//If we have a match in time and will add a new layer
-							if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-								Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-								IsAttributed=true;
+								if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+									Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+									IsAttributed=true;
+								}
+							}
+							if (!IsAttributed) {
+								TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
+								cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+								Candidates.put(Candidates.size()+1, cand);
 							}
 						}
-						if (!IsAttributed) {
-							TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
-							cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-							Candidates.put(Candidates.size()+1, cand);
-						}
-					}
 					
 					//Need to transfer duplicated track candidate from the buffer to the Candidates map and then empty buffer list
 //					for (int buf=0;buf<BufferLayer.size();buf++) {
 //						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
 //					}
 //					BufferLayer.clear();
-				}	
+					}	
 				
 				//We just enter the sector
-				if (noHit_yet_sector) {
-					//Create a new Track Candidate for each cluster of first layer
-					for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
-						TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
-						cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-						Candidates.put(Candidates.size()+1, cand);
-						noHit_yet_sector=false;
-					}
-				}
-			}	
-		}
-		
-		//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
-		if (main.constant.IsWithSVT()) {
-			for (int lay=6; lay>0;lay--) {
-				for (int ray=0; ray<Candidates.size();ray++) {
-					int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-					if (sec!=-1) {
-						Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-						for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
-							double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
-							if (Math.abs(delta)<3) {
-							//if (Math.abs(delta)<10) {
-								if (Candidates.get(ray+1).BSTsize()!=0) {
-									if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
-										TrackCandidate cand=Candidates.get(ray+1).Duplicate();
-										cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-										BufferLayer.add(cand);
-									}
-									if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-								}
-								if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-							}
+					if (noHit_yet_sector) {
+						//Create a new Track Candidate for each cluster of first layer
+						for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+							TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
+							cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+							Candidates.put(Candidates.size()+1, cand);
+							noHit_yet_sector=false;
 						}
 					}
-				}
-				for (int buf=0;buf<BufferLayer.size();buf++) {
-					Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
-				}
-				BufferLayer.clear();
+				}	
 			}
-			
+		
+			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
+			if (main.constant.IsWithSVT()) {
+				for (int lay=6; lay>0;lay--) {
+					for (int ray=0; ray<Candidates.size();ray++) {
+							int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+							if (sec!=-1) {
+								Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+								for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
+									double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
+									if (Math.abs(delta)<3) {
+										//if (Math.abs(delta)<10) {
+										if (Candidates.get(ray+1).BSTsize()!=0) {
+											if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
+												TrackCandidate cand=Candidates.get(ray+1).Duplicate();
+												cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+												BufferLayer.add(cand);
+											}
+											if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+										}
+										if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+									}
+								}
+							}	
+					}
+					for (int buf=0;buf<BufferLayer.size();buf++) {
+						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
+					}
+					BufferLayer.clear();
+				}
+			}
 		}
 		
+		//For cosmic data, no need to overthink the pattern recognition
+		//We check that the cosmic goes through sector 2.
+		if (main.constant.isCosmic) {
+			System.out.println("////////////////");
+			if (Candidates.size()>2) {
+				for (int i=0;i<Candidates.size();i++) {
+				System.out.println(Candidates.get(i+1).BSTsize()+Candidates.get(i+1).size());
+				System.out.println(Candidates.get(i+1).GetBMTCluster(0).getSector()+" "+Candidates.get(i+1).getPhiSeed()+" "+Candidates.get(i+1).getThetaSeed());
+				}
+			}
+		}
 	}
 	
 	public boolean IsCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {

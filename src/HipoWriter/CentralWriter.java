@@ -20,18 +20,18 @@ public class CentralWriter {
 	public CentralWriter() {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
-		factory.addSchema(new Schema("{1,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
+		factory.addSchema(new Schema("{20125,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
-		factory.addSchema(new Schema("{2,BSTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
+		factory.addSchema(new Schema("{20225,BSTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
-		factory.addSchema(new Schema("{4,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
+		factory.addSchema(new Schema("{20528,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
 				+ "[8,chi2,FLOAT][9,ndf,SHORT][10,Cross1_ID,SHORT][11,Cross2_ID,SHORT][12,Cross3_ID,SHORT][13,Cross4_ID,SHORT][14,Cross5_ID,SHORT][14,Cross5_ID,SHORT][15,Cross6_ID,SHORT]"
 				+ "[16,Cross7_ID,SHORT][17,Cross8_ID,SHORT][18,Cross9_ID,SHORT][19,Cross10_ID,SHORT][20,Cross11_ID,SHORT][21,Cross12_ID,SHORT][22,Cross13_ID,SHORT][23,Cross14_ID,SHORT]"
 				+ "[24,Cross15_ID,SHORT][25,Cross16_ID,SHORT][26,Cross17_ID,SHORT][27,Cross18_ID,SHORT]"));
-		factory.addSchema(new Schema("{5,CVTRec::Trajectory}[1,ID,SHORT][2,LayerTrackIntersPlane,BYTE][3,SectorTrackIntersPlane,BYTE][4,XtrackIntersPlane,FLOAT][5,YtrackIntersPlane,FLOAT][6,ZtrackIntersPlane,FLOAT]"
+		factory.addSchema(new Schema("{20529,CVTRec::Trajectory}[1,ID,SHORT][2,LayerTrackIntersPlane,BYTE][3,SectorTrackIntersPlane,BYTE][4,XtrackIntersPlane,FLOAT][5,YtrackIntersPlane,FLOAT][6,ZtrackIntersPlane,FLOAT]"
 				+ "[7,PhitrackIntersPlane,FLOAT][8,ThetatrackIntersPlane,FLOAT][9,trkToMPlnAngl,FLOAT],[10,CalcCentroidStrip,FLOAT]"));
-		factory.addSchema(new Schema("{6,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
+		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
@@ -65,9 +65,9 @@ public class CentralWriter {
 					bank.getNode("ID").setShort(index, (short) index);
 					bank.getNode("sector").setByte(index, (byte) (sec+1));
 					bank.getNode("region").setByte(index, (byte) ((lay+1)/2));
-					bank.getNode("x").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getX());
-					bank.getNode("y").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getY());
-					bank.getNode("z").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getZ());
+					bank.getNode("x").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getX()/10.));
+					bank.getNode("y").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getY()/10.));
+					bank.getNode("z").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getZ()/10.));
 					if (!Double.isNaN(BMT.getTile(lay,sec).getClusters().get(j+1).getX())) {
 						bank.getNode("err_x").setFloat(index, (float) Math.abs(BMT.getTile(lay,sec).getClusters().get(j+1).getErr()*Math.sin(BMT.getTile(lay,sec).getClusters().get(j+1).getPhi())));
 						bank.getNode("err_y").setFloat(index, (float) Math.abs(BMT.getTile(lay,sec).getClusters().get(j+1).getErr()*Math.cos(BMT.getTile(lay,sec).getClusters().get(j+1).getPhi())));
@@ -102,12 +102,12 @@ public class CentralWriter {
 					bank.getNode("ID").setShort(index, (short) index);
 					bank.getNode("sector").setByte(index, (byte) (sec+1));
 					bank.getNode("region").setByte(index, (byte) ((lay+1)/2));
-					bank.getNode("x").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getX());
-					bank.getNode("y").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getY());
-					bank.getNode("z").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getZ());
+					bank.getNode("x").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getX()/10.));
+					bank.getNode("y").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getY()/10.));
+					bank.getNode("z").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getZ()/10.));
 					bank.getNode("err_x").setFloat(index, (float) Math.abs(BST.getModule(lay,sec).getClusters().get(j+1).getErrPhi()*Math.sin(BST.getModule(lay,sec).getClusters().get(j+1).getPhi())));
 					bank.getNode("err_y").setFloat(index, (float) Math.abs(BST.getModule(lay,sec).getClusters().get(j+1).getErrPhi()*Math.cos(BST.getModule(lay,sec).getClusters().get(j+1).getPhi())));
-					bank.getNode("err_z").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getErrZ());
+					bank.getNode("err_z").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getErrZ()/10.));
 					index++;
 				}
 			}
@@ -145,10 +145,10 @@ public class CentralWriter {
 		for (int i=0; i<groupsize; i++) {
 			Vector3D inter=candidates.get(i).getLine().IntersectWithPlaneY();
 			bank.getNode("ID").setShort(index, (short) index);
-			bank.getNode("trkline_yx_slope").setFloat(index, (float) (-candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yx_interc").setFloat(index, (float) inter.x());
-			bank.getNode("trkline_yz_slope").setFloat(index, (float) (-candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yz_interc").setFloat(index, (float) inter.z());
+			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yx_interc").setFloat(index, (float) (inter.x()/10.));
+			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
+			bank.getNode("trkline_yz_interc").setFloat(index, (float) (inter.z()/10.));
 			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
 			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
 			bank.getNode("chi2").setFloat(index, (float) Math.toDegrees((candidates.get(i).get_chi2())));
@@ -220,9 +220,9 @@ public class CentralWriter {
 					bank.getNode("ID").setShort(index, (short) track);
 					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
 					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
-					bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
-					bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
-					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
+					bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
+					bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
+					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
 					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
 					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
 					
