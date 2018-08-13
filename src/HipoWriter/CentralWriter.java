@@ -4,6 +4,8 @@ import org.jlab.jnp.hipo.data.*;
 import org.jlab.jnp.hipo.io.HipoWriter;
 import org.jlab.io.base.*;
 import org.jlab.jnp.hipo.schema.*;
+
+import BMT_geo.Geometry;
 import BST_struct.*;
 import Particles.*;
 import BMT_struct.*;
@@ -36,12 +38,12 @@ public class CentralWriter {
 	
 	public void WriteEvent(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
 		 HipoEvent event = writer.createEvent();
-		 	 
+		 
+		 event.writeGroup(this.fillCosmicRecBank(candidates));
+		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
-		 event.writeGroup(this.fillCosmicRecBank(candidates));
-		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillRunConfig());
 		 writer.writeEvent( event );
 	}
@@ -165,6 +167,8 @@ public class CentralWriter {
 		return bank;
 	}
 	
+	
+	//This method is filling cosmic traj bank... And Update crosses if they are linked to a trajectory!!!!
 	public HipoGroup fillCosmicTrajBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
 		int groupsize=12*candidates.size();
 		if (main.constant.isCosmic) groupsize=groupsize*2;
@@ -180,7 +184,7 @@ public class CentralWriter {
 					int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 					bank.getNode("ID").setShort(index, (short) track);
 					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
-					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (BST.getGeometry().findSectorFromAngle(lay+1, inter)));
+					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
 					bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
 					bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
 					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
@@ -188,10 +192,27 @@ public class CentralWriter {
 					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
 					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
 					index++;
+					
+					int clus_id=-1;
+					for (int clus_track=0;clus_track<candidates.get(track).BSTsize();clus_track++) {
+						if (candidates.get(track).GetBSTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBSTCluster(clus_track).getSector()==sector) 
+							clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
+					}
+					
+					if (clus_id!=-1) {
+						//Update the cluster X,Y,Z info with track info
+						for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
+							if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
+								BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
+								BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
+								BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
+							}
+						}
+					}
 				}
 			}
 			
-			//Intercept with BMT tiles
+			//Intercept with BMT tiles and add info on missing coordinates of the clusters.
 			for (int lay=0; lay<6;lay++) {
 				int sec=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
 				Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
@@ -204,6 +225,26 @@ public class CentralWriter {
 					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
 					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
 					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+					
+					int clus_id=-1;
+					for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
+						if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
+							clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
+					}
+					
+					if (clus_id!=-1) {
+						//Update the cluster X,Y,Z info with track info
+						for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
+							if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
+								if (BMT.getGeometry().getZorC(lay+1)==0) {
+									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
+									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
+								}
+								if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
+							}
+						}
+					}
+					
 					inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
 					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
 					index++;

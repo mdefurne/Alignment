@@ -1,10 +1,4 @@
 /HipoWriter/
-/main/
-/BMT_struct/
 /BST_struct/
-/Particles/
-/PostProcessor/
-/TrackFinder/
-/Trajectory/
+/BMT_struct/
 /BMT_geo/
-/Analyzer/

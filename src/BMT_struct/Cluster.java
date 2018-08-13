@@ -105,6 +105,18 @@ public class Cluster {
 		return centroid_z;
 	}
 	
+	public void setX(double xnew) {
+		centroid_x=xnew;
+	}
+	
+	public void setY(double ynew) {
+		centroid_y=ynew;
+	}
+	
+	public void setZ(double znew) {
+		centroid_z=znew;
+	}
+	
 	public double getRadius() {
 		return centroid_r;
 	}

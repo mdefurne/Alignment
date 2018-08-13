@@ -99,4 +99,16 @@ public class Cluster {
 		return sector;
 	}
 	
+	public void setX(double xnew) {
+		x_mid=xnew;
+	}
+	
+	public void setY(double ynew) {
+		y_mid=ynew;
+	}
+	
+	public void setZ(double znew) {
+		z_mid=znew;
+	}
+	
 }
