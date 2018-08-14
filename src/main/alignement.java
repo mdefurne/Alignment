@@ -35,13 +35,13 @@ public class alignement {
 		alignement MVTAli=new alignement();
 		
 		main.constant.IncludeSVT(true);
-		main.constant.setCosmic(true);
+		main.constant.setCosmic(false);
 		
 		String fileName;
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cos148.hipo";
-		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
-		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
+		fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";

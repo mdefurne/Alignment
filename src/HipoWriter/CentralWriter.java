@@ -181,7 +181,7 @@ public class CentralWriter {
 			for (int lay=0; lay<6;lay++) {
 				for (int sector=1; sector<BST.getGeometry().getNbModule(lay+1)+1;sector++) {
 					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, sector, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, inter)==sector))) {
+					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
 						bank.getNode("ID").setShort(index, (short) track);
@@ -220,6 +220,7 @@ public class CentralWriter {
 				int sec=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
 				Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
 				if (!Double.isNaN(inter.x())) {
+					
 					bank.getNode("ID").setShort(index, (short) track);
 					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
 					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
