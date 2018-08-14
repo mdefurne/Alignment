@@ -18,7 +18,7 @@ public class Fitter {
 	public void StraightTrack(Barrel BMT, Barrel_SVT BST, HashMap<Integer, TrackCandidate> Candidates) {
 		//Use minimizer
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
-			if (Candidates.get(num_cand+1).size()>6) System.err.println("Error: TrackCandidate with more than 6 clusters");
+			if (Candidates.get(num_cand+1).size()>6&&!main.constant.isCosmic) System.err.println("Error: TrackCandidate with more than 6 clusters");
 			if (Candidates.get(num_cand+1).IsFittable()) {
 								
 				//Create parameters

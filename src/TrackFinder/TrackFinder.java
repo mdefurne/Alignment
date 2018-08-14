@@ -41,7 +41,7 @@ public class TrackFinder {
 	public void BuildCandidates() {
 		boolean IsAttributed=true;
 		boolean noHit_yet_sector=true;
-		if (main.constant.isCosmic) {
+		
 			//We are looking for Straight Track
 			//We analyze each sector separately in beam configuration
 			for (int sec=0;sec<3;sec++) {
@@ -86,8 +86,9 @@ public class TrackFinder {
 							noHit_yet_sector=false;
 						}
 					}
-				}	
+				}
 			}
+			
 		
 			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
 			if (main.constant.IsWithSVT()) {
@@ -95,7 +96,7 @@ public class TrackFinder {
 					for (int ray=0; ray<Candidates.size();ray++) {
 							int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 							if (sec!=-1) {
-								Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+								Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 								for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
 									double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
 									if (Math.abs(delta)<3) {
@@ -119,16 +120,24 @@ public class TrackFinder {
 					BufferLayer.clear();
 				}
 			}
-		}
+		
 		
 		//For cosmic data, no need to overthink the pattern recognition
 		//We check that the cosmic goes through sector 2.
 		if (main.constant.isCosmic) {
-			System.out.println("////////////////");
-			if (Candidates.size()>2) {
-				for (int i=0;i<Candidates.size();i++) {
-				System.out.println(Candidates.get(i+1).BSTsize()+Candidates.get(i+1).size());
-				System.out.println(Candidates.get(i+1).GetBMTCluster(0).getSector()+" "+Candidates.get(i+1).getPhiSeed()+" "+Candidates.get(i+1).getThetaSeed());
+			int svt_sec1=0;
+			ArrayList<Integer> index_fittable=new ArrayList<Integer>();
+			for (int track=1;track<Candidates.size()+1;track++) {
+				if (Candidates.get(track).IsFittable())	index_fittable.add(track);
+			}
+			if (index_fittable.size()==1) {
+				for (int mod=1; mod<7;mod++) {
+					if (BST_det.getModule(mod, 1).getClusters().size()==1) svt_sec1++;
+				}
+				if (svt_sec1>3) {
+					for (int mod=1; mod<7;mod++) {
+						if (BST_det.getModule(mod, 1).getClusters().size()==1) Candidates.get(index_fittable.get(0)).addBST(BST_det.getModule(mod, 1).getClusters().get(1));
+					}
 				}
 			}
 		}

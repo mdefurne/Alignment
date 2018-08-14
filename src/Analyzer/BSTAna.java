@@ -30,21 +30,36 @@ public class BSTAna {
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
 		
 		if (cand.IsGoodCandidate()&&cand.get_FitStatus()) {
-			for (int lay=1;lay<7;lay++) {
-					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
-					if (!Double.isNaN(inter.x())) {
-					int sec=BST.getGeometry().findSectorFromAngle(lay, inter);
-					double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay, BST.getGeometry().findSectorFromAngle(lay, inter));
-					double ClosestStrip=-20;
-					for (int clus=0;clus<BST.getModule(lay, sec).getClusters().size();clus++) {
-						//System.out.println(BST.getModule(lay, sec).getClusters().size()+" ");
-						if (Math.abs(BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid()-strip)<Math.abs(ClosestStrip-strip)) ClosestStrip=BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid();
-					}
-					double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), ClosestStrip, inter);
+//			for (int lay=1;lay<7;lay++) {
+//					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
+//					if (!Double.isNaN(inter.x())) {
+//					int sec=BST.getGeometry().findSectorFromAngle(lay, inter);
+//					double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay, BST.getGeometry().findSectorFromAngle(lay, inter));
+//					double ClosestStrip=-20;
+//					for (int clus=0;clus<BST.getModule(lay, sec).getClusters().size();clus++) {
+//						//System.out.println(BST.getModule(lay, sec).getClusters().size()+" ");
+//						if (Math.abs(BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid()-strip)<Math.abs(ClosestStrip-strip)) ClosestStrip=BST.getModule(lay, sec).getClusters().get(clus+1).getCentroid();
+//					}
+//					double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), ClosestStrip, inter);
+//					SVT_residual[lay-1][sec-1].fill(residual);
+//					residual_vs_z[lay-1][sec-1].fill(inter.z(),residual);
+//				}
+//				//System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
+//			}
+			
+			for (int clus=0; clus<cand.BSTsize();clus++) {
+				int lay=cand.GetBSTCluster(clus).getLayer();
+				Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(cand.GetBSTCluster(clus).getLayer(), cand.GetBSTCluster(clus).getSector(), cand.get_VectorTrack(), cand.get_PointTrack()));
+				if (!Double.isNaN(inter.x())) {
+				int sec=BST.getGeometry().findSectorFromAngle(lay, inter);
+				double strip=BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay, BST.getGeometry().findSectorFromAngle(lay, inter));
+				double ClosestStrip=-20;
+				if (cand.GetBSTCluster(clus).getCentroid()-(int)cand.GetBSTCluster(clus).getCentroid()>0.5) ClosestStrip=cand.GetBSTCluster(clus).getCentroid()+1.;
+				else ClosestStrip=cand.GetBSTCluster(clus).getCentroid();
+				double residual=BST.getGeometry().getResidual_line(lay, BST.getGeometry().findSectorFromAngle(lay, inter), ClosestStrip, inter);
 					SVT_residual[lay-1][sec-1].fill(residual);
 					residual_vs_z[lay-1][sec-1].fill(inter.z(),residual);
-				}
-				//System.out.println(BST.getGeometry().getResidual(1, BST.getGeometry().findSectorFromAngle(1, inter), 63, inter));
+			}
 			}
 			SVT_LayerHit.fill(cand.BSTsize());
 		}

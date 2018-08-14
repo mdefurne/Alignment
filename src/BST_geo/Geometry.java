@@ -739,12 +739,13 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
         System.out.printf("PS: % 8.3f % 8.3f % 8.3f\n", aPoint.x, aPoint.y, aPoint.z );
     }
 
-	public Vector3D getIntersectWithRay(int layer, Vector3D dir_line, Vector3D pt_line) {
+	public Vector3D getIntersectWithRay(int layer, int sectorcluster, Vector3D dir_line, Vector3D pt_line) {
 		Vector3D inter=new Vector3D();
-		int sector=findSectorFromAngle(layer,pt_line);
-		if (sector>0) {
-			Vector3D n=findBSTPlaneNormal(sector, layer);
-			Point3D p=getPlaneModuleOrigin(sector, layer);
+		//int sector=findSectorFromAngle(layer,pt_line);
+		inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		if (sectorcluster>0) {
+			Vector3D n=findBSTPlaneNormal(sectorcluster, layer);
+			Point3D p=getPlaneModuleOrigin(sectorcluster, layer);
 		
 			if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()==0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 			else {
@@ -753,7 +754,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 				inter.setX(lambda*dir_line.x()+pt_line.x());
 				inter.setY(lambda*dir_line.y()+pt_line.y());
 				inter.setZ(lambda*dir_line.z()+pt_line.z());
-				if (findSectorFromAngle(layer,inter)<0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+				if (findSectorFromAngle(layer,inter)<0||findSectorFromAngle(layer,inter)!=sectorcluster) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 			}
 		}
 		else inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
@@ -851,5 +852,10 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	    	System.out.println("D "+geo.getLocCoord(s10, s20)[0]+","+geo.getLocCoord(s10, s20)[1]+"  ;  "+geo.getLocCoord(s1, s2)[0]+","+geo.getLocCoord(s1, s2)[1]);
          */
     }
+
+	public int getNbModule(int lay) {
+		// TODO Auto-generated method stub
+		return Constants.NSECT[lay-1];
+	}
 
 }

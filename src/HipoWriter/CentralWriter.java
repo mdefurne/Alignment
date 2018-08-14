@@ -179,33 +179,36 @@ public class CentralWriter {
 		for (int track=0; track<candidates.size();track++) {
 			//Intercept with SVT modules
 			for (int lay=0; lay<6;lay++) {
-				Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-				if (!Double.isNaN(inter.x())) {
-					int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
-					bank.getNode("ID").setShort(index, (short) track);
-					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
-					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
-					bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
-					bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
-					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
-					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
-					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
-					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
-					index++;
+				for (int sector=1; sector<BST.getGeometry().getNbModule(lay+1)+1;sector++) {
+					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, sector, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
+					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, inter)==sector))) {
+						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
+						
+						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
+						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
+						bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
+						bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
+						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
+						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
+						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
+						index++;
 					
-					int clus_id=-1;
-					for (int clus_track=0;clus_track<candidates.get(track).BSTsize();clus_track++) {
-						if (candidates.get(track).GetBSTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBSTCluster(clus_track).getSector()==sector) 
-							clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
-					}
+						int clus_id=-1;
+						for (int clus_track=0;clus_track<candidates.get(track).BSTsize();clus_track++) {
+							if (candidates.get(track).GetBSTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBSTCluster(clus_track).getSector()==sector) 
+								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
+						}
 					
-					if (clus_id!=-1) {
-						//Update the cluster X,Y,Z info with track info
-						for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
-							if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
-								BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
-								BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
-								BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
+						if (clus_id!=-1) {
+							//Update the cluster X,Y,Z info with track info
+							for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
+								if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
+								}
 							}
 						}
 					}
