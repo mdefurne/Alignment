@@ -58,6 +58,8 @@ public class Tracker {
 			}
 		}
 		
+		ArrayList<Integer> Toremove=new ArrayList<Integer> ();
+		
 		for (int i=0;i<Temp_good.size();i++) {
 			good.add(Temp_good.get(i));
 			for (int j=i+1;j<Temp_good.size();j++) {
@@ -67,10 +69,16 @@ public class Tracker {
 						||((good.get(good.size()-1).size()+good.get(good.size()-1).BSTsize())==(Temp_good.get(j).size()+Temp_good.get(j).BSTsize())&&good.get(good.size()-1).get_chi2()>Temp_good.get(j).get_chi2())) {
 						good.remove(good.size()-1);
 						good.add(Temp_good.get(j));
-						Temp_good.remove(j);
-				    }
+					}
+					Toremove.add(j);
 				}
 			}
+			int removed=0;
+			for (int index=0; index<Toremove.size(); index++) {
+				Temp_good.remove(index-removed); //Remove all tracks similar with the one in good
+				removed++;//Correct for the change of the size of the arraylist 
+			}
+			Toremove.clear();
 		}
 		
 		return good;

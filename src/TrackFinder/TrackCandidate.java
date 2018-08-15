@@ -487,7 +487,7 @@ public class TrackCandidate{
 		}
 		
 		if (InCommon>1) IsSame=true;
-		//System.out.println(InCommon);
+		
 		return IsSame;
 	}
 	
