@@ -256,7 +256,7 @@ public class TrackCandidate{
 	public boolean IsFittable() {
 		boolean fit=true;
 		if ((nz<2||nc<2)&&!main.constant.IsWithSVT()) fit=false;
-		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6)&&main.constant.IsWithSVT()) fit=false;
+		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.IsWithSVT()) fit=false;
 		for (int i=0;i<BMTClus.size();i++) {
 			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
 			double ix=mean_X; double iy=mean_Y;
@@ -428,7 +428,7 @@ public class TrackCandidate{
 		}
 		if (main.constant.IsWithSVT()) {
 			if (chi2>200) good=false;
-			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6) good=false;
+			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2) good=false;
 		}
 		if (!fit_status) good=false;
 		return good;
@@ -443,7 +443,7 @@ public class TrackCandidate{
 		}
 		if (main.constant.IsWithSVT()) {
 			if (chi2>100) good=false;
-			if (nz>=2&&nc>=2&&(BSTClus.size()+BMTClus.size())>=6) good=false;
+			if (nz<2||nc<2||(BSTClus.size()+BMTClus.size())<9) good=false;
 		}
 		if (!fit_status) good=false;
 		return good;
@@ -486,7 +486,7 @@ public class TrackCandidate{
 			}
 		}
 		
-		if (InCommon>2) IsSame=true;
+		if (InCommon>1) IsSame=true;
 		
 		return IsSame;
 	}
