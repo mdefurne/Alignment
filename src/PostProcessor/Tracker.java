@@ -53,6 +53,7 @@ public class Tracker {
 		
 		//Keep first only good tracks
 		for (int i=0;i<cand.size();i++) {
+			
 			if (cand.get(i+1).IsGoodCandidate()) {
 				Temp_good.add(cand.get(i+1));
 			}

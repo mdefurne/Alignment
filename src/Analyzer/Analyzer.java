@@ -21,7 +21,7 @@ public class Analyzer {
 		for (int i=0;i<candidates.size();i++) {
 			if (candidates.get(i+1).IsGoodCandidate()) {
 				Trackmeter.analyze(candidates.get(i+1));
-				Simeter.analyze(BST, candidates.get(i+1));
+				//Simeter.analyze(BST, candidates.get(i+1));
 				MCmeter.analyze(MCParticle,candidates.get(i+1));
 			}
 		}
@@ -29,7 +29,7 @@ public class Analyzer {
 	
 	public void draw() {
 		Trackmeter.draw();
-		Simeter.draw();
+		//Simeter.draw();
 		MCmeter.draw();
 	}
 	

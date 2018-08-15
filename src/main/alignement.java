@@ -50,12 +50,11 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		//DataEvent event=reader.gotoEvent(12569);
-		
-		while(reader.hasEvent()) {
-		  DataEvent event = reader.getNextEvent();
-		//for (int i=0;i<3;i++) {
-		  //DataEvent event = reader.gotoEvent(12568+i);
+			
+		//while(reader.hasEvent()) {
+		//  DataEvent event = reader.getNextEvent();
+		for (int i=0;i<1;i++) {
+		  DataEvent event = reader.gotoEvent(12832+i);
 			 
 			count++;
 		    		  

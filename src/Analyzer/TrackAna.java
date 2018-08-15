@@ -71,6 +71,6 @@ public class TrackAna {
 				}
 		 }
 		 
-		 //Clusty.draw();
+		 Clusty.draw();
 	}
 }

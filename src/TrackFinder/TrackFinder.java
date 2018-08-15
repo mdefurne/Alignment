@@ -53,14 +53,23 @@ public class TrackFinder {
 					//If we have already some hit in the sector, there are track candidate to check
 					if (!noHit_yet_sector) {
 						for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+							
 							//Here we always test if we have a match by time
 							IsAttributed=false;
 							for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
 							//If we have a match in time and will add a new layer
+								if (this.AllExceptLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+									TrackCandidate cand=Candidates.get(num_cand+1).DuplicateBMT();
+									cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+									Candidates.put(Candidates.size()+1, cand);
+									IsAttributed=true;
+								}
+								
 								if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
 									Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 									IsAttributed=true;
 								}
+								
 							}
 							if (!IsAttributed) {
 								TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
@@ -85,6 +94,7 @@ public class TrackFinder {
 							Candidates.put(Candidates.size()+1, cand);
 							noHit_yet_sector=false;
 						}
+						
 					}
 				}
 			}
@@ -99,11 +109,11 @@ public class TrackFinder {
 								Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 								for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
 									double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
-									if (Math.abs(delta)<3) {
-										//if (Math.abs(delta)<10) {
+									//if (Math.abs(delta)<3) {
+										if (Math.abs(delta)<5) {
 										if (Candidates.get(ray+1).BSTsize()!=0) {
 											if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
-												TrackCandidate cand=Candidates.get(ray+1).Duplicate();
+												TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
 												cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
 												BufferLayer.add(cand);
 											}
@@ -155,9 +165,22 @@ public class TrackFinder {
 		return test_val;
 	}
 	
+	public boolean AllExceptLayerCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
+		boolean test_val=false;
+		if (this.IsTimeCompatible(clus, ToBuild)) {
+			if (!this.IsLayerCompatible(clus, ToBuild)) {
+				if (this.IsSpatialCompatible(clus, ToBuild)) {
+					test_val=true;
+				}
+			}
+		}
+		return test_val;
+	}
+	
 	public boolean IsTimeCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		//Test if not on the same layer... otherwise need to duplicate track candidate
 		boolean test_val=false;
+		//if (clus.getSector()==2) System.out.println(clus.getT_min()+" "+ToBuild.GetTimeLastHit());
 		if (Math.abs(clus.getT_min()-ToBuild.GetTimeLastHit())<time_match) test_val=true;
 		return test_val;
 	}

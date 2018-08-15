@@ -37,7 +37,7 @@ public class ClusterAna {
 		
 		for (int lay=0;lay<6;lay++) {
 			Size[lay]=new H1F("Cluster size","Cluster size",30,0,30);
-			T_min[lay]=new H1F("T_min of track clusters "+(lay+1),"T_min of Track clusters "+(lay+1),24,0,240);
+			T_min[lay]=new H1F("T_min of track clusters "+(lay+1),"T_min of Track clusters "+(lay+1),48,0,480);
 			Timewalk[lay]=new H1F("Time difference between first and last strip in a cluster","Time difference between first and last strip in a cluster",30,0,240);
 			Edep[lay]=new H1F("Total deposited energy","Total deposited energy",30,0,30);
 			if (main.constant.isMC) {

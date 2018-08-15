@@ -300,12 +300,23 @@ public class TrackCandidate{
 		TrackResidual.add(res);
 	}
 	
-	public TrackCandidate Duplicate() {
+	public TrackCandidate DuplicateBST() {
 		TrackCandidate temp=new TrackCandidate(BMT, BST);
 		for (int dup=0;dup<this.size();dup++) {//Do not want the last cluster since on the same layer
 			temp.addBMT(this.GetBMTCluster(dup));
 		}
 		for (int dup=0;dup<this.BSTsize()-1;dup++) {//Do not want the last cluster since on the same layer
+			temp.addBST(this.GetBSTCluster(dup));
+		}
+		return temp;
+	}
+	
+	public TrackCandidate DuplicateBMT() {
+		TrackCandidate temp=new TrackCandidate(BMT, BST);
+		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
+			temp.addBMT(this.GetBMTCluster(dup));
+		}
+		for (int dup=0;dup<this.BSTsize();dup++) {//Do not want the last cluster since on the same layer
 			temp.addBST(this.GetBSTCluster(dup));
 		}
 		return temp;
