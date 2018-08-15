@@ -50,9 +50,10 @@ public class alignement {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-			
+		//DataEvent event=reader.gotoEvent(168);
+		
 		while(reader.hasEvent()) {
-			//while(count<10000) {
+		//while(count<170) {
 			DataEvent event = reader.getNextEvent();
 			 
 			count++;
@@ -82,7 +83,7 @@ public class alignement {
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	Tracky.addEvent(count, Lycos.get_Candidates());
 		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
-		    	Asimov.WriteEvent(BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
+		    	Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
 		    }
 		   		   		         
 		}

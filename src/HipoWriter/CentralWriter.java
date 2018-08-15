@@ -36,7 +36,7 @@ public class CentralWriter {
 		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
 	}
 	
-	public void WriteEvent(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
+	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
 		 HipoEvent event = writer.createEvent();
 		 
 		 event.writeGroup(this.fillCosmicRecBank(candidates));
@@ -44,7 +44,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
-		 event.writeGroup(this.fillRunConfig());
+		 event.writeGroup(this.fillRunConfig(eventnb));
 		 writer.writeEvent( event );
 	}
 
@@ -159,11 +159,11 @@ public class CentralWriter {
 		return bank;
 	}
 	
-	public HipoGroup fillRunConfig() {
+	public HipoGroup fillRunConfig(int eventnb) {
 		int groupsize=1;
 				
 		HipoGroup bank = writer.getSchemaFactory().getSchema("RUN::config").createGroup(groupsize);
-		
+		bank.getNode("event").setInt(0, (int) eventnb);
 		
 		return bank;
 	}
