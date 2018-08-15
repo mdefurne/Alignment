@@ -151,7 +151,8 @@ public class CentralWriter {
 			bank.getNode("trkline_yz_interc").setFloat(index, (float) (inter.z()/10.));
 			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
 			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
-			bank.getNode("chi2").setFloat(index, (float) Math.toDegrees((candidates.get(i).get_chi2())));
+			bank.getNode("chi2").setFloat(index, (float) (candidates.get(i).get_chi2()));
+			bank.getNode("ndf").setShort(index, (short) (candidates.get(i).size()+candidates.get(i).size()-4));
 			index++;
 		}
 		
