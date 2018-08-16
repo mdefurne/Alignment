@@ -49,7 +49,9 @@ public class TrackFinder {
 				noHit_yet_sector=true;
 			
 				for (int lay=5;lay>-1;lay--) {
-					
+					if (sec==1) {
+						for (int cc=0;cc<Candidates.size();cc++) Candidates.get(cc+1).Print();
+					}
 					if (BMT_det.getTile(lay,sec).getClusters().size()<15) {
 					//If we have already some hit in the sector, there are track candidate to check
 					
@@ -114,7 +116,7 @@ public class TrackFinder {
 								for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
 									double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
 									//if (Math.abs(delta)<3) {
-										if (Math.abs(delta)<5) {
+										if ((Math.abs(delta)<5&&!main.constant.isCosmic)||(Math.abs(delta)<25&&main.constant.isCosmic)) {
 										if (Candidates.get(ray+1).BSTsize()!=0) {
 											if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
 												TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
@@ -139,25 +141,56 @@ public class TrackFinder {
 				//}
 			}
 		
-		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//For cosmic data, no need to overthink the pattern recognition
-		//We check that the cosmic goes through sector 2.
+		
 		if (main.constant.isCosmic) {
-			int svt_sec1=0;
-			ArrayList<Integer> index_fittable=new ArrayList<Integer>();
+			
+			//We look at track going between sec1 and sec3 of BMT
+			int svt_opposite=0;
+			ArrayList<Integer> index_fittable_sec2=new ArrayList<Integer>();
+			ArrayList<Integer> index_fittable_sec1=new ArrayList<Integer>();
+			ArrayList<Integer> index_fittable_sec3=new ArrayList<Integer>();
 			for (int track=1;track<Candidates.size()+1;track++) {
-				if (Candidates.get(track).IsFittable())	index_fittable.add(track);
+				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==2)	index_fittable_sec2.add(track);
+				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==1)	index_fittable_sec1.add(track);
+				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==3)	index_fittable_sec3.add(track);
 			}
-			if (index_fittable.size()==1) {
-				for (int mod=1; mod<7;mod++) {
-					if (BST_det.getModule(mod, 1).getClusters().size()==1) svt_sec1++;
+			int sector_hit=0;
+			if (index_fittable_sec1.size()>0) sector_hit++;
+			if (index_fittable_sec2.size()>0) sector_hit++;
+			if (index_fittable_sec3.size()>0) sector_hit++;
+			//We loop over the track candidates
+			
+			if (sector_hit==1&&index_fittable_sec2.size()>0) {
+				for (int lay=1; lay<7;lay++) {
+					if (BST_det.getModule(lay, 1).getClusters().size()==1) svt_opposite++;
 				}
-				if (svt_sec1>3) {
+				if (svt_opposite>3) {
+					for (int cand=0;cand<index_fittable_sec2.size()) {
+					 for (int lay=1; lay<7;lay++) {
+						 if (BST_det.getModule(lay, 1).getClusters().size()==1) Candidates.get(index_fittable.get(0)).addBST(BST_det.getModule(lay, 1).getClusters().get(1));
+					 }
+					}
+				}
+			}
+			
+			if (sector_hit==1&&index_fittable_sec1.size()>0) {
+				for (int lay=1; lay<7;lay++) {
+					if (lay==1||lay==2) svt_opposite+=BST_det.getModule(lay,7).getClusters().size()+BST_det.getModule(lay,8).getClusters().size();
+					if (lay==3||lay==4) svt_opposite+=BST_det.getModule(lay,10).getClusters().size()+BST_det.getModule(lay,11).getClusters().size();
+					if (lay==5||lay==6) svt_opposite+=BST_det.getModule(lay,13).getClusters().size();
+				}
+				
+				if (svt_opposite>3) {
 					for (int mod=1; mod<7;mod++) {
 						if (BST_det.getModule(mod, 1).getClusters().size()==1) Candidates.get(index_fittable.get(0)).addBST(BST_det.getModule(mod, 1).getClusters().get(1));
 					}
 				}
 			}
+			
+			//We loop over the track candidates
+			
 		}
 	}
 	

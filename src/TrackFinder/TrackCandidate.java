@@ -255,8 +255,8 @@ public class TrackCandidate{
 	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
-		if ((nz<2||nc<2)&&!main.constant.IsWithSVT()) fit=false;
-		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.IsWithSVT()) fit=false;
+		if ((nz<2||nc<2)&&(!main.constant.IsWithSVT()||main.constant.isCosmic)) fit=false;
+		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.IsWithSVT()&&!main.constant.isCosmic) fit=false;
 		for (int i=0;i<BMTClus.size();i++) {
 			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
 			double ix=mean_X; double iy=mean_Y;
