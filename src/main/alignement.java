@@ -51,11 +51,11 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		//while(reader.hasEvent()) {
-		//  DataEvent event = reader.getNextEvent();
-		for (int i=0;i<1;i++) {
-		  DataEvent event = reader.gotoEvent(12832+i);
-			 
+		while(reader.hasEvent()) {
+		  DataEvent event = reader.getNextEvent();
+		//for (int i=0;i<1;i++) {
+		  //DataEvent event = reader.gotoEvent(12832+i);
+			 System.out.println(count);
 			count++;
 		    		  
 		    //Load all the constant needed but only for the first event

@@ -49,56 +49,60 @@ public class TrackFinder {
 				noHit_yet_sector=true;
 			
 				for (int lay=5;lay>-1;lay--) {
-				
+					
+					if (BMT_det.getTile(lay,sec).getClusters().size()<15) {
 					//If we have already some hit in the sector, there are track candidate to check
-					if (!noHit_yet_sector) {
-						for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+					
+						if (!noHit_yet_sector) {
+							for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
 							
-							//Here we always test if we have a match by time
-							IsAttributed=false;
-							for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
-							//If we have a match in time and will add a new layer
-								if (this.AllExceptLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-									TrackCandidate cand=Candidates.get(num_cand+1).DuplicateBMT();
+								//Here we always test if we have a match by time
+								IsAttributed=false;
+								for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
+									//If we have a match in time and will add a new layer
+									if (!this.IsLayerCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+										TrackCandidate cand=Candidates.get(num_cand+1).DuplicateBMT();
+										if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),cand)) {
+											cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+											BufferLayer.add(cand);
+											IsAttributed=true;
+										}
+									}
+								
+									if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
+										Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
+										IsAttributed=true;
+									}
+								
+								}
+							
+								if (!IsAttributed) {
+									TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
 									cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 									Candidates.put(Candidates.size()+1, cand);
-									IsAttributed=true;
 								}
-								
-								if (this.IsCompatible(BMT_det.getTile(lay,sec).getClusters().get(clus+1),Candidates.get(num_cand+1))) {
-									Candidates.get(num_cand+1).addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-									IsAttributed=true;
-								}
-								
+							
 							}
-							if (!IsAttributed) {
+							for (int buf=0;buf<BufferLayer.size();buf++) {
+								Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
+							}
+							BufferLayer.clear();
+						}	
+				
+						//We just enter the sector
+						if (noHit_yet_sector) {
+							//Create a new Track Candidate for each cluster of first layer
+							for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
 								TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
 								cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								Candidates.put(Candidates.size()+1, cand);
+								noHit_yet_sector=false;
 							}
-						}
-					
-					//Need to transfer duplicated track candidate from the buffer to the Candidates map and then empty buffer list
-//					for (int buf=0;buf<BufferLayer.size();buf++) {
-//						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
-//					}
-//					BufferLayer.clear();
-					}	
-				
-				//We just enter the sector
-					if (noHit_yet_sector) {
-						//Create a new Track Candidate for each cluster of first layer
-						for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
-							TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
-							cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
-							Candidates.put(Candidates.size()+1, cand);
-							noHit_yet_sector=false;
-						}
 						
+						}
 					}
 				}
 			}
-			
 		
 			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
 			if (main.constant.IsWithSVT()) {
@@ -129,6 +133,10 @@ public class TrackFinder {
 					}
 					BufferLayer.clear();
 				}
+				
+				//for (int i=0;i<Candidates.size();i++) {
+					//if (Candidates.get(i+1).IsFittable()) Candidates.get(i+1).Print();
+				//}
 			}
 		
 		
@@ -168,8 +176,8 @@ public class TrackFinder {
 	public boolean AllExceptLayerCompatible(BMT_struct.Cluster clus, TrackCandidate ToBuild) {
 		boolean test_val=false;
 		if (this.IsTimeCompatible(clus, ToBuild)) {
+		 if (this.IsSpatialCompatible(clus, ToBuild)) {
 			if (!this.IsLayerCompatible(clus, ToBuild)) {
-				if (this.IsSpatialCompatible(clus, ToBuild)) {
 					test_val=true;
 				}
 			}

@@ -53,7 +53,11 @@ public class Tracker {
 		
 		//Keep first only good tracks
 		for (int i=0;i<cand.size();i++) {
-			
+			//System.out.println(cand.get(i+1).BSTsize()+" "+cand.get(i+1).size()+" "+cand.get(i+1).get_chi2());
+			//if (cand.get(i+1).BSTsize()==6) {
+				//for (int j=0;j<6;j++) System.out.println(cand.get(i+1).GetBSTCluster(j).getPhi());
+				//for (int j=0;j<cand.get(i+1).size();j++) System.out.println(cand.get(i+1).GetBMTCluster(j).getX()+" "+cand.get(i+1).GetBMTCluster(j).getY()+" "+cand.get(i+1).GetBMTCluster(j).getZ());
+			//}
 			if (cand.get(i+1).IsGoodCandidate()) {
 				Temp_good.add(cand.get(i+1));
 			}

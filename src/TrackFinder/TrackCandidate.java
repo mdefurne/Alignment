@@ -315,6 +315,7 @@ public class TrackCandidate{
 		TrackCandidate temp=new TrackCandidate(BMT, BST);
 		for (int dup=0;dup<this.size()-1;dup++) {//Do not want the last cluster since on the same layer
 			temp.addBMT(this.GetBMTCluster(dup));
+			
 		}
 		for (int dup=0;dup<this.BSTsize();dup++) {//Do not want the last cluster since on the same layer
 			temp.addBST(this.GetBSTCluster(dup));
@@ -545,5 +546,15 @@ public class TrackCandidate{
 		line.setSlope_XYZ(vec_track.x(), vec_track.y(), vec_track.z());
 		line.setPoint_XYZ(point_track.x(), point_track.y(), point_track.z());
 		return line;
+	}
+	
+	public void Print() {
+		System.out.println("//////////////////");
+		for (int i=0;i<this.BSTsize();i++) {
+			System.out.println(this.GetBSTCluster(i).getPhi());
+		}
+		for (int i=0;i<this.size();i++) {
+			System.out.println(this.GetBMTCluster(i).getPhi()+" "+this.GetBMTCluster(i).getZ());
+		}
 	}
 }
