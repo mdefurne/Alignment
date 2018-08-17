@@ -35,10 +35,10 @@ public class alignement {
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
 			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS)");
-			System.out.println("TRACKER_TYPE: MVT, SVT or CVT\n");
+			System.out.println("TRACKER_TYPE: MVT, SVT or CVT");
 			System.out.println("RUN_TYPE: cosmic or target");
 			System.out.println("NUM_EVENTS: to set a maximum number of events (optional)");
-			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered (optional)");
+			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered (optional)\n");
 			System.out.println("For more info, please contact Maxime DEFURNE");
 			System.out.println("maxime.defurne@cea.fr");
 			System.exit(0);
