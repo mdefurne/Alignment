@@ -49,10 +49,10 @@ public class TrackFinder {
 				noHit_yet_sector=true;
 			
 				for (int lay=5;lay>-1;lay--) {
-					if (sec==1) {
-						for (int cc=0;cc<Candidates.size();cc++) Candidates.get(cc+1).Print();
-					}
-					if (BMT_det.getTile(lay,sec).getClusters().size()<15) {
+					//if (sec==1) {
+						//for (int cc=0;cc<Candidates.size();cc++) Candidates.get(cc+1).Print();
+					//}
+					if (BMT_det.getTile(lay,sec).getClusters().size()<10) {
 					//If we have already some hit in the sector, there are track candidate to check
 					
 						if (!noHit_yet_sector) {
@@ -107,7 +107,7 @@ public class TrackFinder {
 			}
 		
 			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
-			if (main.constant.IsWithSVT()) {
+			if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
 				for (int lay=6; lay>0;lay--) {
 					for (int ray=0; ray<Candidates.size();ray++) {
 							int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
@@ -167,9 +167,9 @@ public class TrackFinder {
 					if (BST_det.getModule(lay, 1).getClusters().size()==1) svt_opposite++;
 				}
 				if (svt_opposite>3) {
-					for (int cand=0;cand<index_fittable_sec2.size()) {
+					for (int cand=0;cand<index_fittable_sec2.size();cand++) {
 					 for (int lay=1; lay<7;lay++) {
-						 if (BST_det.getModule(lay, 1).getClusters().size()==1) Candidates.get(index_fittable.get(0)).addBST(BST_det.getModule(lay, 1).getClusters().get(1));
+						 if (BST_det.getModule(lay, 1).getClusters().size()==1) Candidates.get(index_fittable_sec2.get(cand)).addBST(BST_det.getModule(lay, 1).getClusters().get(1));
 					 }
 					}
 				}
@@ -183,9 +183,49 @@ public class TrackFinder {
 				}
 				
 				if (svt_opposite>3) {
-					for (int mod=1; mod<7;mod++) {
-						if (BST_det.getModule(mod, 1).getClusters().size()==1) Candidates.get(index_fittable.get(0)).addBST(BST_det.getModule(mod, 1).getClusters().get(1));
-					}
+				  for (int cand=0;cand<index_fittable_sec1.size();cand++) {
+				  if (BST_det.getModule(1, 7).getClusters().size()==1&&BST_det.getModule(1, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 7).getClusters().get(1));
+				  if (BST_det.getModule(1, 7).getClusters().size()==0&&BST_det.getModule(1, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 8).getClusters().get(1));
+				  
+				  if (BST_det.getModule(2, 7).getClusters().size()==1&&BST_det.getModule(2, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 7).getClusters().get(1));
+				  if (BST_det.getModule(2, 7).getClusters().size()==0&&BST_det.getModule(2, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 8).getClusters().get(1));
+				  
+				  if (BST_det.getModule(3, 10).getClusters().size()==1&&BST_det.getModule(3, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 10).getClusters().get(1));
+				  if (BST_det.getModule(3, 10).getClusters().size()==0&&BST_det.getModule(3, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 11).getClusters().get(1));
+				  
+				  if (BST_det.getModule(4, 10).getClusters().size()==1&&BST_det.getModule(4, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 10).getClusters().get(1));
+				  if (BST_det.getModule(4, 10).getClusters().size()==0&&BST_det.getModule(4, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 11).getClusters().get(1));
+				  
+				  if (BST_det.getModule(5, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(5, 13).getClusters().get(1));
+				  if (BST_det.getModule(6, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(6, 13).getClusters().get(1));
+				  }
+				}
+			}
+			
+			if (sector_hit==1&&index_fittable_sec3.size()>0) {
+				for (int lay=1; lay<7;lay++) {
+					if (lay==1||lay==2) svt_opposite+=BST_det.getModule(lay,7).getClusters().size()+BST_det.getModule(lay,8).getClusters().size();
+					if (lay==3||lay==4) svt_opposite+=BST_det.getModule(lay,10).getClusters().size()+BST_det.getModule(lay,11).getClusters().size();
+					if (lay==5||lay==6) svt_opposite+=BST_det.getModule(lay,13).getClusters().size();
+				}
+				
+				if (svt_opposite>3) {
+				  for (int cand=0;cand<index_fittable_sec1.size();cand++) {
+				  if (BST_det.getModule(1, 7).getClusters().size()==1&&BST_det.getModule(1, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 7).getClusters().get(1));
+				  if (BST_det.getModule(1, 7).getClusters().size()==0&&BST_det.getModule(1, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 8).getClusters().get(1));
+				  
+				  if (BST_det.getModule(2, 7).getClusters().size()==1&&BST_det.getModule(2, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 7).getClusters().get(1));
+				  if (BST_det.getModule(2, 7).getClusters().size()==0&&BST_det.getModule(2, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 8).getClusters().get(1));
+				  
+				  if (BST_det.getModule(3, 10).getClusters().size()==1&&BST_det.getModule(3, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 10).getClusters().get(1));
+				  if (BST_det.getModule(3, 10).getClusters().size()==0&&BST_det.getModule(3, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 11).getClusters().get(1));
+				  
+				  if (BST_det.getModule(4, 10).getClusters().size()==1&&BST_det.getModule(4, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 10).getClusters().get(1));
+				  if (BST_det.getModule(4, 10).getClusters().size()==0&&BST_det.getModule(4, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 11).getClusters().get(1));
+				  
+				  if (BST_det.getModule(5, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(5, 13).getClusters().get(1));
+				  if (BST_det.getModule(6, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(6, 13).getClusters().get(1));
+				  }
 				}
 			}
 			

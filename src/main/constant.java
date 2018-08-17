@@ -8,8 +8,10 @@ public class constant {
 	public static boolean isLoaded=false;
 	public static boolean isMC=false;
 	public static boolean isCosmic=false;
-	private static boolean WithSVT=false;
+	public static String TrackerType;
 	public static StraightLine IdealBeam;
+	public static int max_event=Integer.MAX_VALUE;
+	public static boolean drawing=false;
 	
 	public static double getSolenoidscale() {
 		return solenoid_scale;
@@ -42,12 +44,23 @@ public class constant {
 		isCosmic=is;
 	}
 	
-	public static void IncludeSVT(boolean is) {
-		WithSVT=is;
-	}
+	//public static void IncludeSVT(boolean is) {
+		//WithSVT=is;
+	//}
 	
-	public static boolean IsWithSVT() {
-		return WithSVT;
+	//public static boolean IsWithSVT() {
+		//return WithSVT;
+	//}
+	
+	public static void setTrackerType(String Type) {
+		if (!Type.equals("SVT")&&!Type.equals("MVT")&&!Type.equals("CVT")) {
+			System.err.println("Invalid Tracker Type entered :");
+			System.err.println(Type);
+			System.err.println("Must be SVT, MVT or CVT");
+			System.err.println("More info by typing execution line with no argument");
+			System.exit(0);
+		}
+		TrackerType=Type;
 	}
 	
 }

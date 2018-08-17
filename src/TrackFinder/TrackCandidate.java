@@ -255,32 +255,35 @@ public class TrackCandidate{
 	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
-		if ((nz<2||nc<2)&&(!main.constant.IsWithSVT()||main.constant.isCosmic)) fit=false;
-		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.IsWithSVT()&&!main.constant.isCosmic) fit=false;
-		for (int i=0;i<BMTClus.size();i++) {
-			double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
-			double ix=mean_X; double iy=mean_Y;
+		if ((nz<2||nc<2)&&(main.constant.TrackerType.equals("MVT")||main.constant.isCosmic)) fit=false;
+		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.TrackerType.equals("CVT")&&!main.constant.isCosmic) fit=false;
+		if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
+			for (int i=0;i<BMTClus.size();i++) {
+				double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
+				double ix=mean_X; double iy=mean_Y;
 				  
-			//Find the intersection
-			double a=sx*sx+sy*sy;
-			double b=2*(sx*ix+sy*iy);
-			double c=ix*ix+iy*iy-BMTClus.get(i).getRadius()*BMTClus.get(i).getRadius();
+				//Find the intersection
+				double a=sx*sx+sy*sy;
+				double b=2*(sx*ix+sy*iy);
+				double c=ix*ix+iy*iy-BMTClus.get(i).getRadius()*BMTClus.get(i).getRadius();
 				 
-			double delta=b*b-4*a*c;
-			if (delta<0) fit=false;
-			if (delta==0) {
-			    double lambda=-b/2./a;
-			   Vector3D inter=new Vector3D(sx*lambda+ix,sy*lambda+iy,0);
-			    if (BMT.getGeometry().isinsector(inter)!=BMTClus.get(i).getSector()) fit=false;
-			}
-			if (delta>0) {
-				double lambda_a=(-b+Math.sqrt(delta))/2./a;
-			    double lambda_b=(-b-Math.sqrt(delta))/2./a;
-			    Vector3D inter_a=new Vector3D(sx*lambda_a+ix,sy*lambda_a+iy,0);
-			    Vector3D inter_b=new Vector3D(sx*lambda_b+ix,sy*lambda_b+iy,0);
-				if (BMT.getGeometry().isinsector(inter_a)!=BMTClus.get(i).getSector()&&BMT.getGeometry().isinsector(inter_b)!=BMTClus.get(i).getSector()) fit=false;
+				double delta=b*b-4*a*c;
+				if (delta<0) fit=false;
+				if (delta==0) {
+					double lambda=-b/2./a;
+					Vector3D inter=new Vector3D(sx*lambda+ix,sy*lambda+iy,0);
+					if (BMT.getGeometry().isinsector(inter)!=BMTClus.get(i).getSector()) fit=false;
+				}
+				if (delta>0) {
+					double lambda_a=(-b+Math.sqrt(delta))/2./a;
+					double lambda_b=(-b-Math.sqrt(delta))/2./a;
+					Vector3D inter_a=new Vector3D(sx*lambda_a+ix,sy*lambda_a+iy,0);
+					Vector3D inter_b=new Vector3D(sx*lambda_b+ix,sy*lambda_b+iy,0);
+					if (BMT.getGeometry().isinsector(inter_a)!=BMTClus.get(i).getSector()&&BMT.getGeometry().isinsector(inter_b)!=BMTClus.get(i).getSector()) fit=false;
+				}
 			}
 		}
+		if (main.constant.TrackerType.equals("SVT")&&this.BSTsize()<4) fit=false; 
 		return fit;
 	}
 	
@@ -414,13 +417,13 @@ public class TrackCandidate{
 	public double ComputeChi2(StraightLine line) {
 		double chi=0;
 		if (this.size()==0) return chi;
-		
-	      for (int clus=0;clus<this.size();clus++) {
+		 if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
+			 for (int clus=0;clus<this.size();clus++) {
 	    	  StraightLine lineBMT=line.InTileFrame(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector());
 	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),lineBMT.getSlope(),lineBMT.getPoint())/this.GetBMTCluster(clus).getErr(),2);
-	      }
-	      
-	      if (main.constant.IsWithSVT()) {
+	      	}
+		 }
+	      if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("SVT")) {
 	    	  for (int clus=0;clus<this.BSTsize();clus++) {
 	    		  Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line.getSlope(), line.getPoint());
 	    		  if (!Double.isNaN(inter.x())) chi+=Math.pow(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
@@ -433,12 +436,12 @@ public class TrackCandidate{
 	
 	public boolean IsGoodCandidate() {
 		boolean good=true;
-		if (!main.constant.IsWithSVT()) {
+		if (main.constant.TrackerType.equals("MVT")) {
 			if (chi2>50) good=false;
 			if (nz<2) good=false;
 			if (nc<2) good=false;
 		}
-		if (main.constant.IsWithSVT()) {
+		if (main.constant.TrackerType.equals("CVT")) {
 			if (chi2>200) good=false;
 			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2) good=false;
 		}
@@ -448,14 +451,14 @@ public class TrackCandidate{
 	
 	public boolean IsVeryGoodCandidate() {
 		boolean good=true;
-		if (!main.constant.IsWithSVT()) {
+		if (main.constant.TrackerType.equals("MVT")) {
 			if (chi2>10) good=false;
 			if (nz<3) good=false;
 			if (nc<3) good=false;
 		}
-		if (main.constant.IsWithSVT()) {
+		if (main.constant.TrackerType.equals("CVT")) {
 			if (chi2>100) good=false;
-			if (nz<2||nc<2||(BSTClus.size()+BMTClus.size())<9) good=false;
+			if (nz<2||nc<2||(BSTClus.size()+BMTClus.size())<9||BSTClus.size()<4) good=false;
 		}
 		if (!fit_status) good=false;
 		return good;

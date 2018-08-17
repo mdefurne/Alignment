@@ -17,7 +17,7 @@ public class CentralWriter {
 	HipoWriter writer;
 	SchemaFactory factory;
 	
-	public CentralWriter() {
+	public CentralWriter(String Output) {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
 		factory.addSchema(new Schema("{20125,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
@@ -33,7 +33,7 @@ public class CentralWriter {
 				+ "[7,PhitrackIntersPlane,FLOAT][8,ThetatrackIntersPlane,FLOAT][9,trkToMPlnAngl,FLOAT],[10,CalcCentroidStrip,FLOAT]"));
 		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 		 writer.appendSchemaFactory(factory);
-		 writer.open("/home/mdefurne/Bureau/CLAS12/customBank.hipo");
+		 writer.open(Output);
 	}
 	
 	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
@@ -152,7 +152,11 @@ public class CentralWriter {
 			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
 			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
 			bank.getNode("chi2").setFloat(index, (float) (candidates.get(i).get_chi2()));
-			bank.getNode("ndf").setShort(index, (short) (candidates.get(i).size()+candidates.get(i).size()-4));
+			int ndf=0;
+			if (main.constant.TrackerType.equals("SVT")) ndf=candidates.get(i).BSTsize()-4;
+			if (main.constant.TrackerType.equals("MVT")) ndf=candidates.get(i).size()-4;
+			if (main.constant.TrackerType.equals("CVT")) ndf=candidates.get(i).size()+candidates.get(i).BSTsize()-4;
+			bank.getNode("ndf").setShort(index, (short) ndf);
 			index++;
 		}
 		
@@ -202,7 +206,7 @@ public class CentralWriter {
 								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
 						}
 					
-						if (clus_id!=-1) {
+						if (clus_id!=-1&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
 							//Update the cluster X,Y,Z info with track info
 							for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
 								if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
@@ -237,7 +241,7 @@ public class CentralWriter {
 							clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
 					}
 					
-					if (clus_id!=-1) {
+					if (clus_id!=-1&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
 						//Update the cluster X,Y,Z info with track info
 						for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
 							if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
