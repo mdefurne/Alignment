@@ -221,43 +221,44 @@ public class CentralWriter {
 			}
 			
 			//Intercept with BMT tiles and add info on missing coordinates of the clusters.
+			int sector=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
 			for (int lay=0; lay<6;lay++) {
-				int sec=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
-				Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-				if (!Double.isNaN(inter.x())) {
+				for (int sec=1; sec<4;sec++) {
+					Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
+					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||sec==sector)) {
 					
-					bank.getNode("ID").setShort(index, (short) track);
-					bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
-					bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
-					bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
-					bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
-					bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
-					bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
-					bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
+						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
+						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
+						bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
+						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
+						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
+						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
 					
-					int clus_id=-1;
-					for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
-						if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
-							clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
-					}
+						int clus_id=-1;
+						for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
+							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
+								clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
+						}
 					
-					if (clus_id!=-1&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
-						//Update the cluster X,Y,Z info with track info
-						for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
-							if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
-								if (BMT.getGeometry().getZorC(lay+1)==0) {
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
+						if (clus_id!=-1&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
+							//Update the cluster X,Y,Z info with track info
+							for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
+								if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
+									if (BMT.getGeometry().getZorC(lay+1)==0) {
+										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
+										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
+									}
+									if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
 								}
-								if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
 							}
 						}
+					
+						inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
+						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
+						index++;
 					}
-					
-					inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
-					bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
-					index++;
-					
 				}
 			}
 		}

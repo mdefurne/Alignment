@@ -50,6 +50,7 @@ public class alignement {
 		String RunType=args[3];
 		
 		if (RunType.equals("cosmic")) main.constant.setCosmic(true);
+		
 		main.constant.setTrackerType(TrackerType);
 		
 		for (int i=4; i<args.length; i++) {

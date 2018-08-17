@@ -160,6 +160,7 @@ public class TrackFinder {
 			if (index_fittable_sec1.size()>0) sector_hit++;
 			if (index_fittable_sec2.size()>0) sector_hit++;
 			if (index_fittable_sec3.size()>0) sector_hit++;
+			
 			//We loop over the track candidates
 			
 			if (sector_hit==1&&index_fittable_sec2.size()>0) {
@@ -204,33 +205,64 @@ public class TrackFinder {
 			
 			if (sector_hit==1&&index_fittable_sec3.size()>0) {
 				for (int lay=1; lay<7;lay++) {
-					if (lay==1||lay==2) svt_opposite+=BST_det.getModule(lay,7).getClusters().size()+BST_det.getModule(lay,8).getClusters().size();
-					if (lay==3||lay==4) svt_opposite+=BST_det.getModule(lay,10).getClusters().size()+BST_det.getModule(lay,11).getClusters().size();
-					if (lay==5||lay==6) svt_opposite+=BST_det.getModule(lay,13).getClusters().size();
+					if (lay==1||lay==2) svt_opposite+=BST_det.getModule(lay,4).getClusters().size()+BST_det.getModule(lay,5).getClusters().size();
+					if (lay==3||lay==4) svt_opposite+=BST_det.getModule(lay,5).getClusters().size()+BST_det.getModule(lay,6).getClusters().size();
+					if (lay==5||lay==6) svt_opposite+=BST_det.getModule(lay,7).getClusters().size();
 				}
 				
 				if (svt_opposite>3) {
-				  for (int cand=0;cand<index_fittable_sec1.size();cand++) {
-				  if (BST_det.getModule(1, 7).getClusters().size()==1&&BST_det.getModule(1, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 7).getClusters().get(1));
-				  if (BST_det.getModule(1, 7).getClusters().size()==0&&BST_det.getModule(1, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(1, 8).getClusters().get(1));
+				  for (int cand=0;cand<index_fittable_sec3.size();cand++) {
+				  if (BST_det.getModule(1, 4).getClusters().size()==1&&BST_det.getModule(1, 5).getClusters().size()==0) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(1, 4).getClusters().get(1));
+				  if (BST_det.getModule(1, 4).getClusters().size()==0&&BST_det.getModule(1, 5).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(1, 5).getClusters().get(1));
 				  
-				  if (BST_det.getModule(2, 7).getClusters().size()==1&&BST_det.getModule(2, 8).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 7).getClusters().get(1));
-				  if (BST_det.getModule(2, 7).getClusters().size()==0&&BST_det.getModule(2, 8).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(2, 8).getClusters().get(1));
+				  if (BST_det.getModule(2, 4).getClusters().size()==1&&BST_det.getModule(2, 5).getClusters().size()==0) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(2, 4).getClusters().get(1));
+				  if (BST_det.getModule(2, 4).getClusters().size()==0&&BST_det.getModule(2, 5).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(2, 5).getClusters().get(1));
 				  
-				  if (BST_det.getModule(3, 10).getClusters().size()==1&&BST_det.getModule(3, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 10).getClusters().get(1));
-				  if (BST_det.getModule(3, 10).getClusters().size()==0&&BST_det.getModule(3, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(3, 11).getClusters().get(1));
+				  if (BST_det.getModule(3, 5).getClusters().size()==1&&BST_det.getModule(3, 6).getClusters().size()==0) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(3, 5).getClusters().get(1));
+				  if (BST_det.getModule(3, 5).getClusters().size()==0&&BST_det.getModule(3, 6).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(3, 6).getClusters().get(1));
 				  
-				  if (BST_det.getModule(4, 10).getClusters().size()==1&&BST_det.getModule(4, 11).getClusters().size()==0) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 10).getClusters().get(1));
-				  if (BST_det.getModule(4, 10).getClusters().size()==0&&BST_det.getModule(4, 11).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(4, 11).getClusters().get(1));
+				  if (BST_det.getModule(4, 5).getClusters().size()==1&&BST_det.getModule(4, 6).getClusters().size()==0) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(4, 5).getClusters().get(1));
+				  if (BST_det.getModule(4, 5).getClusters().size()==0&&BST_det.getModule(4, 6).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(4, 6).getClusters().get(1));
 				  
-				  if (BST_det.getModule(5, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(5, 13).getClusters().get(1));
-				  if (BST_det.getModule(6, 13).getClusters().size()==1) Candidates.get(index_fittable_sec1.get(cand)).addBST(BST_det.getModule(6, 13).getClusters().get(1));
+				  if (BST_det.getModule(5, 7).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(5, 7).getClusters().get(1));
+				  if (BST_det.getModule(6, 7).getClusters().size()==1) Candidates.get(index_fittable_sec3.get(cand)).addBST(BST_det.getModule(6, 7).getClusters().get(1));
 				  }
 				}
 			}
 			
 			//We loop over the track candidates
-			
+			if (sector_hit>1) {
+				//Merge sec2 track to sec1 and then sec3
+				for (int track_sec2=0;track_sec2<index_fittable_sec2.size();track_sec2++) {
+					for (int track_sec1=0;track_sec1<index_fittable_sec1.size();track_sec1++) {
+						Candidates.put(Candidates.size()+1,Candidates.get(index_fittable_sec2.get(track_sec2)).Merge(Candidates.get(index_fittable_sec1.get(track_sec1))));
+						Candidates.get(Candidates.size()).set_VectorTrack(Candidates.get(index_fittable_sec2.get(track_sec2)).get_VectorTrack());
+						Candidates.get(Candidates.size()).set_PointTrack(Candidates.get(index_fittable_sec2.get(track_sec2)).get_PointTrack());
+						Candidates.get(Candidates.size()).set_PhiSeed(Candidates.get(index_fittable_sec2.get(track_sec2)).getPhiSeed());
+						Candidates.get(Candidates.size()).set_ThetaSeed(Candidates.get(index_fittable_sec2.get(track_sec2)).getThetaSeed());
+						
+					}
+					for (int track_sec3=0;track_sec3<index_fittable_sec3.size();track_sec3++) {
+						Candidates.put(Candidates.size()+1,Candidates.get(index_fittable_sec2.get(track_sec2)).Merge(Candidates.get(index_fittable_sec3.get(track_sec3))));
+						Candidates.get(Candidates.size()).set_VectorTrack(Candidates.get(index_fittable_sec2.get(track_sec2)).get_VectorTrack());
+						Candidates.get(Candidates.size()).set_PointTrack(Candidates.get(index_fittable_sec2.get(track_sec2)).get_PointTrack());
+						Candidates.get(Candidates.size()).set_PhiSeed(Candidates.get(index_fittable_sec2.get(track_sec2)).getPhiSeed());
+						Candidates.get(Candidates.size()).set_ThetaSeed(Candidates.get(index_fittable_sec2.get(track_sec2)).getThetaSeed());
+						
+					}
+				}
+				//Merge sec1 and sec3 Track
+				for (int track_sec3=0;track_sec3<index_fittable_sec3.size();track_sec3++) {
+					for (int track_sec1=0;track_sec1<index_fittable_sec1.size();track_sec1++) {
+						Candidates.put(Candidates.size()+1,Candidates.get(index_fittable_sec3.get(track_sec3)).Merge(Candidates.get(index_fittable_sec1.get(track_sec1))));
+						Candidates.get(Candidates.size()).set_VectorTrack(Candidates.get(index_fittable_sec3.get(track_sec3)).get_VectorTrack());
+						Candidates.get(Candidates.size()).set_PointTrack(Candidates.get(index_fittable_sec3.get(track_sec3)).get_PointTrack());
+						Candidates.get(Candidates.size()).set_PhiSeed(Candidates.get(index_fittable_sec3.get(track_sec3)).getPhiSeed());
+						Candidates.get(Candidates.size()).set_ThetaSeed(Candidates.get(index_fittable_sec3.get(track_sec3)).getThetaSeed());
+					}
+				}
+				
+			}
 		}
 	}
 	

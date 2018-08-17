@@ -95,6 +95,7 @@ public class TrackCandidate{
 		point_track=new Vector3D();
 		point_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		phi_tolerance=Math.toRadians(60);
+		if (main.constant.isCosmic) phi_tolerance=Math.toRadians(100);
 		theta_min=Math.toRadians(0);
 		theta_max=Math.toRadians(180);
 		
@@ -119,6 +120,14 @@ public class TrackCandidate{
 	
 	public void set_PointTrack(Vector3D point) {
 		point_track=point;
+	}
+	
+	public void set_PhiSeed(double phi) {
+		phi_seed=phi;
+	}
+	
+	public void set_ThetaSeed(double theta) {
+		theta_seed=theta;
 	}
 	
 	public Vector3D get_VectorTrack() {
@@ -323,6 +332,27 @@ public class TrackCandidate{
 		for (int dup=0;dup<this.BSTsize();dup++) {//Do not want the last cluster since on the same layer
 			temp.addBST(this.GetBSTCluster(dup));
 		}
+		return temp;
+	}
+	
+	public TrackCandidate Merge(TrackCandidate ToMerge) {
+		TrackCandidate temp=new TrackCandidate(BMT, BST);
+		for (int dup=0;dup<this.size();dup++) {//Do not want the last cluster since on the same layer
+			temp.addBMT(this.GetBMTCluster(dup));
+			
+		}
+		for (int dup=0;dup<this.BSTsize();dup++) {//Do not want the last cluster since on the same layer
+			temp.addBST(this.GetBSTCluster(dup));
+		}
+		
+		for (int dup=0;dup<ToMerge.size();dup++) {//Do not want the last cluster since on the same layer
+			temp.addBMT(ToMerge.GetBMTCluster(dup));
+			
+		}
+		for (int dup=0;dup<ToMerge.BSTsize();dup++) {//Do not want the last cluster since on the same layer
+			temp.addBST(ToMerge.GetBSTCluster(dup));
+		}
+			
 		return temp;
 	}
 	

@@ -33,8 +33,8 @@ public class Fitter {
 				 if (main.constant.isCosmic) {
 					 upar.add("phi", Candidates.get(num_cand+1).getPhiSeed(), Math.toRadians(90), Candidates.get(num_cand+1).getPhiSeed()-Math.toRadians(45), Candidates.get(num_cand+1).getPhiSeed()+Math.toRadians(45));
 					 upar.add("theta", Candidates.get(num_cand+1).getThetaSeed(), Math.toRadians(90), Candidates.get(num_cand+1).getThetaSeed()-Math.toRadians(45), Candidates.get(num_cand+1).getThetaSeed()+Math.toRadians(45));
-					 upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())-Math.PI/8.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())+Math.PI/8.);
-					 upar.add("point_z", Candidates.get(num_cand+1).getLastZ(), 600.,Candidates.get(num_cand+1).getZMean()-150.,Candidates.get(num_cand+1).getZMean()+150.);
+					 upar.add("point_phi", Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX()), Math.PI/4.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())-Math.PI/3.,Math.atan2(Candidates.get(num_cand+1).getLastY(),Candidates.get(num_cand+1).getLastX())+Math.PI/3.);
+					 upar.add("point_z", Candidates.get(num_cand+1).getLastZ(), 600.,Candidates.get(num_cand+1).getZMean()-300.,Candidates.get(num_cand+1).getZMean()+300.);
 				 }
 					   
 			  	    
