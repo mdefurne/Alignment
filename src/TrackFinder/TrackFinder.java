@@ -110,25 +110,32 @@ public class TrackFinder {
 			if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
 				for (int lay=6; lay>0;lay--) {
 					for (int ray=0; ray<Candidates.size();ray++) {
-							int sec=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-							if (sec!=-1) {
-								Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-								for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
-									double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
-									//if (Math.abs(delta)<3) {
-										if ((Math.abs(delta)<5&&!main.constant.isCosmic)||(Math.abs(delta)<25&&main.constant.isCosmic)) {
-										if (Candidates.get(ray+1).BSTsize()!=0) {
-											if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
-												TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
-												cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-												BufferLayer.add(cand);
-											}
-											if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+							int sector=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+							int delta_sec=1; //Point_track may be a bit shifted compared to the module we are supposed to look at!!
+							if (main.constant.isCosmic) delta_sec=2;
+							if (sector!=-1) {
+								for (int sector_stud=sector-delta_sec; sector_stud<sector+delta_sec; sector_stud++) {
+									int sec=sector_stud%BST_det.getGeometry().getNbModule(lay)+1;
+									Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+									if (!Double.isNaN(inter.x())) {
+										for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
+											double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
+									
+												if ((Math.abs(delta)<5&&!main.constant.isCosmic)||(Math.abs(delta)<25&&main.constant.isCosmic)) {
+													if (Candidates.get(ray+1).BSTsize()!=0) {
+														if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
+															TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
+															cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+															BufferLayer.add(cand);
+														}
+														if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+													}
+													if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+												}
 										}
-										if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-									}
+									}	
 								}
-							}	
+							}
 					}
 					for (int buf=0;buf<BufferLayer.size();buf++) {
 						Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
