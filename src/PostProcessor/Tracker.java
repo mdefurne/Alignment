@@ -53,7 +53,6 @@ public class Tracker {
 		
 		//Keep first only good tracks
 		for (int i=0;i<cand.size();i++) {
-			//System.out.println(cand.get(i+1).BSTsize()+" "+cand.get(i+1).size()+" "+cand.get(i+1).get_chi2());
 			//if (cand.get(i+1).BSTsize()==6) {
 				//for (int j=0;j<6;j++) System.out.println(cand.get(i+1).GetBSTCluster(j).getPhi());
 				//for (int j=0;j<cand.get(i+1).size();j++) System.out.println(cand.get(i+1).GetBMTCluster(j).getX()+" "+cand.get(i+1).GetBMTCluster(j).getY()+" "+cand.get(i+1).GetBMTCluster(j).getZ());
@@ -67,6 +66,7 @@ public class Tracker {
 		
 		for (int i=0;i<Temp_good.size();i++) {
 			good.add(Temp_good.get(i));
+			Toremove.add(i);
 			for (int j=i+1;j<Temp_good.size();j++) {
 				//if (good.get(good.size()-1).IsSimilar(Temp_good.get(j))&&good.get(good.size()-1).get_chi2()/(2*good.get(good.size()-1).size()+2*good.get(good.size()-1).BSTsize()-4)>Temp_good.get(j).get_chi2()/(2*Temp_good.get(j).size()+2*Temp_good.get(j).BSTsize()-4)) {
 				if (good.get(good.size()-1).IsSimilar(Temp_good.get(j))) {
@@ -79,8 +79,9 @@ public class Tracker {
 				}
 			}
 			int removed=0;
+			
 			for (int index=0; index<Toremove.size(); index++) {
-				Temp_good.remove(index-removed); //Remove all tracks similar with the one in good
+				Temp_good.remove(Toremove.get(index)-removed); //Remove all tracks similar with the one in good
 				removed++;//Correct for the change of the size of the arraylist 
 			}
 			Toremove.clear();

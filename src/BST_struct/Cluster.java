@@ -11,6 +11,8 @@ public class Cluster {
 	
 	private int size;
 	private int Edep;
+	private int Eseed;
+	private int stripseed;
 	private double centroid;
 	private double centroidResidual;
 	private double phi_mid;
@@ -22,6 +24,7 @@ public class Cluster {
 	private int layer;
 	private int sector;
 	private ArrayList<Integer> hit_id;
+	private int trkID;
 	
 	public Cluster(int lay, int sec) {
 		size=0;
@@ -37,10 +40,17 @@ public class Cluster {
 		hit_id= new ArrayList();
 		layer=lay;
 		sector=sec;
+		trkID=-1;
+		Eseed=-1;
+		stripseed=-1;
 	}
 	
 	public void add(int id_hit, Hit aHit) {
 		hit_id.add(id_hit);
+		if (Eseed<aHit.getADC()) {
+			Eseed=aHit.getADC();
+			stripseed=id_hit;
+		}
 		centroid=Edep*centroid+aHit.getADC()*id_hit;
 		size++;
 		phi_mid=Edep*phi_mid+aHit.getPhi()*aHit.getADC();
@@ -123,6 +133,26 @@ public class Cluster {
 	
 	public ArrayList<Integer> getListOfHits(){
 		return hit_id;
+	}
+	
+	public int gettrkID(){
+		return trkID;
+	}
+	
+	public void settrkID(int ID){
+		trkID=ID;
+	}
+	
+	public int getEtot(){
+		return Edep;
+	}
+	
+	public int getSeedE(){
+		return Eseed;
+	}
+	
+	public int getSeed(){
+		return stripseed;
 	}
 	
 }

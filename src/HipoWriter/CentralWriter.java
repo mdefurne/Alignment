@@ -27,9 +27,9 @@ public class CentralWriter {
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
 		
 		factory.addSchema(new Schema("{20221,BSTRec::Hits}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,strip,INT][5,fitResidual,FLOAT][6,trkingStat,INT]"
-				+ "[7,clusterID,SHORT][8,trk_ID,SHORT]"));
+				+ "[7,clusterID,SHORT][8,trkID,SHORT]"));
 		
-		factory.addSchema(new Schema("{20221,BSTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
+		factory.addSchema(new Schema("{20222,BSTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
 				+ "[9,centroidResidual,FLOAT][10,seedResidual,FLOAT][11,Hit1_ID,SHORT][12,Hit2_ID,SHORT][13,Hit3_ID,SHORT][14,Hit4_ID,SHORT][15,Hit5_ID,SHORT][16,trkID,SHORT]"));
 		
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
@@ -55,6 +55,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 event.writeGroup(this.fillBSTHitsBank(BST));
+		 event.writeGroup(this.fillBSTClusterBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 writer.writeEvent( event );
@@ -132,19 +133,54 @@ public class CentralWriter {
 				
 		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Hits").createGroup(groupsize);
 		int index=0;
-		
+		int index_clus=0;
+				
 		for (int lay=1; lay<7; lay++) {
 			for (int sec=1; sec<19; sec++) {
 				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
-					bank.getNode("clusterID").setShort(index, (short) index);
-					bank.getNode("sector").setByte(index, (byte) (sec+1));
-					bank.getNode("layer").setByte(index, (byte) (lay+1));
 					for (int str=0;str<BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
 						int strip=BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
+						bank.getNode("clusterID").setShort(index, (short) index_clus);
+						bank.getNode("trkID").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).gettrkID());
+						bank.getNode("sector").setByte(index, (byte) sec);
+						bank.getNode("layer").setByte(index, (byte) lay);
 						bank.getNode("strip").setInt(index, strip);
 						bank.getNode("ID").setShort(index, (short) BST.getModule(lay,sec).getHits().get(strip).getHit_ID());
+						bank.getNode("fitResidual").setFloat(index, (float) BST.getModule(lay,sec).getHits().get(strip).getResidual());
 						index++;
 					}
+					index_clus++;
+				}
+			}
+		}
+        return bank;
+	}
+	
+	public HipoGroup fillBSTClusterBank(Barrel_SVT BST) {
+		int groupsize=0;
+		for (int lay=1; lay<7; lay++) {
+			for (int sec=1; sec<19; sec++) {
+			groupsize+=BST.getModule(lay,sec).getClusters().size();
+			}
+		}
+		
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Clusters").createGroup(groupsize);
+		int index=0;
+						
+		for (int lay=1; lay<7; lay++) {
+			for (int sec=1; sec<19; sec++) {
+				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
+					bank.getNode("ID").setShort(index, (short) index);
+					bank.getNode("trkID").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).gettrkID());
+					bank.getNode("sector").setByte(index, (byte) sec);
+					bank.getNode("layer").setByte(index, (byte) lay);
+					bank.getNode("centroid").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getCentroid());
+					bank.getNode("size").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size());
+					bank.getNode("Etot").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getEtot());
+					bank.getNode("seedStrip").setInt(index, (int) BST.getModule(lay,sec).getClusters().get(j+1).getSeed());
+					bank.getNode("seedE").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getSeedE());
+					bank.getNode("centroidResidual").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getCentroidResidual());
+					index++;
 				}
 			}
 		}
@@ -249,6 +285,8 @@ public class CentralWriter {
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).settrkID(track);
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).setCentroidResidual(BST.getGeometry().getResidual_line(lay+1,sector,BST.getModule(lay+1, sector).getClusters().get(clus+1).getCentroid(),inter));
 								}
 							}
 						}
@@ -287,6 +325,8 @@ public class CentralWriter {
 										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
 									}
 									if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
+									BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track);
+									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
 								}
 							}
 						}

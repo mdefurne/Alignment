@@ -74,7 +74,7 @@ public class Hit {
 		fitResidual=residue;
 	}
 	
-	public double getResidual(double residue) {
+	public double getResidual() {
 		return fitResidual;
 	}
 		

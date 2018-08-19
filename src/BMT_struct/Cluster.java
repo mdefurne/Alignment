@@ -14,6 +14,7 @@ public class Cluster {
 	private Vector3D XYZ;
 	private Vector3D RPhiZ;
 	private double centroid; //strip info
+	private double centroidResidual;
 	private double centroid_phi; //info in loc frame, either phi or z.
 	private double centroid_x; //info in loc frame, either phi or z.
 	private double centroid_y; //info in loc frame, either phi or z.
@@ -29,6 +30,7 @@ public class Cluster {
 	boolean InTheFit;
 	private int first_tmin;
 	private int second_tmin;
+	private int trkID;
 		
 	public Cluster() {
 		t_min=0;
@@ -47,6 +49,8 @@ public class Cluster {
 		InTheFit=true;
 		first_tmin=0;
 		second_tmin=0;
+		trkID=-1;
+		centroidResidual=Double.NaN;
 		}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -185,6 +189,14 @@ public class Cluster {
 		return InTheFit;
 	}
 	
+	public int gettrkID(){
+		return trkID;
+	}
+	
+	public void settrkID(int ID){
+		trkID=ID;
+	}
+	
 	public void close(int mode) {
 		if (mode==1&&!main.constant.isMC) {
 			centroid=(double) hit_id.get(first_tmin);
@@ -219,5 +231,14 @@ public class Cluster {
 			}
 		}
 	}
+	
+	public void setCentroidResidual(double res) {
+		centroidResidual=res;
+	}
+	
+	public double getCentroidResidual() {
+		return centroidResidual;
+	}
+		
 				
 }
