@@ -17,6 +17,7 @@ public class CentralWriter {
 	HipoWriter writer;
 	SchemaFactory factory;
 	
+	
 	public CentralWriter(String Output) {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
@@ -45,10 +46,11 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open(Output);
+		 
 	}
 	
 	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
-		 HipoEvent event = writer.createEvent();
+		HipoEvent event=writer.createEvent();
 		 
 		 event.writeGroup(this.fillCosmicRecBank(candidates));
 		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
@@ -240,6 +242,8 @@ public class CentralWriter {
 				
 		HipoGroup bank = writer.getSchemaFactory().getSchema("RUN::config").createGroup(groupsize);
 		bank.getNode("event").setInt(0, (int) eventnb);
+		if (main.constant.isCosmic) bank.getNode("type").setByte(0, (byte) 1);
+		if (!main.constant.isCosmic) bank.getNode("type").setByte(0, (byte) 0);
 		
 		return bank;
 	}
@@ -261,7 +265,7 @@ public class CentralWriter {
 					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
-						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("ID").setShort(index, (short) index);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
@@ -270,6 +274,7 @@ public class CentralWriter {
 						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
 						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
 						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
+						bank.getNode("CalcCentroidStrip").setFloat(index, (float) BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay+1, sector));
 						index++;
 					
 						int clus_id=-1;
@@ -301,7 +306,7 @@ public class CentralWriter {
 					Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
 					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||sec==sector)) {
 					
-						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("ID").setShort(index, (short) index);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
@@ -309,7 +314,9 @@ public class CentralWriter {
 						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
 						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
 						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
-					
+						if (BMT.getGeometry().getZorC(lay+1)==0) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getCStrip(lay+1, inter.z()));
+						if (BMT.getGeometry().getZorC(lay+1)==1) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getZStrip(lay+1, Math.atan2(inter.y(), inter.x())));
+						
 						int clus_id=-1;
 						for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
 							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
