@@ -76,7 +76,7 @@ public class alignement {
 		  DataEvent event = reader.getNextEvent();
 		
 			count++;
-		    		  
+		    	 
 		    //Load all the constant needed but only for the first event
 		    if (!main.constant.isLoaded) {
 		    	if (event.hasBank("MC::Particle")) {
@@ -94,16 +94,18 @@ public class alignement {
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	TrackFinder Lycos=new TrackFinder(BMT,BST);
-		    	Lycos.BuildCandidates();
-		    	Lycos.FetchTrack();
-		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
-		    	Tracky.addEvent(count, Lycos.get_Candidates());
-		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
+		    	if (!main.constant.isCosmic||BMT.getNbHits()<50) { //Cut on 50 hits if cosmic (most likely shower)
+		    		TrackFinder Lycos=new TrackFinder(BMT,BST);
+		    		Lycos.BuildCandidates();
+		    		Lycos.FetchTrack();
+		    		if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
+		    		Tracky.addEvent(count, Lycos.get_Candidates());
+		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
 		    	
-		    	///////////////////////////////////////
-		    	//Asimov.LoadADC(event.getBank("BST::adc"), event.getBank("BMT::adc"));
-		    	Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
+		    		///////////////////////////////////////
+		    		//Asimov.LoadADC(event.getBank("BST::adc"), event.getBank("BMT::adc"));
+		    		Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
+		    	}
 		    }
 		   		   		         
 		}

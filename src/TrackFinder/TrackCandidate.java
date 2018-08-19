@@ -467,12 +467,12 @@ public class TrackCandidate{
 	public boolean IsGoodCandidate() {
 		boolean good=true;
 		if (main.constant.TrackerType.equals("MVT")) {
-			if (chi2>50) good=false;
+			if ((chi2>50&&!main.constant.isCosmic)||(chi2>100&&main.constant.isCosmic)) good=false;
 			if (nz<2) good=false;
 			if (nc<2) good=false;
 		}
 		if (main.constant.TrackerType.equals("CVT")) {
-			if (chi2>200) good=false;
+			if ((chi2>200&&!main.constant.isCosmic)||(chi2>500&&main.constant.isCosmic)) good=false;
 			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2) good=false;
 		}
 		if (!fit_status) good=false;

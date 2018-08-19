@@ -13,9 +13,11 @@ import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 public class Barrel {
 	Tile[][] Tiles=new Tile[6][3]; 
 	Geometry geo;
+	int nb_hit;
 	
 	public Barrel(){
 		geo= new BMT_geo.Geometry();
+		nb_hit=0;
 		BMT_geo.CCDBConstantsLoader.Load(new DatabaseConstantProvider(10, "default"));
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<3;sec++) {
@@ -31,6 +33,7 @@ public class Barrel {
 				Tiles[lay][sec].clear();
 			}
 		}
+		nb_hit=0;
 	}
 	
 	public Tile getTile(int lay, int sec) {
@@ -99,13 +102,21 @@ public class Barrel {
 			int ADC= pbank.getInt("ADC",row );
 			if (!isMC) time= pbank.getFloat("time",row );
 						
-			if (geo.getZorC(layer)==1&&strip>0&&ADC>0) 
+			if (geo.getZorC(layer)==1&&strip>0&&ADC>0) { 
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
-			if (geo.getZorC(layer)==0&&strip>0&&ADC>0) 
+				nb_hit++;
+			}
+			if (geo.getZorC(layer)==0&&strip>0&&ADC>0) { 
 				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
+				nb_hit++;
+			}
 		}
 		MakeClusters();
 		//PrintClusters();
+	}
+	
+	public int getNbHits() {
+		return nb_hit;
 	}
 	
 	public Geometry getGeometry() {
