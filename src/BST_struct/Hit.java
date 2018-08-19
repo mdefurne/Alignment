@@ -2,6 +2,7 @@ package BST_struct;
 
 public class Hit {
 	
+	private int id;
 	private int adc_strip;
 	private float time_strip;
 	private double phi_strip;
@@ -10,16 +11,19 @@ public class Hit {
 	private double z_strip;
 	private double err_phi_strip;
 	private double err_z_strip;
+	private double fitResidual;
 		
 	public Hit() {
-		this.set(0,0,0,0,0,0,0,0);
+		this.set(0,0,0,0,0,0,0,0,0);
+		fitResidual=Double.NaN;
 	}
 			
-	public Hit(double x, double y, double z, double phi, double err_phi, double err_z, int adc, float time) {
-		this.set(x, y , z , phi, err_phi, err_z, adc, time);
+	public Hit(int hit_id, double x, double y, double z, double phi, double err_phi, double err_z, int adc, float time) {
+		this.set(hit_id, x, y , z , phi, err_phi, err_z, adc, time);
 	}
 		
-	public final void set(double x, double y, double z, double phi,  double err_phi, double err_z, int adc, float time) {
+	public final void set(int hit_id, double x, double y, double z, double phi,  double err_phi, double err_z, int adc, float time) {
+		id=hit_id;
 		adc_strip=adc;
 		time_strip=time;
 		phi_strip=phi;	
@@ -32,6 +36,10 @@ public class Hit {
 			
 	public int getADC() {
 		return adc_strip;
+	}
+	
+	public int getHit_ID() {
+		return id;
 	}
 		
 	public float getTime() {
@@ -60,6 +68,14 @@ public class Hit {
 	
 	public double getErrZ() {
 		return err_z_strip;
+	}
+	
+	public void setResidual(double residue) {
+		fitResidual=residue;
+	}
+	
+	public double getResidual(double residue) {
+		return fitResidual;
 	}
 		
 			

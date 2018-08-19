@@ -12,6 +12,7 @@ public class Cluster {
 	private int size;
 	private int Edep;
 	private double centroid;
+	private double centroidResidual;
 	private double phi_mid;
 	private double z_mid;
 	private double x_mid;
@@ -26,6 +27,7 @@ public class Cluster {
 		size=0;
 		Edep=0;
 		centroid=0;
+		centroidResidual=Double.NaN;
 		phi_mid=0;
 		z_mid=0;
 		y_mid=0;
@@ -91,6 +93,14 @@ public class Cluster {
 		return centroid;
 	}
 	
+	public double getCentroidResidual() {
+		return centroidResidual;
+	}
+	
+	public void setCentroidResidual(double residue) {
+		centroidResidual=residue;
+	}
+	
 	public int getLayer() {
 		return layer;
 	}
@@ -109,6 +119,10 @@ public class Cluster {
 	
 	public void setZ(double znew) {
 		z_mid=znew;
+	}
+	
+	public ArrayList<Integer> getListOfHits(){
+		return hit_id;
 	}
 	
 }

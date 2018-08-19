@@ -22,15 +22,26 @@ public class CentralWriter {
 		factory = new SchemaFactory();
 		factory.addSchema(new Schema("{20125,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
+		
 		factory.addSchema(new Schema("{20225,BSTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
 				+ "[7,err_x,FLOAT][8,err_y,FLOAT][9,err_z,FLOAT][10,ux,FLOAT][11,uy,FLOAT][12,uz,FLOAT][13,Cluster1_ID,SHORT][14,Cluster2_ID,SHORT][15,trkID,SHORT]"));
+		
+		factory.addSchema(new Schema("{20221,BSTRec::Hits}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,strip,INT][5,fitResidual,FLOAT][6,trkingStat,INT]"
+				+ "[7,clusterID,SHORT][8,trk_ID,SHORT]"));
+		
+		factory.addSchema(new Schema("{20221,BSTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
+				+ "[9,centroidResidual,FLOAT][10,seedResidual,FLOAT][11,Hit1_ID,SHORT][12,Hit2_ID,SHORT][13,Hit3_ID,SHORT][14,Hit4_ID,SHORT][15,Hit5_ID,SHORT][16,trkID,SHORT]"));
+		
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
+		
 		factory.addSchema(new Schema("{20528,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
 				+ "[8,chi2,FLOAT][9,ndf,SHORT][10,Cross1_ID,SHORT][11,Cross2_ID,SHORT][12,Cross3_ID,SHORT][13,Cross4_ID,SHORT][14,Cross5_ID,SHORT][14,Cross5_ID,SHORT][15,Cross6_ID,SHORT]"
 				+ "[16,Cross7_ID,SHORT][17,Cross8_ID,SHORT][18,Cross9_ID,SHORT][19,Cross10_ID,SHORT][20,Cross11_ID,SHORT][21,Cross12_ID,SHORT][22,Cross13_ID,SHORT][23,Cross14_ID,SHORT]"
 				+ "[24,Cross15_ID,SHORT][25,Cross16_ID,SHORT][26,Cross17_ID,SHORT][27,Cross18_ID,SHORT]"));
+		
 		factory.addSchema(new Schema("{20529,CVTRec::Trajectory}[1,ID,SHORT][2,LayerTrackIntersPlane,BYTE][3,SectorTrackIntersPlane,BYTE][4,XtrackIntersPlane,FLOAT][5,YtrackIntersPlane,FLOAT][6,ZtrackIntersPlane,FLOAT]"
 				+ "[7,PhitrackIntersPlane,FLOAT][8,ThetatrackIntersPlane,FLOAT][9,trkToMPlnAngl,FLOAT],[10,CalcCentroidStrip,FLOAT]"));
+		
 		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open(Output);
@@ -43,6 +54,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
+		 event.writeGroup(this.fillBSTHitsBank(BST));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 writer.writeEvent( event );
@@ -109,6 +121,30 @@ public class CentralWriter {
 					bank.getNode("err_y").setFloat(index, (float) Math.abs(BST.getModule(lay,sec).getClusters().get(j+1).getErrPhi()*Math.cos(BST.getModule(lay,sec).getClusters().get(j+1).getPhi())));
 					bank.getNode("err_z").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getErrZ()/10.));
 					index++;
+				}
+			}
+		}
+        return bank;
+	}
+	
+	public HipoGroup fillBSTHitsBank(Barrel_SVT BST) {
+		int groupsize=BST.getNbHits();
+				
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Hits").createGroup(groupsize);
+		int index=0;
+		
+		for (int lay=1; lay<7; lay++) {
+			for (int sec=1; sec<19; sec++) {
+				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
+					bank.getNode("clusterID").setShort(index, (short) index);
+					bank.getNode("sector").setByte(index, (byte) (sec+1));
+					bank.getNode("layer").setByte(index, (byte) (lay+1));
+					for (int str=0;str<BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
+						int strip=BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
+						bank.getNode("strip").setInt(index, strip);
+						bank.getNode("ID").setShort(index, (short) BST.getModule(lay,sec).getHits().get(strip).getHit_ID());
+						index++;
+					}
 				}
 			}
 		}

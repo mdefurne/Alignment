@@ -16,10 +16,12 @@ public class Barrel_SVT {
 	
 	Module[][] Modules=new Module[6][18]; //Six Layers made of at most 18 modules
 	Geometry geo;
+	int nb_hit;
 		
 	public Barrel_SVT(){
 		geo= new BST_geo.Geometry();
 		BST_geo.Constants.Load();
+		nb_hit=0;
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
 				Modules[lay][sec]=new Module(lay+1,sec+1);
@@ -34,6 +36,11 @@ public class Barrel_SVT {
 				Modules[lay][sec].clear();
 			}
 		}
+		nb_hit=0;
+	}
+	
+	public int getNbHits() {
+		return nb_hit;
 	}
 	
 	public Module getModule(int lay, int sec) {
@@ -63,7 +70,10 @@ public class Barrel_SVT {
 			Point3D end=new Point3D(geo.transformToFrame(sector, layer, endpoints[1][0], 0, endpoints[1][1], "lab", ""));
 			double phi_begin=Math.atan2(begin.y(),begin.x());
 			double phi_end=Math.atan2(end.y(),end.x());
-			if (ADC>0&&strip>0) Modules[layer-1][sector-1].addHit(strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), (end.z()-begin.z())/2., ADC, time);
+			if (ADC>0&&strip>0) {
+				nb_hit++;
+				Modules[layer-1][sector-1].addHit(nb_hit, strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), (end.z()-begin.z())/2., ADC, time);
+			}
 		}
 		MakeClusters();
 		//PrintClusters();
