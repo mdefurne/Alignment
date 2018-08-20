@@ -83,6 +83,7 @@ public class Cluster {
 		
 		centroid_r=aHit.getRadius()+BMT_geo.Constants.hStrip2Det;
 		Err=Edep*Err+aHit.getADC()*aHit.getErr();
+		centroid+=Edep*centroid+id_hit*aHit.getADC();
 		
 		if(!Double.isNaN(aHit.getPhi())) {
 			centroid_x=Edep*centroid_x+centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
@@ -102,7 +103,8 @@ public class Cluster {
 			Edep+=aHit.getADC();
 			centroid_z=centroid_z/Edep;
 		}
-		centroid+=id_hit*aHit.getADC();
+		
+		centroid=centroid/Edep;
 		Err=Err/Edep;
 	}
 	
