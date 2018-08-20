@@ -21,6 +21,7 @@ public class TrackFinder {
 		Candidates=new HashMap<Integer, TrackCandidate>();
 		BufferLayer=new ArrayList<TrackCandidate>();
 		time_match=40;
+		//if (main.constant.isCosmic) time_match=80;
 		cand_newsec=0;
 		BMT_det=BMT;
 		BST_det=BST;
@@ -302,7 +303,6 @@ public class TrackFinder {
 		boolean test_val=false;
 		//if (clus.getSector()==2) System.out.println(clus.getT_min()+" "+ToBuild.GetTimeLastHit());
 		if (Math.abs(clus.getT_min()-ToBuild.GetTimeLastHit())<time_match) test_val=true;
-		if (main.constant.isCosmic) test_val=true;
 		return test_val;
 	}
 	

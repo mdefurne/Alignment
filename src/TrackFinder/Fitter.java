@@ -44,9 +44,10 @@ public class Fitter {
 			    //Give clusters to Chi2 to compute distance
 			    Straight.SetTrackCandidate(BMT,BST,Candidates.get(num_cand+1));
 			    
+			 
 			    //Create Minuit (parameters and function to minimize)
 			    MnMigrad migrad = new MnMigrad(Straight, upar);
-			    
+			 			    
 			    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
 			    FunctionMinimum min = migrad.minimize();
 			   
