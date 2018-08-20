@@ -14,6 +14,7 @@ public class Tile {
 	int layer_id;
 	int sector_id;
 	boolean InTheTracking;
+	private double ClusteringTime;
 	private int mode; //0=charge-weighted average placed in the middle of the drift space, 1=Charge-weighted average with only the first 2-strip hit and placed at a quarter of drift space
 	
 	public Tile() {
@@ -23,6 +24,8 @@ public class Tile {
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
 		InTheTracking=true;
+		ClusteringTime=50;
+		if (main.constant.isCosmic) ClusteringTime=200;
 		mode=0;
 	}
 	
@@ -32,6 +35,8 @@ public class Tile {
 		hitmap = new HashMap<Integer, Hit>();
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
+		ClusteringTime=50;
+		if (main.constant.isCosmic) ClusteringTime=200;
 		InTheTracking=true;
 		mode=0;
 	}
@@ -66,7 +71,7 @@ public class Tile {
 		    		last_time=hitmap.get(last_hit).getTime();
 		    	}	
 		    	//We close the old cluster and create a new one
-		       	if ((m.getKey()-last_hit>2)||Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)>50) {
+		       	if ((m.getKey()-last_hit>2)||Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)>ClusteringTime) {
 		       		if (clustermap.size()!=0) clustermap.get(clustermap.size()).close(mode);
 		    		Cluster clus=new Cluster();
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
@@ -76,7 +81,7 @@ public class Tile {
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}
 		       	//We add this hit to the current cluster
-		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=50) {
+		    	if ((m.getKey()-last_hit<=2)&&Math.abs(sorted_hitmap.get(m.getKey()).getTime()-last_time)<=ClusteringTime) {
 		    		clustermap.get(clustermap.size()).add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    	}
 			}

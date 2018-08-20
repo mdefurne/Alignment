@@ -209,8 +209,8 @@ public class CentralWriter {
 				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
 					bank.getNode("ID").setShort(index, (short) index);
 					bank.getNode("trkID").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).gettrkID());
-					bank.getNode("sector").setByte(index, (byte) sec);
-					bank.getNode("layer").setByte(index, (byte) lay);
+					bank.getNode("sector").setByte(index, (byte) (sec+1));
+					bank.getNode("layer").setByte(index, (byte) (lay+1));
 					bank.getNode("centroid").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getCentroid());
 					bank.getNode("size").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).getSize());
 					bank.getNode("Etot").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getEdep());
