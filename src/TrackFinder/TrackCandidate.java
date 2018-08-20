@@ -39,6 +39,7 @@ public class TrackCandidate{
 	private double phi_seed;
 	private double theta_seed;
 	private double phi_tolerance;
+	private double theta_tolerance;
 	private double theta_min;
 	private double theta_max;
 	private final double radius_SVT_2=93;
@@ -95,7 +96,11 @@ public class TrackCandidate{
 		point_track=new Vector3D();
 		point_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		phi_tolerance=Math.toRadians(60);
-		if (main.constant.isCosmic) phi_tolerance=Math.toRadians(100);
+		theta_tolerance=Math.toRadians(5);
+		if (main.constant.isCosmic) {
+			phi_tolerance=Math.toRadians(100);
+			theta_tolerance=Math.toRadians(25);
+		}
 		theta_min=Math.toRadians(0);
 		theta_max=Math.toRadians(180);
 		
@@ -172,16 +177,17 @@ public class TrackCandidate{
 				theta_seed=Math.acos(clus.getZ()/Math.sqrt(clus.getZ()*clus.getZ()+clus.getRadius()*clus.getRadius()));
 				Theta_track.add(theta_seed);
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
-				this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
-				this.setThetaMax(Math.acos((clus.getZ()-end_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
-				
+				if (!main.constant.isCosmic) {
+					this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+					this.setThetaMax(Math.acos((clus.getZ()-end_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
+				}
 			}
 			if (nc>0) {
 				theta_seed=Math.acos((Z_hit.get(Z_hit.size()-1)-clus.getZ())/Math.sqrt((Z_hit.get(Z_hit.size()-1)-clus.getZ())*(Z_hit.get(Z_hit.size()-1)-clus.getZ())
 						+(clus.getRadius()-R_hit.get(R_hit.size()-1))*(clus.getRadius()-R_hit.get(R_hit.size()-1))));
 				Theta_track.add(theta_seed);
-				this.setThetaMin(theta_seed-Math.toRadians(5));
-				this.setThetaMax(theta_seed+Math.toRadians(5));
+				this.setThetaMin(theta_seed-theta_tolerance);
+				this.setThetaMax(theta_seed+theta_tolerance);
 				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 			}
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
@@ -472,7 +478,7 @@ public class TrackCandidate{
 			if (nc<2) good=false;
 		}
 		if (main.constant.TrackerType.equals("CVT")) {
-			if ((chi2>200&&!main.constant.isCosmic)||(chi2>500&&main.constant.isCosmic)) good=false;
+			if ((chi2>200&&!main.constant.isCosmic)||(chi2>1300&&main.constant.isCosmic)) good=false;
 			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2) good=false;
 		}
 		if (!fit_status) good=false;

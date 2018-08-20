@@ -33,6 +33,9 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{20222,BSTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
 				+ "[9,centroidResidual,FLOAT][10,seedResidual,FLOAT][11,Hit1_ID,SHORT][12,Hit2_ID,SHORT][13,Hit3_ID,SHORT][14,Hit4_ID,SHORT][15,Hit5_ID,SHORT][16,trkID,SHORT]"));
 		
+		factory.addSchema(new Schema("{20122,BMTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
+				+ "[9,centroidResidual,FLOAT][10,seedResidual,FLOAT][11,Hit1_ID,SHORT][12,Hit2_ID,SHORT][13,Hit3_ID,SHORT][14,Hit4_ID,SHORT][15,Hit5_ID,SHORT][16,trkID,SHORT][17,Tmin,FLOAT][18,Tmax,FLOAT]"));
+		
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
 		
 		factory.addSchema(new Schema("{20528,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
@@ -58,6 +61,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTCrossesBank(BST));
 		 event.writeGroup(this.fillBSTHitsBank(BST));
 		 event.writeGroup(this.fillBSTClusterBank(BST));
+		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 writer.writeEvent( event );
@@ -189,6 +193,39 @@ public class CentralWriter {
         return bank;
 	}
 	
+	public HipoGroup fillBMTClusterBank(Barrel BMT) {
+		int groupsize=0;
+		for (int lay=0; lay<6; lay++) {
+			for (int sec=0; sec<3; sec++) {
+			groupsize+=BMT.getTile(lay,sec).getClusters().size();
+			}
+		}
+		
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BMTRec::Clusters").createGroup(groupsize);
+		int index=0;
+						
+		for (int lay=0; lay<6; lay++) {
+			for (int sec=0; sec<3; sec++) {
+				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
+					bank.getNode("ID").setShort(index, (short) index);
+					bank.getNode("trkID").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).gettrkID());
+					bank.getNode("sector").setByte(index, (byte) sec);
+					bank.getNode("layer").setByte(index, (byte) lay);
+					bank.getNode("centroid").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getCentroid());
+					bank.getNode("size").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).getSize());
+					bank.getNode("Etot").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getEdep());
+					bank.getNode("seedStrip").setInt(index, (int) BMT.getTile(lay,sec).getClusters().get(j+1).getSeed());
+					bank.getNode("seedE").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getSeedE());
+					bank.getNode("Tmin").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getT_min());
+					bank.getNode("Tmax").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getT_max());
+					bank.getNode("centroidResidual").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getCentroidResidual());
+					index++;
+				}
+			}
+		}
+        return bank;
+	}
+	
 	public HipoGroup fillMCBank(ParticleEvent MCParticles) {
 		
 		int groupsize=MCParticles.hasNumberOfParticles();
@@ -262,7 +299,8 @@ public class CentralWriter {
 			for (int lay=0; lay<6;lay++) {
 				for (int sector=1; sector<BST.getGeometry().getNbModule(lay+1)+1;sector++) {
 					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, sector, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
+					if (!Double.isNaN(inter.x())&&sector==BST.getGeometry().findSectorFromAngle(lay+1, inter)
+							&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
 						bank.getNode("ID").setShort(index, (short) index);

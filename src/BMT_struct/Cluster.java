@@ -31,6 +31,8 @@ public class Cluster {
 	private int first_tmin;
 	private int second_tmin;
 	private int trkID;
+	private int seed;
+	private int seedE;
 		
 	public Cluster() {
 		t_min=0;
@@ -51,6 +53,8 @@ public class Cluster {
 		second_tmin=0;
 		trkID=-1;
 		centroidResidual=Double.NaN;
+		seed=-1;
+		seedE=-1;
 		}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -71,6 +75,11 @@ public class Cluster {
 		
 		hit_id.add(id_hit);
 		hit_list.add(aHit);
+		
+		if (aHit.getADC()>seedE) {
+			seedE=aHit.getADC();
+			seed=id_hit;
+		}
 		
 		centroid_r=aHit.getRadius()+BMT_geo.Constants.hStrip2Det;
 		Err=Edep*Err+aHit.getADC()*aHit.getErr();
@@ -95,6 +104,14 @@ public class Cluster {
 		}
 		centroid+=id_hit*aHit.getADC();
 		Err=Err/Edep;
+	}
+	
+	public int getSeed() {
+		return seed;
+	}
+	
+	public int getSeedE() {
+		return seedE;
 	}
 	
 	public double getX() {

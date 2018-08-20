@@ -754,7 +754,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 				inter.setX(lambda*dir_line.x()+pt_line.x());
 				inter.setY(lambda*dir_line.y()+pt_line.y());
 				inter.setZ(lambda*dir_line.z()+pt_line.z());
-				if (findSectorFromAngle(layer,inter)<0||findSectorFromAngle(layer,inter)!=sectorcluster) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+				
 			}
 		}
 		else inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);

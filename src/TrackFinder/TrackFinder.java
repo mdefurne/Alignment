@@ -302,6 +302,7 @@ public class TrackFinder {
 		boolean test_val=false;
 		//if (clus.getSector()==2) System.out.println(clus.getT_min()+" "+ToBuild.GetTimeLastHit());
 		if (Math.abs(clus.getT_min()-ToBuild.GetTimeLastHit())<time_match) test_val=true;
+		if (main.constant.isCosmic) test_val=true;
 		return test_val;
 	}
 	
