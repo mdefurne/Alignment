@@ -12,7 +12,7 @@ import PostProcessor.*;
 import HipoWriter.*;
 
 
-public class alignement {
+public class StraightTracker {
 	static Barrel BMT;
 	static Barrel_SVT BST;
 	static ParticleEvent MCParticles;
@@ -21,7 +21,7 @@ public class alignement {
 	static Tracker Tracky;
 	
 	
-	public alignement(String Output) {
+	public StraightTracker(String Output) {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
@@ -32,9 +32,22 @@ public class alignement {
 	
 	public static void main(String[] args) {
 		
-		String Output="/home/mdefurne/Bureau/CLAS12/test.hipo";
-		String TrackerType="CVT";
-		String RunType="cosmic";
+		if (args.length<4) {
+			System.out.println("Execution line is as follows:\n");
+			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS)");
+			System.out.println("TRACKER_TYPE: MVT, SVT or CVT");
+			System.out.println("RUN_TYPE: cosmic or target");
+			System.out.println("NUM_EVENTS: to set a maximum number of events (optional)");
+			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered (optional)\n");
+			System.out.println("For more info, please contact Maxime DEFURNE");
+			System.out.println("maxime.defurne@cea.fr");
+			System.exit(0);
+		}
+		
+		String fileName=args[0];
+		String Output=args[1];
+		String TrackerType=args[2];
+		String RunType=args[3];
 		
 		if (RunType.equals("cosmic")) main.constant.setCosmic(true);
 		
@@ -45,13 +58,12 @@ public class alignement {
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 		}
 		
-		alignement MVTAli=new alignement(Output);
+		StraightTracker MVTAli=new StraightTracker(Output);
 				
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
-		String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cvt211_str490dr500.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
-		//String fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/3859.hipo";
+		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/3859.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_all.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
@@ -60,11 +72,8 @@ public class alignement {
 		reader.open(fileName);
 		int count=0;
 			
-		//for (int i=0;i<1;i++) {
-			//DataEvent event = reader.gotoEvent(165+i);
-		//main.constant.max_event=75000;
 		while(reader.hasEvent()&&count<main.constant.max_event) {
-		 DataEvent event = reader.getNextEvent();
+		  DataEvent event = reader.getNextEvent();
 		
 			count++;
 		    	 System.out.println(count);
