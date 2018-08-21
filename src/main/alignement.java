@@ -62,7 +62,7 @@ public class alignement {
 			
 		//for (int i=0;i<1;i++) {
 			//DataEvent event = reader.gotoEvent(165+i);
-		//main.constant.max_event=75000;
+		main.constant.max_event=1500;
 		while(reader.hasEvent()&&count<main.constant.max_event) {
 		 DataEvent event = reader.getNextEvent();
 		

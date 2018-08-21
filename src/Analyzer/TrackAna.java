@@ -1,6 +1,9 @@
 package Analyzer;
 
+import javax.swing.JFrame;
+
 import org.jlab.groot.data.*;
+//import org.root.histogram.*;
 import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
 import Analyzer.ClusterAna;
@@ -54,13 +57,17 @@ public class TrackAna {
 	
 	public void draw() {
 		 TCanvas theta = new TCanvas("theta", 1100, 700);
+		 theta.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 theta.draw(Theta_track);
 		 TCanvas phi = new TCanvas("phi", 1100, 700);
+		 phi.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 phi.draw(Phi_track);
 		 //phi.draw(Chi2_track);
 		 TCanvas z_res = new TCanvas("Z layers", 1100, 700);
+		 z_res.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 z_res.divide(3, 3);
 		 TCanvas c_res = new TCanvas("C_layers", 1100, 700);
+		 c_res.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 c_res.divide(3, 3);
 		 for (int lay=0;lay<3;lay++) {
 				for (int sec=0;sec<3;sec++) {

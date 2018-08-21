@@ -7,6 +7,7 @@ public class constant {
 	public static double solenoid_scale=0;
 	public static boolean isLoaded=false;
 	public static boolean isMC=false;
+	public static boolean efficiency=false;
 	public static boolean isCosmic=false;
 	public static String TrackerType;
 	public static StraightLine IdealBeam;

@@ -181,7 +181,7 @@ public class TrackFinder {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//For cosmic data, no need to overthink the pattern recognition
 		
-		if (main.constant.isCosmic) {
+		if (main.constant.isCosmic&&!main.constant.efficiency) {
 			
 			//We look at track going between sec1 and sec3 of BMT
 			int svt_opposite=0;
@@ -393,7 +393,12 @@ public class TrackFinder {
 	
 	public void FetchTrack() {
 		Fitter myfit=new Fitter();
-		myfit.StraightTrack(BMT_det, BST_det, Candidates);
+		int NbFittable=0;
+		for (int i=0;i<Candidates.size();i++) {
+			if (Candidates.get(i+1).IsFittable()) NbFittable++;
+			
+		}
+		 if (NbFittable<5||!main.constant.isCosmic) myfit.StraightTrack(BMT_det, BST_det, Candidates);
 		}
 	
 }	

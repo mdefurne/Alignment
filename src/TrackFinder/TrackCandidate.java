@@ -97,10 +97,8 @@ public class TrackCandidate{
 		point_track.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		phi_tolerance=Math.toRadians(60);
 		theta_tolerance=Math.toRadians(5);
-		if (main.constant.isCosmic) {
-			phi_tolerance=Math.toRadians(100);
-			theta_tolerance=Math.toRadians(25);
-		}
+		if (main.constant.isCosmic) theta_tolerance=Math.toRadians(25);
+		
 		theta_min=Math.toRadians(0);
 		theta_max=Math.toRadians(180);
 		

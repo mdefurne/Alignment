@@ -34,11 +34,13 @@ public class StraightTracker {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
-			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS)");
+			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE)");
 			System.out.println("TRACKER_TYPE: MVT, SVT or CVT");
 			System.out.println("RUN_TYPE: cosmic or target");
 			System.out.println("NUM_EVENTS: to set a maximum number of events (optional)");
-			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered (optional)\n");
+			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered (optional)");
+			System.out.println("MODE can be chosen among");
+			System.out.println("       -EFFICENCY: Prevent from merging tracks from different sectors in cosmic mode (optional)\n");
 			System.out.println("For more info, please contact Maxime DEFURNE");
 			System.out.println("maxime.defurne@cea.fr");
 			System.exit(0);
@@ -56,6 +58,7 @@ public class StraightTracker {
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
+			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
 		}
 		
 		StraightTracker MVTAli=new StraightTracker(Output);
