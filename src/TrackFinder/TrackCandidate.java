@@ -176,7 +176,6 @@ public class TrackCandidate{
 			if (nc==0) {
 				theta_seed=Math.acos(clus.getZ()/Math.sqrt(clus.getZ()*clus.getZ()+clus.getRadius()*clus.getRadius()));
 				Theta_track.add(theta_seed);
-				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 				if (!main.constant.isCosmic) {
 					this.setThetaMin(Math.acos((clus.getZ()-start_SVT_2)/Math.sqrt((clus.getZ()-start_SVT_2)*(clus.getZ()-start_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
 					this.setThetaMax(Math.acos((clus.getZ()-end_SVT_2)/Math.sqrt((clus.getZ()-end_SVT_2)*(clus.getZ()-end_SVT_2)+(clus.getRadius()-radius_SVT_2)*(clus.getRadius()-radius_SVT_2))));
@@ -188,7 +187,6 @@ public class TrackCandidate{
 				Theta_track.add(theta_seed);
 				this.setThetaMin(theta_seed-theta_tolerance);
 				this.setThetaMax(theta_seed+theta_tolerance);
-				vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 			}
 			mean_Z=(mean_Z*nc+clus.getZ())/((double)(nc+1));
 			mean_R=(mean_R*nc+clus.getRadius())/((double)(nc+1));
@@ -198,7 +196,7 @@ public class TrackCandidate{
 			nc++;
 		}
 		double Rphi=Math.sqrt(mean_X*mean_X+mean_Y*mean_Y);
-		
+		vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
 		if (theta_seed==Math.PI/2.) point_track.setXYZ(mean_X, mean_Y, mean_Z);
 		if (theta_seed!=Math.PI/2.) point_track.setXYZ(mean_X, mean_Y, (Rphi-mean_R)/Math.tan(theta_seed)+mean_Z);
 	}
@@ -270,8 +268,9 @@ public class TrackCandidate{
 	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
-		if ((nz<2||nc<2)&&(main.constant.TrackerType.equals("MVT")||main.constant.isCosmic)) fit=false;
-		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.TrackerType.equals("CVT")&&!main.constant.isCosmic) fit=false;
+		if ((nz<2||nc<2)&&main.constant.TrackerType.equals("MVT")) fit=false;
+		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.TrackerType.equals("CVT")) fit=false;
+		if (main.constant.isCosmic&&main.constant.TrackerType.equals("CVT")&&BSTClus.size()<8&&(nz<2||nc<2)) fit=false;
 		if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
 			for (int i=0;i<BMTClus.size();i++) {
 				double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
@@ -356,9 +355,13 @@ public class TrackCandidate{
 			
 		}
 		for (int dup=0;dup<ToMerge.BSTsize();dup++) {//Do not want the last cluster since on the same layer
-			temp.addBST(ToMerge.GetBSTCluster(dup));
+			boolean checked=true;
+			for (int tt=0;tt<this.BSTsize();tt++) {
+				if (ToMerge.GetBSTCluster(dup).equals(this.GetBSTCluster(tt))) checked=false;
+			}
+			if (checked) temp.addBST(ToMerge.GetBSTCluster(dup));
 		}
-			
+		// For cosmic, we might have duplicated BST	
 		return temp;
 	}
 	
@@ -593,7 +596,7 @@ public class TrackCandidate{
 			System.out.println(this.GetBSTCluster(i).getPhi());
 		}
 		for (int i=0;i<this.size();i++) {
-			System.out.println(this.GetBMTCluster(i).getPhi()+" "+this.GetBMTCluster(i).getZ());
+			System.out.println(this.GetBMTCluster(i).getPhi()+" "+this.GetBMTCluster(i).getZ()+" "+this.GetBMTCluster(i).getT_min());
 		}
 	}
 }

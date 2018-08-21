@@ -21,7 +21,7 @@ public class TrackFinder {
 		Candidates=new HashMap<Integer, TrackCandidate>();
 		BufferLayer=new ArrayList<TrackCandidate>();
 		time_match=40;
-		//if (main.constant.isCosmic) time_match=80;
+		if (main.constant.isCosmic) time_match=256;
 		cand_newsec=0;
 		BMT_det=BMT;
 		BST_det=BST;
@@ -48,12 +48,12 @@ public class TrackFinder {
 			for (int sec=0;sec<3;sec++) {
 				cand_newsec=Candidates.size(); //Avoid to mix the sectors between them
 				noHit_yet_sector=true;
-			
+				
 				for (int lay=5;lay>-1;lay--) {
 					//if (sec==1) {
-						//for (int cc=0;cc<Candidates.size();cc++) Candidates.get(cc+1).Print();
+						//for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) Candidates.get(num_cand+1).Print();
 					//}
-					if (BMT_det.getTile(lay,sec).getClusters().size()<10) {
+					if (!main.constant.isCosmic||(BMT_det.getTile(lay,sec).getClusters().size()<7)) {
 					//If we have already some hit in the sector, there are track candidate to check
 					
 						if (!noHit_yet_sector) {
@@ -106,35 +106,64 @@ public class TrackFinder {
 					}
 				}
 			}
-		
+			
 			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
 			if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
 				for (int lay=6; lay>0;lay--) {
+					
 					for (int ray=0; ray<Candidates.size();ray++) {
-							int sector=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-							int delta_sec=1; //Point_track may be a bit shifted compared to the module we are supposed to look at!!
-							if (main.constant.isCosmic) delta_sec=2;
-							if (sector!=-1) {
-								for (int sector_stud=sector-delta_sec; sector_stud<sector+delta_sec; sector_stud++) {
-									int sec=sector_stud%BST_det.getGeometry().getNbModule(lay)+1;
-									Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
-									if (!Double.isNaN(inter.x())) {
-										for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
-											double delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
+						
+							//System.out.println(ray+" "+Candidates.get(ray+1).size()+" "+Candidates.get(ray+1).BSTsize()+" "+Candidates.get(ray+1).IsFittable());
+							ArrayList<Integer> sector=BST_det.getGeometry().getSectIntersect(lay, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
+							int sec_pointTrack=BST_det.getGeometry().findSectorFromAngle(lay, Candidates.get(ray+1).get_PointTrack());
+							
+							
+							//if (sector!=-1){
+							for (int hh=0;hh<sector.size();hh++) {
+								//for (int sector_stud=sector-delta_sec; sector_stud<=sector+delta_sec; sector_stud++) {
+									//int sec=sector_stud%BST_det.getGeometry().getNbModule(lay)+1;
+									int sec= sector.get(hh);
+									if (main.constant.isCosmic
+											||(!main.constant.isCosmic&&(Math.abs(sec-sec_pointTrack)<2||(sec==1&&sec_pointTrack==BST_det.getGeometry().getNbModule(lay))||(sec_pointTrack==1&&sec==BST_det.getGeometry().getNbModule(lay))))) {
+										
+										Vector3D inter=BST_det.getGeometry().getIntersectWithRay(lay, sec, Candidates.get(ray+1).get_VectorTrack(), Candidates.get(ray+1).get_PointTrack());
 									
-												if ((Math.abs(delta)<5&&!main.constant.isCosmic)||(Math.abs(delta)<25&&main.constant.isCosmic)) {
-													if (Candidates.get(ray+1).BSTsize()!=0) {
-														if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
-															TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
-															cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-															BufferLayer.add(cand);
+										if (!Double.isNaN(inter.x())) {
+											for (int str=0;str<BST_det.getModule(lay, sec).getClusters().size();str++) {
+												double delta=Double.MAX_VALUE;
+												if (!main.constant.isCosmic) delta=BST_det.getGeometry().getResidual_line(lay, sec, BST_det.getModule(lay, sec).getClusters().get(str+1).getCentroid() , inter);
+												else delta=Math.sqrt((inter.y()-BST_det.getModule(lay, sec).getClusters().get(str+1).getY())*(inter.y()-BST_det.getModule(lay, sec).getClusters().get(str+1).getY())
+													+(inter.x()-BST_det.getModule(lay, sec).getClusters().get(str+1).getX())*(inter.x()-BST_det.getModule(lay, sec).getClusters().get(str+1).getX()));
+											
+													//Going from outside to the inside
+													if (Math.abs(delta)<5&&!main.constant.isCosmic) {
+														if (Candidates.get(ray+1).BSTsize()!=0) {
+															if (Candidates.get(ray+1).getLastBSTLayer()==lay) {
+																TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
+																cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+																BufferLayer.add(cand);
+															}
+															if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
 														}
-														if (Candidates.get(ray+1).getLastBSTLayer()!=lay) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+														if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
 													}
-													if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
-												}
+													
+													//For cosmic, we look all the sector from a same layer.
+													if (Math.abs(delta)<20&&main.constant.isCosmic) {
+														if (Candidates.get(ray+1).BSTsize()!=0) {
+															if (this.NotCosmicSVTCompatible(Candidates.get(ray+1),BST_det.getModule(lay, sec).getClusters().get(str+1))) {
+																TrackCandidate cand=Candidates.get(ray+1).DuplicateBST();
+																cand.addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+																BufferLayer.add(cand);
+															}
+															else Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+														}
+														if (Candidates.get(ray+1).BSTsize()==0) Candidates.get(ray+1).addBST(BST_det.getModule(lay, sec).getClusters().get(str+1));
+													}
+													
+											}
 										}
-									}	
+										
 								}
 							}
 					}
@@ -239,7 +268,8 @@ public class TrackFinder {
 			}
 			
 			//We loop over the track candidates
-			if (sector_hit>1) {
+			if (sector_hit>1&&index_fittable_sec2.size()<10&&index_fittable_sec1.size()<10&&index_fittable_sec3.size()<10) {
+				
 				//Merge sec2 track to sec1 and then sec3
 				for (int track_sec2=0;track_sec2<index_fittable_sec2.size();track_sec2++) {
 					for (int track_sec1=0;track_sec1<index_fittable_sec1.size();track_sec1++) {
@@ -342,6 +372,23 @@ public class TrackFinder {
 			}
 		}
 		return test_val;
+	}
+	
+	public boolean NotCosmicSVTCompatible(TrackCandidate ToBuild, BST_struct.Cluster clus) {
+		boolean notCompatible=false;
+		String clus_side="down";
+		String last_side="down";
+		if (clus.getLayer()!=ToBuild.getLastBSTLayer()) return notCompatible;
+		if ((clus.getLayer()==5||clus.getLayer()==6)&&clus.getSector()>=6&&clus.getSector()<=14) clus_side="up";
+		if ((clus.getLayer()==3||clus.getLayer()==4)&&clus.getSector()>=5&&clus.getSector()<=11) clus_side="up";
+		if ((clus.getLayer()==1||clus.getLayer()==2)&&clus.getSector()>=4&&clus.getSector()<=8) clus_side="up";
+		
+		if ((ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==5||ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==6)&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()>=6&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()<=14) last_side="up";
+		if ((ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==3||ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==4)&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()>=5&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()<=11) last_side="up";
+		if ((ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==1||ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getLayer()==2)&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()>=4&&ToBuild.GetBSTCluster(ToBuild.BSTsize()-1).getSector()<=8) last_side="up";
+		
+		if (last_side.equals(clus_side)) notCompatible=true;
+		return notCompatible;
 	}
 	
 	public void FetchTrack() {

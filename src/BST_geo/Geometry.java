@@ -4,6 +4,8 @@ package BST_geo;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
 import org.jlab.detector.geant4.v2.SVT.SVTConstants;
 
 import org.jlab.geom.prim.Point3D;
@@ -761,10 +763,25 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		return inter;
 	}
 	
-	public int getSectIntersect(int layer, Vector3D dir_line, Vector3D pt_line) {
+	public ArrayList<Integer> getSectIntersect(int layer, Vector3D dir_line, Vector3D pt_line) {
 		Vector3D inter=new Vector3D();
-		int sector=findSectorFromAngle(layer,pt_line);
-		return sector;
+		inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+		ArrayList<Integer> hit_sec=new ArrayList<Integer>();
+		for (int sec=1;sec<this.getNbModule(layer);sec++) {
+			Vector3D n=findBSTPlaneNormal(sec, layer);
+			Point3D p=getPlaneModuleOrigin(sec, layer);
+		
+			if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()!=0) {
+				double lambda=(n.x()*(p.x()-pt_line.x())+n.y()*(p.y()-pt_line.y())+n.z()*(p.z()-pt_line.z()))
+						/(dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z());
+				inter.setX(lambda*dir_line.x()+pt_line.x());
+				inter.setY(lambda*dir_line.y()+pt_line.y());
+				inter.setZ(lambda*dir_line.z()+pt_line.z());
+				if (sec==this.findSectorFromAngle(layer, inter)) hit_sec.add(sec);
+			}
+		
+		}
+		return hit_sec;
 	}
 	
 	public double getResidual_line(int layer, int sector, double strip, Vector3D point) {
