@@ -10,10 +10,32 @@ import org.jlab.io.base.DataBank;
 
 
 public class Efficiency {
+	public static int[] NumStrip= new int[6];
+	public static double PhiMin; //Fiducail range for C-tile
+	public static double PhiMax; //Fiducail range for C-tile
+	public static double DeltaPhi; //For convenience
+	public static double[] Zmin= new double[3]; //Fiducail range for Z-tile
+	public static double[] Zmax= new double[3]; //Fiducail range for Z-tile
+	
+	
+	public static int DeltaStripEff;
+	
+	public Efficiency() {
+		NumStrip[0]=896; NumStrip[1]=640; NumStrip[2]=640; NumStrip[3]=1024; NumStrip[4]=768; NumStrip[5]=1152;
+		PhiMin=Math.toRadians(10);
+		PhiMax=Math.toRadians(95);
+		DeltaPhi=Math.toRadians(35);
+		Zmin[0]=-115.77;Zmin[1]=-136.69;Zmin[2]=-157.6;
+		Zmax[0]=216.93;Zmax[1]=244.25;Zmax[2]=247.25;
+		DeltaStripEff=20;
+		
+	}
 
 	public static void main(String[] args) {
 		
-		int[] NumStrip= {896,640,640,1024,768,1152};
+		Efficiency eff=new Efficiency();
+		
+		//int[] NumStrip= {896,640,640,1024,768,1152};
 		double[][] GotHit=new double[6][3];
 		double[][] RefTrack=new double[6][3];
 		
@@ -99,14 +121,14 @@ public class Efficiency {
 									//Need to not look at intercept in same sector than the track was found
 									if (Tbank.getByte("LayerTrackIntersPlane",Trow)>=7&&sector!=Tbank.getByte("SectorTrackIntersPlane",Trow)) {
 									
-										if (Tbank.getFloat("CalcCentroidStrip",Trow)>25&&Tbank.getFloat("CalcCentroidStrip",Trow)<(NumStrip[Tbank.getByte("LayerTrackIntersPlane",Trow)-7]-25)) {
+										if (eff.IsInFiducial(Tbank.getByte("LayerTrackIntersPlane",Trow)-6, Tbank.getByte("SectorTrackIntersPlane",Trow), Tbank.getFloat("XtrackIntersPlane",Trow), Tbank.getFloat("YtrackIntersPlane",Trow), Tbank.getFloat("ZtrackIntersPlane",Trow) ,Tbank.getFloat("CalcCentroidStrip",Trow))) {
 											// The track must intercept a layer in the opposite sector and not close to the edge (Need to add Phi condition for C and Z condition for Z-tile)
 											// Need now to check if a cluster match
 											// We are looking for a good hit
 											RefTrack[Tbank.getByte("LayerTrackIntersPlane",Trow)-7][Tbank.getByte("SectorTrackIntersPlane",Trow)-1]++;
 										
 											for (int Brow=0;Brow<Bbank.rows();Brow++) {
-												if (Math.abs(Bbank.getFloat("centroid",Brow)-Tbank.getFloat("CalcCentroidStrip",Trow))<20&&
+												if (Math.abs(Bbank.getFloat("centroid",Brow)-Tbank.getFloat("CalcCentroidStrip",Trow))<DeltaStripEff&&
 														(Tbank.getByte("LayerTrackIntersPlane",Trow)-6)==Bbank.getByte("layer",Brow)&&
 														Tbank.getByte("SectorTrackIntersPlane",Trow)==Bbank.getByte("sector",Brow)&&
 														!LayerHit[Tbank.getByte("LayerTrackIntersPlane",Trow)-7]) {
@@ -219,5 +241,30 @@ public class Efficiency {
 		 Micromegas.draw(Eff6Z1);Micromegas.draw(Eff6Z2,"same");Micromegas.draw(Eff6Z3,"same");
 	}
 	
+	public boolean IsInFiducial(int layer, int sector, float x, float y, float z, float CalcCentroid) {
+		boolean IsIn=false;
+		int region=(layer-1)/2;
+		double phiinter=Math.atan2(y, x);
+		if (phiinter<0) phiinter+=2*Math.PI;
+		
+		phiinter=phiinter-DeltaPhi;
+		if (sector==1) phiinter=phiinter-2*Math.PI/3.; 
+		if (sector==3) phiinter=phiinter-4*Math.PI/3.;
+		
+		if (CalcCentroid>25&&CalcCentroid<NumStrip[layer-1]) {
+			
+		//For C tile, we cut on phi
+		  if (layer==1||layer==4||layer==6) {
+			if (phiinter>PhiMin&&phiinter<PhiMax) IsIn=true;
+		  }
+		  
+		  //For Z-tile, we cut on z
+		  if (layer==2||layer==3||layer==5) {
+				if (z>Zmin[region]&&z<Zmax[region]) IsIn=true;
+		  }
+		}
+		
+		return IsIn;
+	}
 	
 }
