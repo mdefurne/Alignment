@@ -34,8 +34,7 @@ public class Efficiency {
 	public static void main(String[] args) {
 		
 		Efficiency eff=new Efficiency();
-		
-		//int[] NumStrip= {896,640,640,1024,768,1152};
+				
 		double[][] GotHit=new double[6][3];
 		double[][] RefTrack=new double[6][3];
 		
@@ -251,7 +250,7 @@ public class Efficiency {
 		if (sector==1) phiinter=phiinter-2*Math.PI/3.; 
 		if (sector==3) phiinter=phiinter-4*Math.PI/3.;
 		
-		if (CalcCentroid>25&&CalcCentroid<NumStrip[layer-1]) {
+		if (CalcCentroid>DeltaStripEff&&CalcCentroid<NumStrip[layer-1]-DeltaStripEff) {
 			
 		//For C tile, we cut on phi
 		  if (layer==1||layer==4||layer==6) {
