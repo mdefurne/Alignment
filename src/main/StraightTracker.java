@@ -97,7 +97,7 @@ public class StraightTracker {
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	if (BMT.getNbHits()<50) { //Cut on 50 hits if cosmic (most likely shower)
+		    	if (BMT.getNbHits()<50&&(BST.getNbHits()<50||!main.constant.isCosmic)) { //Cut on 50 hits if cosmic (most likely shower)
 		    		TrackFinder Lycos=new TrackFinder(BMT,BST);
 		    		Lycos.BuildCandidates();
 		    		Lycos.FetchTrack();

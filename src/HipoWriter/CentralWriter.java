@@ -305,7 +305,7 @@ public class CentralWriter {
 							&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
-						bank.getNode("ID").setShort(index, (short) index);
+						bank.getNode("ID").setShort(index, (short) track);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
@@ -346,7 +346,7 @@ public class CentralWriter {
 					Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
 					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||sec==sector)) {
 					
-						bank.getNode("ID").setShort(index, (short) index);
+						bank.getNode("ID").setShort(index, (short) track);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
