@@ -1,9 +1,9 @@
 package BMT_geo;
 
 import java.util.Random;
-
+import java.io.*;
+import java.util.Scanner;
 import org.jlab.geom.prim.Vector3D;
-
 import BMT_struct.Cluster;
 
 public class Geometry {
@@ -340,68 +340,52 @@ public class Geometry {
         return randomNumber;
     }
    
-     public double[] LabToDetFrame(int layer, int sector, double x, double y, double z) {	
-     	double[] newPos = new double[3];
-     
-     	newPos[0] = x-BMT_geo.Constants.Cx[layer-1][sector-1];
-     	newPos[1] = y-BMT_geo.Constants.Cy[layer-1][sector-1];
-     	newPos[2] = z-BMT_geo.Constants.Cz[layer-1][sector-1];
+     public Vector3D Slope_LabToDetFrame(int layer, int sector, Vector3D slope) {	
+     	Vector3D new_slope = new Vector3D();
+     	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+     	new_slope.rotateX(BMT_geo.Constants.getRx(layer,sector));
+		new_slope.rotateY(BMT_geo.Constants.getRy(layer,sector));
+		new_slope.rotateZ(BMT_geo.Constants.getRz(layer,sector));
  	
-     	double ThetaZ=BMT_geo.Constants.Rz[layer-1][sector-1];	
-     	double ThetaY=BMT_geo.Constants.Ry[layer-1][sector-1];
-     	double ThetaX=BMT_geo.Constants.Rx[layer-1][sector-1];
- 	
-     	//Rotate around z
-     	double xx=newPos[0];
-     	newPos[0]=Math.cos(ThetaZ)*xx+Math.sin(ThetaZ)*newPos[1];
-     	newPos[1]=-Math.sin(ThetaZ)*xx+Math.cos(ThetaZ)*newPos[1];
- 	
-     	//Rotate around x
-     	double yy=newPos[1];
-     	newPos[1]=Math.cos(ThetaX)*yy+Math.sin(ThetaX)*newPos[2];
-     	newPos[2]=-Math.sin(ThetaX)*yy+Math.cos(ThetaX)*newPos[2];
- 	
-     	//Rotate around Y
-     	double zz=newPos[2];
-     	newPos[2]=Math.cos(ThetaY)*zz+Math.sin(ThetaY)*newPos[0];
-     	newPos[0]=-Math.sin(ThetaY)*zz+Math.cos(ThetaY)*newPos[0];
- 	
- 	return newPos;
+     	return new_slope;
      }
- 
-    public double[] DetToLabFrame(int layer, int sector, double x, double y, double z) {
- 	
- 	double[] newPos = new double[3];
      
- 	newPos[0] = x;
- 	newPos[1] = y;
- 	newPos[2] = z;
- 	
- 	double ThetaZ=-BMT_geo.Constants.Rz[layer-1][sector-1];
- 	double ThetaY=-BMT_geo.Constants.Ry[layer-1][sector-1];
- 	double ThetaX=-BMT_geo.Constants.Rx[layer-1][sector-1];
- 	
- 	//Rotate around z
- 	double xx=newPos[0];
- 	newPos[0]=Math.cos(ThetaZ)*xx+Math.sin(ThetaZ)*newPos[1];
- 	newPos[1]=-Math.sin(ThetaZ)*xx+Math.cos(ThetaZ)*newPos[1];
- 	
- 	//Rotate around x
- 	double yy=newPos[1];
- 	newPos[1]=Math.cos(ThetaX)*yy+Math.sin(ThetaX)*newPos[2];
- 	newPos[2]=-Math.sin(ThetaX)*yy+Math.cos(ThetaX)*newPos[2];
- 	
- 	//Rotate around Y
- 	double zz=newPos[2];
- 	newPos[2]=Math.cos(ThetaY)*zz+Math.sin(ThetaY)*newPos[0];
- 	newPos[0]=-Math.sin(ThetaY)*zz+Math.cos(ThetaY)*newPos[0];
- 	
- 	newPos[0] = x+BMT_geo.Constants.Cx[layer-1][sector-1];
- 	newPos[1] = y+BMT_geo.Constants.Cy[layer-1][sector-1];
- 	newPos[2] = z+BMT_geo.Constants.Cz[layer-1][sector-1];
- 	
- 	return newPos;
-    }
+     public Vector3D Point_LabToDetFrame(int layer, int sector, Vector3D point) {	
+      	Vector3D new_point = new Vector3D();
+      	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+      	new_point.rotateX(BMT_geo.Constants.getRx(layer,sector));
+ 		new_point.rotateY(BMT_geo.Constants.getRy(layer,sector));
+ 		new_point.rotateZ(BMT_geo.Constants.getRz(layer,sector));
+ 		new_point.setX(new_point.x()+BMT_geo.Constants.getCx(layer,sector));
+		new_point.setY(new_point.y()+BMT_geo.Constants.getCy(layer,sector));
+		new_point.setZ(new_point.z()+BMT_geo.Constants.getCz(layer,sector));
+  	
+      	return new_point;
+      }
+     
+     public Vector3D Slope_DetToLabFrame(int layer, int sector, Vector3D slope) {	
+      	Vector3D new_slope = new Vector3D();
+      	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+      	new_slope.rotateZ(-BMT_geo.Constants.getRz(layer,sector));
+ 		new_slope.rotateY(-BMT_geo.Constants.getRy(layer,sector));
+ 		new_slope.rotateX(-BMT_geo.Constants.getRx(layer,sector));
+  	
+      	return new_slope;
+      }
+      
+      public Vector3D Point_DetToLabFrame(int layer, int sector, Vector3D point) {	
+       	Vector3D new_point = new Vector3D();
+       	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+       	new_point.setX(new_point.x()-BMT_geo.Constants.getCx(layer,sector));
+ 		new_point.setY(new_point.y()-BMT_geo.Constants.getCy(layer,sector));
+ 		new_point.setZ(new_point.z()-BMT_geo.Constants.getCz(layer,sector));
+ 		new_point.rotateZ(-BMT_geo.Constants.getRz(layer,sector));
+ 		new_point.rotateY(-BMT_geo.Constants.getRy(layer,sector));
+ 		new_point.rotateX(-BMT_geo.Constants.getRx(layer,sector));
+   	
+       	return new_point;
+       }
+ 
  
     /**
      *
@@ -627,13 +611,15 @@ public class Geometry {
     	return r;
     }
     
-    public double getResidual_line(Cluster clus, Vector3D slope, Vector3D point) {
+    public double getResidual_line(Cluster clus, Vector3D slope_lab, Vector3D point_lab) {
 		double distance=0;
 		Vector3D point_inter=new Vector3D();
 		Vector3D point_inter_a=new Vector3D();
 		Vector3D point_inter_b=new Vector3D();
 		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
 		
+		Vector3D slope=this.Slope_LabToDetFrame(clus.getLayer(), clus.getSector(), slope_lab);
+		Vector3D point=this.Point_LabToDetFrame(clus.getLayer(), clus.getSector(), point_lab);
 				
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
 		double sx=slope.x(); double sy=slope.y(); 
@@ -691,12 +677,14 @@ public class Geometry {
 		return distance;
 	}
     
-    public Vector3D getIntercept(int layer, int sector, Vector3D slope, Vector3D point) {
+    public Vector3D getIntercept(int layer, int sector, Vector3D slope_lab, Vector3D point_lab) {
 		Vector3D point_inter=new Vector3D();
 		Vector3D point_inter_a=new Vector3D();
 		Vector3D point_inter_b=new Vector3D();
 		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
 		
+		Vector3D slope=this.Slope_LabToDetFrame(layer, sector, slope_lab);
+		Vector3D point=this.Point_LabToDetFrame(layer, sector, point_lab);
 				
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
 		double sx=slope.x(); double sy=slope.y(); 
@@ -721,8 +709,8 @@ public class Geometry {
 		    if (this.isinsector(point_inter_a)==sector) point_inter=point_inter_a;
 		}
 		 
-		  		
-		return point_inter;
+		Vector3D point_final=this.Point_DetToLabFrame(layer, sector, point_inter);  		
+		return point_final;
 	}
 	
 		
@@ -766,4 +754,30 @@ public class Geometry {
 		
 		return pt;
 	}
+	
+	public void LoadMisalignmentFromFile(String FileName) throws IOException{
+		File GeoTrans=new File(FileName);
+		int rowwidth=6;
+		String separator = "\\s+";
+		
+		if (GeoTrans.exists()) {
+			String[] line=new String[6];
+			int linenumber=0;
+			Scanner input = new Scanner(GeoTrans);
+            while (input.hasNextLine()) {
+            	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
+               
+            	//Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
+            	Constants.setRx(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[0]));
+            	Constants.setRy(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[1]));
+            	Constants.setRz(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[2]));
+            	Constants.setCx(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[3]));
+            	Constants.setCy(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[4]));
+            	Constants.setCz(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[5]));
+			linenumber++;
+			}
+		}
+		
+	}
+	
 }

@@ -12,7 +12,7 @@ import PostProcessor.*;
 import HipoWriter.*;
 
 
-public class alignement {
+public class TrackerQuickTest {
 	static Barrel BMT;
 	static Barrel_SVT BST;
 	static ParticleEvent MCParticles;
@@ -21,7 +21,7 @@ public class alignement {
 	static Tracker Tracky;
 	
 	
-	public alignement(String Output) {
+	public TrackerQuickTest(String Output) {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
@@ -45,7 +45,7 @@ public class alignement {
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 		}
 		
-		alignement MVTAli=new alignement(Output);
+		TrackerQuickTest MVTAli=new TrackerQuickTest(Output);
 				
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cvt211_str490dr500.hipo";
