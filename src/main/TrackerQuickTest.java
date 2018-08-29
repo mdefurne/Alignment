@@ -46,9 +46,9 @@ public class TrackerQuickTest {
 		}
 		
 		TrackerQuickTest MVTAli=new TrackerQuickTest(Output);
-				
-		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
-		String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cvt211_str490dr500.hipo";
+		//String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/tracker_cvtCosmics1-0145.hipo";
+		String fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
+		//String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cvt211_str490dr500.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";
 		//String fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/3859.hipo";
@@ -101,6 +101,7 @@ public class TrackerQuickTest {
 		   		   		         
 		}
 		Asimov.close();
+		main.constant.drawing=true;
 		if (main.constant.drawing) {
 			Tracky.draw();
 			Sherlock.draw();		
