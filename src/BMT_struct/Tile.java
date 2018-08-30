@@ -105,6 +105,10 @@ public class Tile {
 	public HashMap<Integer, Cluster> getClusters(){
 		return clustermap;
 	}
+	
+	public HashMap<Integer, Hit> getHits(){
+		return hitmap;
+	}
 }
 
 

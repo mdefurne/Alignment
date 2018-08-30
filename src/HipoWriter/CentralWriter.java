@@ -47,6 +47,9 @@ public class CentralWriter {
 				+ "[7,PhitrackIntersPlane,FLOAT][8,ThetatrackIntersPlane,FLOAT][9,trkToMPlnAngl,FLOAT],[10,CalcCentroidStrip,FLOAT]"));
 		
 		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
+		
+		factory.addSchema(new Schema("{20211,BST::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,timestamp,LONG]"));
+		factory.addSchema(new Schema("{20111,BMT::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,integral,INT][9,timestamp,LONG]"));
 		 writer.appendSchemaFactory(factory);
 		 writer.open(Output);
 		 
@@ -64,7 +67,56 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
+		 event.writeGroup(this.fillBSTADCbank(BST));
+		 event.writeGroup(this.fillBMTADCbank(BMT));
 		 writer.writeEvent( event );
+	}
+	
+	public HipoGroup fillBSTADCbank(Barrel_SVT BST) {
+		int groupsize=BST.getNbHits();
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BST::adc").createGroup(groupsize);
+		int index=0;
+		for (int lay=1; lay<7; lay++) {
+			for (int sec=1; sec<19; sec++) {
+				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
+					for (int str=0;str<BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
+						int strip=BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
+						bank.getNode("sector").setByte(index, (byte) sec);
+						bank.getNode("layer").setByte(index, (byte) lay);
+						bank.getNode("component").setShort(index, (short) strip);
+						bank.getNode("ADC").setInt(index, BST.getModule(lay,sec).getHits().get(strip).getADC());
+						bank.getNode("time").setFloat(index, BST.getModule(lay,sec).getHits().get(strip).getTime());
+						index++;
+					}
+				}					
+			}
+		}
+		
+		return bank;
+	}
+	
+	public HipoGroup fillBMTADCbank(Barrel BMT) {
+		int groupsize=BMT.getNbHits();
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BMT::adc").createGroup(groupsize);
+		
+		int index=0;
+		for (int lay=0; lay<6; lay++) {
+			for (int sec=0; sec<3; sec++) {
+				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
+					for (int str=0;str<BMT.getTile(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
+						int strip=BMT.getTile(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
+						bank.getNode("sector").setByte(index, (byte) (sec+1));
+						bank.getNode("layer").setByte(index, (byte) (lay+1));
+						bank.getNode("component").setShort(index, (short) strip);
+						bank.getNode("ADC").setInt(index, BMT.getTile(lay,sec).getHits().get(strip).getADC());
+						bank.getNode("time").setFloat(index, BMT.getTile(lay,sec).getHits().get(strip).getTime());
+						index++;
+					}
+				}					
+			}
+		}
+		
+		return bank;
 	}
 
 	public HipoGroup fillBMTCrossesBank(Barrel BMT) {
@@ -138,6 +190,7 @@ public class CentralWriter {
 		int groupsize=BST.getNbHits();
 				
 		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Hits").createGroup(groupsize);
+		
 		int index=0;
 		int index_clus=0;
 				

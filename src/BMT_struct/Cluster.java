@@ -57,6 +57,10 @@ public class Cluster {
 		seedE=-1;
 		}
 	
+	public ArrayList<Integer> getListOfHits(){
+		return hit_id;
+	}
+	
 	public void add(int id_hit, Hit aHit) {
 		//By default, everything is computed in mode 0. If mode 1, everything is computed again in close method
 		if (hit_id.size()==0) {
