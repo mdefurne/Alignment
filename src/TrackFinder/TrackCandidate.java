@@ -456,8 +456,7 @@ public class TrackCandidate{
 		if (this.size()==0) return chi;
 		 if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
 			 for (int clus=0;clus<this.size();clus++) {
-	    	  StraightLine lineBMT=line.InTileFrame(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector());
-	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),lineBMT.getSlope(),lineBMT.getPoint())/this.GetBMTCluster(clus).getErr(),2);
+	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line.getSlope(),line.getPoint())/this.GetBMTCluster(clus).getErr(),2);
 	      	}
 		 }
 	      if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("SVT")) {

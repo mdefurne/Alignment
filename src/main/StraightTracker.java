@@ -21,17 +21,19 @@ public class StraightTracker {
 	static Tracker Tracky;
 	
 	
-	public StraightTracker(String Output) {
+	public StraightTracker() {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
 		Tracky=new Tracker();
 		Sherlock=new Analyzer();
-		Asimov=new CentralWriter(Output);
+		Asimov=new CentralWriter();
 	}
 	
 	public static void main(String[] args) {
 		
+		StraightTracker MVTAli=new StraightTracker();
+				
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
 			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE -l X/Y)");
@@ -39,9 +41,9 @@ public class StraightTracker {
 			System.out.println("RUN_TYPE: cosmic or target\n");
 			System.out.println("with a few options which might be useful");
 			System.out.println("NUM_EVENTS: to set a maximum number of events");
-			System.out.println("DRAW: Display residuals and beam info if DRAW is enetered");
-			System.out.println("X/Y: will disable layer X sector Y. If Y=*, disable an entire layer. If X=*, disable an entire sector");
-			System.out.println("MODE can be chosen among");
+			System.out.println("DRAW: Display residuals and beam info if DRAW is entered");
+			System.out.println("X/Y: will disable layer X sector Y. If Y=*, disable an entire layer");
+			System.out.println("MODE can be chosen among:");
 			System.out.println("       -EFFICENCY: Prevent from merging tracks from different sectors in cosmic mode\n");
 			System.out.println("For more info, please contact Maxime DEFURNE");
 			System.out.println("maxime.defurne@cea.fr");
@@ -57,17 +59,20 @@ public class StraightTracker {
 		
 		main.constant.setTrackerType(TrackerType);
 		
+		Asimov.setOuputFileName(Output);
+		
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
 			if (args[i].equals("-l")) {
-				if (args[i+1].charAt(0)=='*') main.constant.efficiency=true;
+				int LayToDisable=Integer.parseInt(String.valueOf(args[i+1].charAt(0)));
+				if (args[i+1].charAt(args[i+1].length()-1)=='*') 
+					if (LayToDisable>=7) BMT.DisableLayer(LayToDisable-7);
 			}
+			
 		}
 		
-		StraightTracker MVTAli=new StraightTracker(Output);
-				
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";

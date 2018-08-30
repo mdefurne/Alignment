@@ -18,7 +18,7 @@ public class CentralWriter {
 	SchemaFactory factory;
 	
 	
-	public CentralWriter(String Output) {
+	public CentralWriter() {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
 		factory.addSchema(new Schema("{20125,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
@@ -51,8 +51,7 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{20211,BST::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,timestamp,LONG]"));
 		factory.addSchema(new Schema("{20111,BMT::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,integral,INT][9,timestamp,LONG]"));
 		 writer.appendSchemaFactory(factory);
-		 writer.open(Output);
-		 
+		 		 
 	}
 	
 	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
@@ -70,6 +69,10 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTADCbank(BST));
 		 event.writeGroup(this.fillBMTADCbank(BMT));
 		 writer.writeEvent( event );
+	}
+	
+	public void setOuputFileName(String output){
+		writer.open(output);
 	}
 	
 	public HipoGroup fillBSTADCbank(Barrel_SVT BST) {

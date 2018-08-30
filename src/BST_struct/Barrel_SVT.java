@@ -72,7 +72,7 @@ public class Barrel_SVT {
 			double phi_end=Math.atan2(end.y(),end.x());
 			if (ADC>0&&strip>0) {
 				nb_hit++;
-				Modules[layer-1][sector-1].addHit(nb_hit, strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), (end.z()-begin.z())/2., ADC, time);
+				Modules[layer-1][sector-1].addHit(nb_hit, strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), Double.NaN, ADC, time);
 			}
 		}
 		MakeClusters();

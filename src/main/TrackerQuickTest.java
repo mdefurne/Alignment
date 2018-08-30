@@ -27,7 +27,7 @@ public class TrackerQuickTest {
 		MCParticles=new ParticleEvent();
 		Tracky=new Tracker();
 		Sherlock=new Analyzer();
-		Asimov=new CentralWriter(Output);
+		Asimov=new CentralWriter();
 	}
 	
 	public static void main(String[] args) {
@@ -44,6 +44,8 @@ public class TrackerQuickTest {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 		}
+		
+		Asimov.setOuputFileName(Output);
 		
 		TrackerQuickTest MVTAli=new TrackerQuickTest(Output);
 		//String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/tracker_cvtCosmics1-0145.hipo";
