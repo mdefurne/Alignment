@@ -174,7 +174,7 @@ public class CentralWriter {
 			for (int sec=1; sec<19; sec++) {
 				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
 					bank.getNode("ID").setShort(index, (short) index);
-					bank.getNode("sector").setByte(index, (byte) (sec+1));
+					bank.getNode("sector").setByte(index, (byte) sec);
 					bank.getNode("region").setByte(index, (byte) ((lay+1)/2));
 					bank.getNode("x").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getX()/10.));
 					bank.getNode("y").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getY()/10.));
