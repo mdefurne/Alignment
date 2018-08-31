@@ -25,6 +25,7 @@ public class Cluster {
 	private int sector;
 	private ArrayList<Integer> hit_id;
 	private int trkID;
+	boolean InTheFit;
 	
 	public Cluster(int lay, int sec) {
 		size=0;
@@ -43,6 +44,7 @@ public class Cluster {
 		trkID=-1;
 		Eseed=-1;
 		stripseed=-1;
+		InTheFit=true;
 	}
 	
 	public void add(int id_hit, Hit aHit) {
@@ -153,6 +155,14 @@ public class Cluster {
 	
 	public int getSeed(){
 		return stripseed;
+	}
+	
+	public void InTheFit(boolean infit) {
+		InTheFit=infit;
+	}
+	
+	public boolean IsInFit() {
+		return InTheFit;
 	}
 	
 }

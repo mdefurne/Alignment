@@ -39,6 +39,26 @@ public class Barrel_SVT {
 		nb_hit=0;
 	}
 	
+	public void DisableTile(int lay, int sec) {
+		Modules[lay-1][sec-1].DisableModule();
+	}
+	
+	public void EnableTile(int lay, int sec) {
+		Modules[lay-1][sec-1].EnableModule();
+	}
+		
+	public void DisableLayer(int lay) {
+		for (int sec=0;sec<geo.getNbModule(lay);sec++) {
+			Modules[lay-1][sec].DisableModule();
+		}
+	}
+	
+	public void EnableLayer(int lay) {
+		for (int sec=0;sec<geo.getNbModule(lay);sec++) {
+			Modules[lay-1][sec].EnableModule();
+		}
+	}
+	
 	public int getNbHits() {
 		return nb_hit;
 	}

@@ -462,7 +462,7 @@ public class TrackCandidate{
 	      if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("SVT")) {
 	    	  for (int clus=0;clus<this.BSTsize();clus++) {
 	    		  Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line.getSlope(), line.getPoint());
-	    		  if (!Double.isNaN(inter.x())) chi+=Math.pow(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+	    		  if (!Double.isNaN(inter.x())&&this.GetBSTCluster(clus).IsInFit()) chi+=Math.pow(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
 	    				  /BST.getGeometry().getSingleStripResolution(this.GetBSTCluster(clus).getLayer(), (int)this.GetBSTCluster(clus).getCentroid(), inter.z()),2);
 	    	  }
 	      }

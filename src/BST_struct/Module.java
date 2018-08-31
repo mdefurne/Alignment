@@ -14,6 +14,7 @@ public class Module {
 	HashMap<Integer, Cluster> clustermap;
 	int layer_id;
 	int sector_id;
+	boolean InTheTracking;
 	Vector3D norm;
 	
 	public Module() {
@@ -23,6 +24,7 @@ public class Module {
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
 		norm=new Vector3D();
+		InTheTracking=true;
 	}
 	
 	public Module(int layer, int sector) {
@@ -32,6 +34,7 @@ public class Module {
 		sorted_hitmap = new TreeMap<Integer, Hit>();
 		clustermap = new HashMap<Integer, Cluster>();
 		norm=new Vector3D();
+		InTheTracking=true;
 	}
 	
 	public void addHit(int id, int strip, double x, double y, double z, double phi, double err_phi, double err_z, int adc, float time) {
@@ -42,6 +45,14 @@ public class Module {
 	public void SortHitmap() {
 		sorted_hitmap.clear();
 		sorted_hitmap.putAll(hitmap);
+	}
+	
+	public void DisableModule() {
+		InTheTracking=false;
+	}
+	
+	public void EnableModule() {
+		InTheTracking=true;
 	}
 	
 	public void DoClustering() {
@@ -57,6 +68,7 @@ public class Module {
 		    	}	
 		       	if (m.getKey()-last_hit>2) {
 		    		Cluster clus=new Cluster(layer_id,sector_id);
+		    		clus.InTheFit(InTheTracking);
 		    		clus.add(m.getKey(),sorted_hitmap.get(m.getKey()));
 		    		clustermap.put(clustermap.size()+1,clus);
 		    	}
