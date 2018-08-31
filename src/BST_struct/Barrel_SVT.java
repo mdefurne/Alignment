@@ -39,11 +39,11 @@ public class Barrel_SVT {
 		nb_hit=0;
 	}
 	
-	public void DisableTile(int lay, int sec) {
+	public void DisableModule(int lay, int sec) {
 		Modules[lay-1][sec-1].DisableModule();
 	}
 	
-	public void EnableTile(int lay, int sec) {
+	public void EnableModule(int lay, int sec) {
 		Modules[lay-1][sec-1].EnableModule();
 	}
 		
