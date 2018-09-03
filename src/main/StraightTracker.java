@@ -68,12 +68,12 @@ public class StraightTracker {
 			if (args[i].equals("-l")) {
 				int LayToDisable=Integer.parseInt(args[i+1].substring(0, args[i+1].indexOf('/')));
 				if (args[i+1].charAt(args[i+1].length()-1)=='*') {
-					if (LayToDisable>=7) BMT.DisableLayer(LayToDisable-7);
+					if (LayToDisable>=7) BMT.DisableLayer(LayToDisable-6);
 					else BST.DisableLayer(LayToDisable);
 				}
 				else {
 					int sectorToDisable=Integer.parseInt(args[i+1].substring(args[i+1].indexOf('/'),args[i+1].length()));
-					if (LayToDisable>=7) BMT.DisableTile(LayToDisable-7,sectorToDisable);
+					if (LayToDisable>=7) BMT.DisableTile(LayToDisable-6,sectorToDisable);
 					else BST.DisableModule(LayToDisable,sectorToDisable);
 				}
 			}
