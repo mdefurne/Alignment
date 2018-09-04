@@ -295,7 +295,7 @@ public class TrackCandidate{
 				}
 			}
 		}
-		if (main.constant.TrackerType.equals("SVT")&&this.BSTsize()<4) fit=false; 
+		if (main.constant.TrackerType.equals("SVT")&&(this.BSTsize()<4||nz==0||nc==0)) fit=false; 
 		return fit;
 	}
 	
