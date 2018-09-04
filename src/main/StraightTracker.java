@@ -32,8 +32,6 @@ public class StraightTracker {
 	
 	public static void main(String[] args) {
 		
-		StraightTracker MVTAli=new StraightTracker();
-				
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
 			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE -l X/Y)");
@@ -55,10 +53,25 @@ public class StraightTracker {
 		String TrackerType=args[2];
 		String RunType=args[3];
 		
+		HipoDataSource reader = new HipoDataSource();
+		reader.open(fileName);
+		int count=0;
+		DataEvent event_zero = reader.gotoEvent(1);
+		if (!main.constant.isLoaded) {
+		   	if (event_zero.hasBank("MC::Particle")) main.constant.setMC(true);
+		   		
+		   	if (event_zero.hasBank("RUN::config")) {
+		   		main.constant.setSolenoidscale(event_zero.getBank("RUN::config").getFloat("solenoid", 0));
+		   	}
+		   	
+		   	main.constant.setLoaded(true);
+	   }
+		
 		if (RunType.equals("cosmic")) main.constant.setCosmic(true);
 		
 		main.constant.setTrackerType(TrackerType);
 		
+		StraightTracker Straight=new StraightTracker();
 		Asimov.setOuputFileName(Output);
 		
 		for (int i=4; i<args.length; i++) {
@@ -88,28 +101,13 @@ public class StraightTracker {
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
-		HipoDataSource reader = new HipoDataSource();
-		reader.open(fileName);
-		int count=0;
-			
 		while(reader.hasEvent()&&count<main.constant.max_event) {
-		  DataEvent event = reader.getNextEvent();
+		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
 		    	 System.out.println(count);
 		    //Load all the constant needed but only for the first event
-		    if (!main.constant.isLoaded) {
-		    	if (event.hasBank("MC::Particle")) {
-		    		main.constant.setMC(true);
-		    		if (main.constant.isMC&&BMT.getTile(1, 1).getClusteringMode()==1) System.out.println("Mode 1 is not available for MC data");
-		    	}
-		    
-		    	if (event.hasBank("RUN::config")) {
-		    		main.constant.setSolenoidscale(event.getBank("RUN::config").getFloat("solenoid", 0));
-		    	}
-		    	
-		    	main.constant.setLoaded(true);
-		    }
+		   
 		    
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);

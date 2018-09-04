@@ -7,6 +7,9 @@ import org.jlab.groot.math.F1D;
 import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
 import BST_struct.*;
+
+import javax.swing.JFrame;
+
 import org.jlab.geom.prim.Vector3D;
 
 
@@ -19,7 +22,8 @@ public class BSTAna {
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
-				SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",50,-0.25,0.25);
+				if (main.constant.isMC) SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.25,0.25);
+				if (!main.constant.isMC) SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
 			}
 		}
@@ -71,6 +75,7 @@ public class BSTAna {
 		 TCanvas[] residual = new TCanvas[6];
 		 for (int lay=0;lay<6;lay++) {
 		 residual[lay]= new TCanvas("Residual for layer "+(lay+1), 1100, 700);
+		 residual[lay].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 residual[lay].divide(4, 5);
 		 for (int sec=0;sec<18;sec++) {
 					residual[lay].cd(sec);
