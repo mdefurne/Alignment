@@ -767,7 +767,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		Vector3D inter=new Vector3D();
 		inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		ArrayList<Integer> hit_sec=new ArrayList<Integer>();
-		for (int sec=1;sec<this.getNbModule(layer);sec++) {
+		for (int sec=1;sec<this.getNbModule(layer)+1;sec++) {
 			Vector3D n=findBSTPlaneNormal(sec, layer);
 			Point3D p=getPlaneModuleOrigin(sec, layer);
 		
