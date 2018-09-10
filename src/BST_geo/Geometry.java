@@ -182,6 +182,45 @@ public class Geometry {
         }
         return new Point3D(xt, yt, zt);
     }
+    
+/*public Point3D transformToFrame(int sector, int layer, double x, double y, double z, String frame, String MiddlePlane) {
+    	
+        // global rotation angle
+        double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) * 2. * Math.PI + Constants.PHI0[layer - 1];
+        
+        // angle to rotate to global frame
+        double Loc_to_Glob_rangl = Glob_rangl - Constants.LOCZAXISROTATION;
+
+        double gap = 0;
+        if (MiddlePlane.equals("middle")) {
+            if ((layer - 1) % 2 == 0) { // for a cross take the bottom layer
+                gap = Constants.MODULERADIUS[layer][sector - 1] - Constants.MODULERADIUS[layer - 1][sector - 1];
+            }
+        }
+        double lTx = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.cos(Glob_rangl);
+        double lTy = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.sin(Glob_rangl);
+        double lTz = Constants.Z0[layer - 1];
+
+        //rotate and translate
+        double cosRotation = Math.cos(Loc_to_Glob_rangl);
+        double sinRotation = Math.sin(Loc_to_Glob_rangl);
+
+        double xt = 0;
+        double yt = 0;
+        double zt = 0;
+
+        if (frame.equals("lab")) {
+            xt = (x - 0.5 * Constants.ACTIVESENWIDTH - Constants.STRIPTSTART) * cosRotation - y * sinRotation + lTx;
+            yt = (x - 0.5 * Constants.ACTIVESENWIDTH - Constants.STRIPTSTART) * sinRotation + y * cosRotation + lTy;
+            zt = z + lTz;
+        }
+        if (frame.equals("local")) {
+            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * Constants.ACTIVESENWIDTH + Constants.STRIPTSTART;
+            yt = -(x - lTx) * sinRotation + (y - lTy) * cosRotation;
+            zt = z - lTz;
+        }
+        return new Point3D(xt, yt, zt);
+    }*/
     //*** point and its error
 
     public double[] getCrossPars(int sector, int upperlayer, double s1, double s2, String frame, Vector3D trkDir) {

@@ -17,18 +17,21 @@ public class BSTAna {
 	H1F[][] SVT_residual=new H1F[6][18];
 	H2F[][] residual_vs_z=new H2F[6][18];
 	H1F SVT_LayerHit;
-	F1D funcres;
-	
+		
 	public BSTAna() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
-				if (main.constant.isMC) SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.25,0.25);
-				if (!main.constant.isMC) SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
+				if (main.constant.isMC) {
+					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.25,0.25);
+				}
+				if (!main.constant.isMC) {
+					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
+				}
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
 			}
 		}
 		SVT_LayerHit=new H1F("Total number of hit per track candidate","Total number of hit per track candidate",12,0,12);
-		funcres=new F1D("resolution", "gaus",-1.0,1.0);
+		
 	}
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
@@ -78,11 +81,23 @@ public class BSTAna {
 		 residual[lay].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 residual[lay].divide(4, 5);
 		 for (int sec=0;sec<18;sec++) {
-					residual[lay].cd(sec);
-					//DataFitter.fit(funcres, SVT_residual[lay][sec], "test");
-					residual[lay].draw(SVT_residual[lay][sec]);
-					//residual[lay].draw(funcres);
-					//residual[lay].draw(residual_vs_z[lay][sec]);
+			 F1D funcres;
+			 if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-1.,1.);
+			 funcres.setParameter(0, 100);
+			funcres.setParameter(1, 0);
+			funcres.setParameter(2, 0.050);
+				residual[lay].cd(sec);
+				residual[lay].draw(SVT_residual[lay][sec]);
+				if (SVT_residual[lay][sec].getEntries()>20) {
+					DataFitter.fit(funcres, SVT_residual[lay][sec], "Q");
+					funcres.setOptStat(1100);
+					funcres.setLineColor(1);
+					funcres.setLineWidth(2);
+					residual[lay].draw(funcres,"same");
+				}
+				//residual[lay].draw(funcres);
+				//residual[lay].draw(residual_vs_z[lay][sec]);
 					
 		 	}
 		 }
