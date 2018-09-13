@@ -418,8 +418,7 @@ public class CentralWriter {
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
 						bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
 						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
-						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
-						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
+						
 						if (BMT.getGeometry().getZorC(lay+1)==0) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getCStrip(lay+1, inter.z()));
 						if (BMT.getGeometry().getZorC(lay+1)==1) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getZStrip(lay+1, Math.atan2(inter.y(), inter.x())));
 						
@@ -446,6 +445,17 @@ public class CentralWriter {
 					
 						inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
 						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
+						Vector3D PhiBMT=new Vector3D();
+						PhiBMT.setXYZ(candidates.get(track).get_VectorTrack().x(),candidates.get(track).get_VectorTrack().y() , 0);
+						Vector3D eTheta=new Vector3D();
+						eTheta.setXYZ(-inter.y(),inter.x(),0);
+						Vector3D ThetaBMT=new Vector3D();
+						ThetaBMT.setXYZ(candidates.get(track).get_VectorTrack().x(),candidates.get(track).get_VectorTrack().y() , candidates.get(track).get_VectorTrack().z());
+						Vector3D ProjThetaBMT=new Vector3D();
+						ProjThetaBMT=ThetaBMT.projection(eTheta);
+						ThetaBMT.sub(ProjThetaBMT);
+						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiBMT.angle(inter)));
+						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaBMT.angle(inter)));
 						index++;
 					}
 				}
