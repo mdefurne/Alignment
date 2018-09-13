@@ -89,6 +89,14 @@ public class Geometry {
 
         return new Vector3D(Math.cos(angle), Math.sin(angle), 0);
     }
+    
+    public double findBSTPlaneAngle(int sector, int layer) {
+
+        //double angle = 2.*Math.PI*((double)(sector-1)/(double)Constants.NSECT[layer-1]) + Math.PI/2.;
+        double angle = 2. * Math.PI * ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) + Constants.PHI0[layer - 1];
+
+        return angle;
+    }
     //***
 
     public double[] getLocCoord(double s1, double s2) { //2 top, 1 bottom
@@ -158,6 +166,7 @@ public class Geometry {
                 gap = Constants.MODULERADIUS[layer][sector - 1] - Constants.MODULERADIUS[layer - 1][sector - 1];
             }
         }
+       
         double lTx = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.cos(Glob_rangl);
         double lTy = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.sin(Glob_rangl);
         double lTz = Constants.Z0[layer - 1];

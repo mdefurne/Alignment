@@ -2,10 +2,8 @@ package HipoWriter;
 
 import org.jlab.jnp.hipo.data.*;
 import org.jlab.jnp.hipo.io.HipoWriter;
-import org.jlab.io.base.*;
 import org.jlab.jnp.hipo.schema.*;
 
-import BMT_geo.Geometry;
 import BST_struct.*;
 import Particles.*;
 import BMT_struct.*;
@@ -361,15 +359,27 @@ public class CentralWriter {
 							&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
+						Vector3D normSVT=BST.getGeometry().findBSTPlaneNormal(sector, lay+1);
+						Vector3D PhiSVT=new Vector3D();
+						PhiSVT.setX(candidates.get(track).get_VectorTrack().x());PhiSVT.setY(candidates.get(track).get_VectorTrack().y());PhiSVT.setZ(0);
+						Vector3D eTheta=new Vector3D();
+						eTheta.setX(-Math.sin(BST.getGeometry().findBSTPlaneAngle(sector, lay+1)));	eTheta.setY(Math.cos(BST.getGeometry().findBSTPlaneAngle(sector, lay+1))); eTheta.setZ(0);		
+												
+						Vector3D ThetaSVT=new Vector3D();
+						ThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
+						Vector3D ProjThetaSVT=new Vector3D();
+						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
+						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
+												
 						bank.getNode("ID").setShort(index, (short) track);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
 						bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
 						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
-						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) candidates.get(track).getPhi());
-						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) candidates.get(track).getTheta());
-						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(BST.getGeometry().findBSTPlaneNormal(sector, lay+1))));
+						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiSVT.angle(normSVT)));
+						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaSVT.angle(normSVT)));
+						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(normSVT)));
 						bank.getNode("CalcCentroidStrip").setFloat(index, (float) BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay+1, sector));
 						index++;
 					
