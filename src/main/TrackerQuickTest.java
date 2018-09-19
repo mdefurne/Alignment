@@ -21,7 +21,7 @@ public class TrackerQuickTest {
 	static Tracker Tracky;
 	
 	
-	public TrackerQuickTest(String Output) {
+	public TrackerQuickTest() {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
@@ -31,7 +31,7 @@ public class TrackerQuickTest {
 	}
 	
 	public static void main(String[] args) {
-		
+		TrackerQuickTest MVTAli=new TrackerQuickTest();
 		String Output="/home/mdefurne/Bureau/CLAS12/test.hipo";
 		String TrackerType="CVT";
 		String RunType="cosmic";
@@ -47,7 +47,7 @@ public class TrackerQuickTest {
 		
 		Asimov.setOuputFileName(Output);
 		
-		TrackerQuickTest MVTAli=new TrackerQuickTest(Output);
+		
 		//String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/tracker_cvtCosmics1-0145.hipo";
 		String fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//String fileName="/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cvt211_str490dr500.hipo";
@@ -61,10 +61,13 @@ public class TrackerQuickTest {
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
+		
+		System.out.println(BST.getGeometry().getStripEndPoints(1, 1)[0][0]);
+		System.out.println(BST.getGeometry().getStripEndPoints(1, 2)[0][0]);
 			
 		//for (int i=0;i<1;i++) {
 			//DataEvent event = reader.gotoEvent(165+i);
-		main.constant.max_event=1500;
+		main.constant.max_event=1;
 		while(reader.hasEvent()&&count<main.constant.max_event) {
 		 DataEvent event = reader.getNextEvent();
 		

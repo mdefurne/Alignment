@@ -63,7 +63,7 @@ public class Constants {
     //public static final double ACTIVESENWIDTH = 40.052; 
     public static final double ACTIVESENWIDTH = 40.032;
     public static final double STRIPTSTART = 0.048;
-    public static double LAYRGAP = 3.166; //LAYRGAP = 3.547; DB:3.166
+    public static double LAYRGAP = 2.842; //3.166 de ideal geom LAYRGAP = 3.547; DB:3.166; 3.482... including 2*siliconthickness of 0.32um
     //public static double LAYRGAP = 3.262; //<-- GEMC value--> should be 3.236
     public static double ACTIVESENLEN = 109.955;
     static double TOTSENLEN = 111.625;
@@ -239,32 +239,28 @@ public class Constants {
 		}
          */
         for (int s = 0; s < NSECT[0]; s++) {
-            MODULERADIUS[0][s] = 65.447 - MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[0][s] = 67.028 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[2]; s++) {
-            MODULERADIUS[2][s] = 93.047 - MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[2][s] = 94.628 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[4]; s++) {
-            MODULERADIUS[4][s] = 120.482 - MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[4][s] = 122.063 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         //for (int s = 0; s < NSECT[6]; s++) {
         //    MODULERADIUS[6][s] = 161.362 - MODULEPOSFAC * SILICONTHICK;
         //}
 
         for (int s = 0; s < NSECT[1]; s++) {
-            MODULERADIUS[1][s] = 65.447 + LAYRGAP + MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[1][s] = 67.028 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[3]; s++) {
-            MODULERADIUS[3][s] = 93.047 + LAYRGAP + MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[3][s] = 94.628 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[5]; s++) {
-            MODULERADIUS[5][s] = 120.482 + LAYRGAP + MODULEPOSFAC * SILICONTHICK;
+            MODULERADIUS[5][s] = 122.063 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
-        //for (int s = 0; s < NSECT[7]; s++) {
-        //    MODULERADIUS[7][s] = 161.362 + LAYRGAP + MODULEPOSFAC * SILICONTHICK;
-        //}
-        LAYRGAP = MODULERADIUS[1][0] - MODULERADIUS[0][0];
-
+       
         // SHIFTS
         for (int reg=0;reg<3;reg++) {
         	for (int sec=0; sec<NSECT[reg];sec++) {
