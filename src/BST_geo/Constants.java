@@ -63,7 +63,7 @@ public class Constants {
     //public static final double ACTIVESENWIDTH = 40.052; 
     public static final double ACTIVESENWIDTH = 40.032;
     public static final double STRIPTSTART = 0.048;
-    public static double LAYRGAP = 2.842; 
+    public static double LAYRGAP = 3.278; //2.842; 
     public static double ACTIVESENLEN = 109.955;
     static double TOTSENLEN = 111.625;
     static double MICROGAP = 0.112;
@@ -210,24 +210,24 @@ public class Constants {
         PHI0[5] = Math.toRadians(90. + 180. * rotationFlag);
        
         for (int s = 0; s < NSECT[0]; s++) {
-            MODULERADIUS[0][s] = 67.028 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[0][s] = 67.084 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[2]; s++) {
-            MODULERADIUS[2][s] = 94.628 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[2][s] = 94.744 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[4]; s++) {
-            MODULERADIUS[4][s] = 122.063 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[4][s] = 122.164 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
        
 
         for (int s = 0; s < NSECT[1]; s++) {
-            MODULERADIUS[1][s] = 67.028 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[1][s] = 67.084 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[3]; s++) {
-            MODULERADIUS[3][s] = 94.628 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[3][s] = 94.744 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
         for (int s = 0; s < NSECT[5]; s++) {
-            MODULERADIUS[5][s] = 122.063 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[5][s] = 122.164 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
         }
        
         // SHIFTS
