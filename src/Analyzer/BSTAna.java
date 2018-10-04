@@ -27,7 +27,7 @@ public class BSTAna {
 				if (!main.constant.isMC) {
 					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
 				}
-				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",28,-100, 180, 10,-1,1);
+				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",14,-100, 180, 11,-0.1,0.1);
 			}
 		}
 		SVT_LayerHit=new H1F("Total number of hit per track candidate","Total number of hit per track candidate",12,0,12);
@@ -88,6 +88,7 @@ public class BSTAna {
 			funcres.setParameter(1, 0);
 			funcres.setParameter(2, 0.050);
 				residual[lay].cd(sec);
+				//residual[lay].draw(residual_vs_z[lay][sec]);
 				residual[lay].draw(SVT_residual[lay][sec]);
 				if (SVT_residual[lay][sec].getEntries()>20) {
 					DataFitter.fit(funcres, SVT_residual[lay][sec], "Q");

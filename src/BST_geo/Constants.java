@@ -188,12 +188,12 @@ public class Constants {
 		Z0[6] =  -83.406 + 0.5*DEADZNLEN;
 		Z0[7] =  -83.406 + 0.5*DEADZNLEN;
          */
-        Z0[0] = -219.826 + 0. * DEADZNLEN;
-        Z0[1] = -219.826 + 0. * DEADZNLEN;
-        Z0[2] = -180.380 + 0. * DEADZNLEN;
-        Z0[3] = -180.380 + 0. * DEADZNLEN;
-        Z0[4] = -141.206 + 0. * DEADZNLEN;
-        Z0[5] = -141.206 + 0. * DEADZNLEN;
+        Z0[0] = -219.826 + 0*DEADZNLEN;
+        Z0[1] = -219.826 + 0*DEADZNLEN;
+        Z0[2] = -180.380 + 0*DEADZNLEN;
+        Z0[3] = -180.380 + 0*DEADZNLEN;
+        Z0[4] = -141.206 + 0*DEADZNLEN;
+        Z0[5] = -141.206 + 0*DEADZNLEN;
         //Z0[6] = -83.405 + 0. * DEADZNLEN;
         //Z0[7] = -83.405 + 0. * DEADZNLEN;
 
@@ -210,24 +210,24 @@ public class Constants {
         PHI0[5] = Math.toRadians(90. + 180. * rotationFlag);
        
         for (int s = 0; s < NSECT[0]; s++) {
-            MODULERADIUS[0][s] = 67.084 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[0][s] = 67.084 - 0.5 * (LAYRGAP + SILICONTHICK);
         }
         for (int s = 0; s < NSECT[2]; s++) {
-            MODULERADIUS[2][s] = 94.744 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[2][s] = 94.744 - 0.5 * (LAYRGAP + SILICONTHICK);
         }
         for (int s = 0; s < NSECT[4]; s++) {
-            MODULERADIUS[4][s] = 122.164 - 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[4][s] = 122.164 - 0.5 * (LAYRGAP + SILICONTHICK);
         }
        
 
         for (int s = 0; s < NSECT[1]; s++) {
-            MODULERADIUS[1][s] = 67.084 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[1][s] = 67.084 + 0.5 * (LAYRGAP + SILICONTHICK);
         }
         for (int s = 0; s < NSECT[3]; s++) {
-            MODULERADIUS[3][s] = 94.744 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[3][s] = 94.744 + 0.5 * (LAYRGAP + SILICONTHICK);
         }
         for (int s = 0; s < NSECT[5]; s++) {
-            MODULERADIUS[5][s] = 122.164 + 0.5 * (LAYRGAP + MODULEPOSFAC * SILICONTHICK);
+            MODULERADIUS[5][s] = 122.164 + 0.5 * (LAYRGAP + SILICONTHICK);
         }
        
         // SHIFTS
