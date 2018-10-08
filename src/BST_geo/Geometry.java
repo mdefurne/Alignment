@@ -8,15 +8,29 @@ import java.util.ArrayList;
 
 import org.jlab.detector.geant4.v2.SVT.SVTConstants;
 
+import org.jlab.detector.calib.utils.DatabaseConstantProvider;
+
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.geometry.prim.Triangle3d;
 import Trajectory.*;
 
 public class Geometry {
-
+	
+	org.jlab.detector.geant4.v2.SVT.SVTConstants SVTConstants;
+	DatabaseConstantProvider cp;
+	
+	double interTol;
+	double ToModuleEdge;
+	
     public Geometry() {
-
+    	SVTConstants=new org.jlab.detector.geant4.v2.SVT.SVTConstants();
+    	org.jlab.detector.geant4.v2.SVT.SVTConstants.VERBOSE = true;
+    	cp = new DatabaseConstantProvider(10, "default");
+    	org.jlab.detector.geant4.v2.SVT.SVTConstants.connect(cp);
+    	
+    	interTol=20; //mm // Tolerance for strip intersection
+    	ToModuleEdge=1.0; //mm // Tolerance for track trajectory point at layer to module fiducial edge (mm
     }
 
     // Comments on the Geometry of the BST 
@@ -47,14 +61,14 @@ public class Geometry {
 
     public Point3D getPlaneModuleEnd(int sector, int layer) {
         //shift the local origin to the physical orign instead of active area
-        Point3D point0 = new Point3D(transformToFrame(sector, layer, Constants.ACTIVESENWIDTH + 1, 0, 0, "lab", ""));
+        Point3D point0 = new Point3D(transformToFrame(sector, layer, org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID + 1, 0, 0, "lab", ""));
         return point0;
     }
 
     //*** 
     public int findSectorFromAngle(int layer, Vector3D trkPoint) {
 //        int Sect = -1;
-//        for (int s = 0; s < Constants.NSECT[layer - 1]; s++) {
+//        for (int s = 0; s < Constants.NSECT[(layer-1)/2]; s++) {
 //            int sector = s + 1;
 //            Vector3D orig = new Vector3D(getPlaneModuleOrigin(sector, layer).x(), getPlaneModuleOrigin(sector, layer).y(), 0);
 //            Vector3D end = new Vector3D(getPlaneModuleEnd(sector, layer).x(), getPlaneModuleEnd(sector, layer).y(), 0);
@@ -71,49 +85,48 @@ public class Geometry {
 //                Sect = sector;
 //            }
 //        }
-    	double step=2*Math.PI/((double)Constants.NSECT[layer - 1]);
+    	double step=2*Math.PI/((double)org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2]);
     	double ang=Math.atan2(trkPoint.y(), trkPoint.x());
     	ang=-(ang+Math.PI/2.-step/2.);
     	if (ang<0) ang+=2*Math.PI;
     	int Sect= (int)(ang/step) +1;
-    	if (Sect>Constants.NSECT[layer - 1]) Sect=1;
-    	if (Sect<1) Sect=Constants.NSECT[layer - 1];
+    	if (Sect>org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2]) Sect=1;
+    	if (Sect<1) Sect=org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2];
         return Sect;
     }
 
     //***
     public Vector3D findBSTPlaneNormal(int sector, int layer) {
 
-        //double angle = 2.*Math.PI*((double)(sector-1)/(double)Constants.NSECT[layer-1]) + Math.PI/2.;
-        double angle = 2. * Math.PI * ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) + Constants.PHI0[layer - 1];
+        double angle = 2. * Math.PI * ((double) -(sector - 1) / (double) org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2]) + org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
 
         return new Vector3D(Math.cos(angle), Math.sin(angle), 0);
     }
     
     public double findBSTPlaneAngle(int sector, int layer) {
 
-        //double angle = 2.*Math.PI*((double)(sector-1)/(double)Constants.NSECT[layer-1]) + Math.PI/2.;
-        double angle = 2. * Math.PI * ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) + Constants.PHI0[layer - 1];
+        //double angle = 2.*Math.PI*((double)(sector-1)/(double)Constants.NSECT[(layer-1)/2]) + Math.PI/2.;
+        double angle = 2. * Math.PI * ((double) -(sector - 1) / (double) org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2]) + org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
 
         return angle;
     }
     //***
 
-    public double[] getLocCoord(double s1, double s2) { //2 top, 1 bottom
+    /*public double[] getLocCoord(double s1, double s2) { //2 top, 1 bottom
 
         double[] X = new double[2];
-        double ialpha1 = (s1 - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+        double ialpha1 = (s1 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc1 = (s1 - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
-        double ialpha2 = (s2 - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+        double interc1 = (s1 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
+        double ialpha2 = (s2 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc2 = (s2 - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
+        double interc2 = (s2 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
         // Equation for strip line is x = mz + b [i.e. z is the direction of the length of the module]
         // -------------------------------------
         double m1 = -Math.tan(ialpha1);
         double m2 = Math.tan(ialpha2);
-        double b1 = Constants.ACTIVESENWIDTH - interc1;
+        double b1 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID - interc1;
         double b2 = interc2;
 
         double z = (b2 - b1) / (m1 - m2);
@@ -123,9 +136,9 @@ public class Geometry {
 
         return X;
 
-    }
+    }*/
 
-    public double[] getLocCoordErrs(int lay1, int lay2, double s1, double s2, double z) {
+   /* public double[] getLocCoordErrs(int lay1, int lay2, double s1, double s2, double z) {
         double[] Xerr = new double[2];
 
         double sigma1 = getSingleStripResolution(lay1, (int) s1, z);
@@ -149,27 +162,27 @@ public class Geometry {
 
         return Xerr;
 
-    }
+    }*/
     //***
 
    /* public Point3D transformToFrame(int sector, int layer, double x, double y, double z, String frame, String MiddlePlane) {
     	
         // global rotation angle
-        double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) * 2. * Math.PI + Constants.PHI0[layer - 1];
+        double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[(layer-1)/2]) * 2. * Math.PI + Constants.PHI0[(layer-1)/2];
         
         // angle to rotate to global frame
         double Loc_to_Glob_rangl = Glob_rangl - Constants.LOCZAXISROTATION;
 
         double gap = 0;
         if (MiddlePlane.equals("middle")) {
-            if ((layer - 1) % 2 == 0) { // for a cross take the bottom layer
-                gap = Constants.MODULERADIUS[layer][sector - 1] - Constants.MODULERADIUS[layer - 1][sector - 1];
+            if (((layer-1)/2) % 2 == 0) { // for a cross take the bottom layer
+                gap = Constants.MODULERADIUS[layer][sector - 1] - Constants.MODULERADIUS[(layer-1)/2][sector - 1];
             }
         }
        
-        double lTx = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.cos(Glob_rangl);
-        double lTy = (Constants.MODULERADIUS[layer - 1][sector - 1] + 0.5 * gap) * Math.sin(Glob_rangl);
-        double lTz = Constants.Z0[layer - 1];
+        double lTx = (Constants.MODULERADIUS[(layer-1)/2][sector - 1] + 0.5 * gap) * Math.cos(Glob_rangl);
+        double lTy = (Constants.MODULERADIUS[(layer-1)/2][sector - 1] + 0.5 * gap) * Math.sin(Glob_rangl);
+        double lTz = Constants.Z0[(layer-1)/2];
 
         //rotate and translate
         double cosRotation = Math.cos(Loc_to_Glob_rangl);
@@ -195,14 +208,14 @@ public class Geometry {
 public Point3D transformToFrame(int sector, int layer, double x, double y, double z, String frame, String MiddlePlane) {
     	
         // global rotation angle
-        double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layer - 1]) * 2. * Math.PI + Constants.PHI0[layer - 1];
+        double Glob_rangl = ((double) -(sector - 1) / (double) org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(layer-1)/2]) * 2. * Math.PI + org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
         
         // angle to rotate to global frame
-        double Loc_to_Glob_rangl = Glob_rangl - Constants.LOCZAXISROTATION;
+        double Loc_to_Glob_rangl = Glob_rangl - org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
 
-        double lTx = Constants.MODULERADIUS[layer - 1][sector - 1]  * Math.cos(Glob_rangl);
-        double lTy = Constants.MODULERADIUS[layer - 1][sector - 1]  * Math.sin(Glob_rangl);
-        double lTz = Constants.Z0[layer - 1];
+        double lTx = org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[(layer-1)/2][(layer-1)%2]  * Math.cos(Glob_rangl);
+        double lTy = org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[(layer-1)/2][(layer-1)%2]  * Math.sin(Glob_rangl);
+        double lTz = org.jlab.detector.geant4.v2.SVT.SVTConstants.Z0ACTIVE[(layer-1)/2]-org.jlab.detector.geant4.v2.SVT.SVTConstants.DEADZNLEN;
 
         //rotate and translate
         double cosRotation = Math.cos(Loc_to_Glob_rangl);
@@ -213,12 +226,12 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double zt = 0;
 
         if (frame.equals("lab")) {
-            xt = (x - 0.5 * Constants.ACTIVESENWIDTH)  * cosRotation - y * sinRotation + lTx;
-            yt = (x - 0.5 * Constants.ACTIVESENWIDTH) * sinRotation + y * cosRotation + lTy;
+            xt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID)  * cosRotation - y * sinRotation + lTx;
+            yt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID) * sinRotation + y * cosRotation + lTy;
             zt = z + lTz;
         }
         if (frame.equals("local")) {
-            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * Constants.ACTIVESENWIDTH;
+            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID;
             yt = -(x - lTx) * sinRotation + (y - lTy) * cosRotation;
             zt = z - lTz;
         }
@@ -226,13 +239,13 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
     }
     //*** point and its error
 
-    public double[] getCrossPars(int sector, int upperlayer, double s1, double s2, String frame, Vector3D trkDir) {
+   /* public double[] getCrossPars(int sector, int upperlayer, double s1, double s2, String frame, Vector3D trkDir) {
         double[] vals = new double[6];
 
         // if first iteration trkDir == null
         double s2corr = s2;
         // now use track info
-        s2corr = this.getCorrectedStrip(sector, upperlayer, s2, trkDir, Constants.MODULELENGTH);
+        s2corr = this.getCorrectedStrip(sector, upperlayer, s2, trkDir, org.jlab.detector.geant4.v2.SVT.SVTConstants.MODULELEN);
         double z = getLocCoord(s1, s2corr)[1];
         //update using the corrected z
         s2corr = this.getCorrectedStrip(sector, upperlayer, s2, trkDir, z);
@@ -248,28 +261,28 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double LC_x = LC[0];
         double LC_z = LC[1];
 
-        Point3D crPoint = transformToFrame(sector, upperlayer - 1, LC_x, 0, LC_z, "lab", "middle");
+        Point3D crPoint = transformToFrame(sector, upperlayer-1, LC_x, 0, LC_z, "lab", "middle");
         // test shifts
         //this.applyShift(crPoint, upperlayer / 2, sector);
         vals[0] = crPoint.x();
         vals[1] = crPoint.y();
         vals[2] = crPoint.z();
 
-        double[] LCErr = getLocCoordErrs(upperlayer - 1, upperlayer, s1, s2corr, zf);
+        double[] LCErr = getLocCoordErrs(upperlayer-1, upperlayer, s1, s2corr, zf);
         double LCErr_x = LCErr[0];
         double LCErr_z = LCErr[1];
 
         // global rotation angle to get the error in the lab frame
-        int layerIdx = upperlayer - 1;
+        int layerIdx = upperlayer-1;
         /*
 			double Glob_rangl = ((double) (sector-1)/(double) Constants.NSECT[layerIdx])*2.*Math.PI;
 	        // angle to rotate to global frame
 	        double Loc_to_Glob_rangl = Glob_rangl-Constants.PHI0[layerIdx];
-         */
+         
         // global rotation angle
-        double Glob_rangl = ((double) -(sector - 1) / (double) Constants.NSECT[layerIdx]) * 2. * Math.PI + Constants.PHI0[layerIdx];
+        double Glob_rangl = ((double) -(sector - 1) / (double) org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[layerIdx]) * 2. * Math.PI + org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
         // angle to rotate to global frame
-        double Loc_to_Glob_rangl = Glob_rangl - Constants.LOCZAXISROTATION;
+        double Loc_to_Glob_rangl = Glob_rangl - org.jlab.detector.geant4.v2.SVT.SVTConstants.PHI0;
 
         double cosRotation = Math.cos(Loc_to_Glob_rangl);
         double sinRotation = Math.sin(Loc_to_Glob_rangl);
@@ -281,17 +294,17 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         vals[4] = yerr;
         vals[5] = LCErr_z;
 
-        if (LC_z > Constants.MODULELENGTH + Constants.interTol * 2) {
+        if (LC_z > org.jlab.detector.geant4.v2.SVT.SVTConstants.MODULELEN + interTol) {
             return new double[]{Double.NaN, 0, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
         }
         // once there is a trk, the cross should be well calculated
         //if the local cross is not in the fiducial volume it is not physical
-        if ((trkDir != null && (LC_x < 0 || LC_x > Constants.ACTIVESENWIDTH + Constants.TOLTOMODULEEDGE))
-                || (trkDir != null && (LC_z < -Constants.interTol || LC_z > Constants.MODULELENGTH + Constants.interTol))) {
+        if ((trkDir != null && (LC_x < 0 || LC_x > org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID + ToModuleEdge))
+                || (trkDir != null && (LC_z < -interTol || LC_z > org.jlab.detector.geant4.v2.SVT.SVTConstants.MODULELEN + interTol))) {
             return new double[]{Double.NaN, 0, Double.NaN, Double.NaN, Double.NaN, Double.NaN};
         }
 
-        //if(vals[5]<Constants.Z0[upperlayer-1]-Constants.interTol || vals[5]>Constants.Z0[upperlayer-1]+Constants.MODULELENGTH+Constants.interTol) {	
+        //if(vals[5]<Constants.Z0[upper(layer-1)/2]-Constants.interTol || vals[5]>Constants.Z0[upper(layer-1)/2]+Constants.MODULELENGTH+Constants.interTol) {	
         //	return new double[] {Double.NaN,0,Double.NaN,Double.NaN, Double.NaN, Double.NaN};
         //}
         double[] values = new double[6];
@@ -304,7 +317,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
         return values;
 
-    }
+    }*/
 
     private double getCorrectedStrip(int sector, int upperlayer, double s2,
             Vector3D trkDir, double ZalongModule) {
@@ -334,23 +347,23 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double x = LocPoint.x();
         double z = LocPoint.z();
 
-        double alpha = Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+        double alpha = org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
 
-        double b = Constants.ACTIVESENWIDTH;
-        double P = Constants.PITCH;
+        double b = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID;
+        double P = org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH;
 
         double s = -1;
 
         if (layer % 2 == 1) {//layers 1,3,5 == bottom ==i ==>(1) : regular configuration
             //m1,b1
-            s = (int) Math.floor((-x + b + alpha * z + 0.5 * P - Constants.STRIPTSTART) / (alpha * z + P));
+            s = (int) Math.floor((-x + b + alpha * z + 0.5 * P - org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID) / (alpha * z + P));
 
             double delta = 99999;
             double sdelta = delta;
             double newStrip = s;
             for (int i = -1; i < 2; i++) {
                 double sp = s + (double) i;
-                double x_calc = -Math.tan((sp - 1) * alpha) * z + b - sp * P + 0.5 * P - Constants.STRIPTSTART;
+                double x_calc = -Math.tan((sp - 1) * alpha) * z + b - sp * P + 0.5 * P - org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
                 if (Math.abs(x - x_calc) < delta) {
                     sdelta = x - x_calc;
@@ -362,7 +375,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
             s = newStrip;
             for (int i = -10; i <= 10; i++) {
                 double sp = s + (double) i * 0.1;
-                double x_calc = -Math.tan((sp - 1) * alpha) * z + b - sp * P + 0.5 * P - Constants.STRIPTSTART;
+                double x_calc = -Math.tan((sp - 1) * alpha) * z + b - sp * P + 0.5 * P - org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
                 if (Math.abs(x - x_calc) < delta) {
                     sdelta = x - x_calc;
@@ -383,14 +396,14 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         if (layer % 2 == 0) {
             //layers 2,4,6 == top ==j ==>(2) : regular configuration
             //m2,b2		
-            s = (int) Math.floor((x + alpha * z + 0.5 * P - Constants.STRIPTSTART) / (alpha * z + P));
+            s = (int) Math.floor((x + alpha * z + 0.5 * P - org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID) / (alpha * z + P));
 
             double delta = 99999;
             double sdelta = delta;
             double newStrip = s;
             for (int i = -1; i < 2; i++) {
                 double sp = s + (double) i;
-                double x_calc = Math.tan((sp - 1) * alpha) * z + sp * P - 0.5 * P + Constants.STRIPTSTART;
+                double x_calc = Math.tan((sp - 1) * alpha) * z + sp * P - 0.5 * P + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
                 if (Math.abs(x - x_calc) < delta) {
                     sdelta = x - x_calc;
@@ -402,7 +415,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
             s = newStrip;
             for (int i = -10; i <= 10; i++) {
                 double sp = s + (double) i * 0.1;
-                double x_calc = Math.tan((sp - 1) * alpha) * z + sp * P - 0.5 * P + Constants.STRIPTSTART;
+                double x_calc = Math.tan((sp - 1) * alpha) * z + sp * P - 0.5 * P + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
                 if (Math.abs(x - x_calc) < delta) {
                     sdelta = x - x_calc;
@@ -434,8 +447,8 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
     public double getSingleStripResolution(int lay, int strip, double Z) { // as a function of local z
         double Strip = (double) strip;
         double StripUp = Strip + 1;
-        if (strip == Constants.NSTRIP) {
-            StripUp = (double) Constants.NSTRIP; //edge strip
+        if (strip == org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS) {
+            StripUp = (double) org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS; //edge strip
         }
         double StripDown = Strip - 1;
         if (strip == 1) {
@@ -469,15 +482,15 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
     public double getDOCAToStrip(int sector, int layer, double centroidstrip, Point3D point0) {
 
         // local angle of  line graded from 0 to 3 deg.
-        double ialpha = (centroidstrip - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+        double ialpha = (centroidstrip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc = (centroidstrip - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
+        double interc = (centroidstrip - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
         // Equation for strip line is x = mz + b [i.e. z is the direction of the length of the module]
         // -------------------------------------
         double m1 = -Math.tan(ialpha);
         double m2 = Math.tan(ialpha);
-        double b1 = Constants.ACTIVESENWIDTH - interc;
+        double b1 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID - interc;
         double b2 = interc;
 
         Vector3D vecAlongStrip = new Vector3D();
@@ -505,25 +518,26 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
     public double getXAtZ(int layer, double centroidstrip, double Z) {
         double X = 0;
+        double Zloc=Z-org.jlab.detector.geant4.v2.SVT.SVTConstants.DEADZNLEN;
         // local angle of  line graded from 0 to 3 deg.
-        double ialpha = (centroidstrip - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+        double ialpha = (centroidstrip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc = (centroidstrip - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
+        double interc = (centroidstrip - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
        
         // Equation for strip line is x = mz + b [i.e. z is the direction of the length of the module]
         // -------------------------------------
         double m1 = -Math.tan(ialpha);
         double m2 = Math.tan(ialpha);
-        double b1 = Constants.ACTIVESENWIDTH - interc;
+        double b1 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID - interc;
         double b2 = interc;
 
         if (layer % 2 == 0) { //layers 2,4,6 == top ==j ==>(2) : regular configuration
 
-            X = m2 * Z + b2;
+            X = m2 * Zloc + b2;
         }
         if (layer % 2 == 1) { //layers 1,3,5 == bottom ==i ==>(1) : regular configuration
 
-            X = m1 * Z + b1;
+            X = m1 * Zloc + b1;
         }
 
         return X;
@@ -542,7 +556,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         // int shift = (int)((Constants.LAYRGAP*n.cross(trkDir_t).z())/Constants.PITCH);
         //
         //correction to the pitch to take into account the grading of the angle -- get the upper or lower strip depending on the trkdir
-        double pitchcorr = Constants.PITCH;
+        double pitchcorr = org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH;
 
         if (s2 > 2 && s2 < 255) {
             double pitchToNextStrp = Math.abs(getXAtZ(layer, (double) s2 + 1, z) - getXAtZ(layer, (double) s2, z));
@@ -556,7 +570,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
             pitchcorr = Math.abs(getXAtZ(layer, (double) s2 - 1, z) - getXAtZ(layer, (double) s2, z));
         }
 
-        double layerGap = Constants.MODULERADIUS[1][0] - Constants.MODULERADIUS[0][0];
+        double layerGap = org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[1][0] - org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[0][0];
 
         double shift = sign * layerGap * Math.tan(TrkToPlnNormRelatAngl) / pitchcorr;
 
@@ -582,18 +596,18 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double m = (LocPoint1.x() - LocPoint2.x()) / (LocPoint1.z() - LocPoint2.z());
         double b = LocPoint1.x() - m * LocPoint1.z();
 
-        double ialpha1 = (s1 - 1) * BST_geo.Constants.STEREOANGLE / (double) (BST_geo.Constants.NSTRIP - 1);
+        double ialpha1 = (s1 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc1 = (s1 - 0.5) * BST_geo.Constants.PITCH + BST_geo.Constants.STRIPTSTART;
-        double ialpha2 = (s2 - 1) * BST_geo.Constants.STEREOANGLE / (double) (BST_geo.Constants.NSTRIP - 1);
+        double interc1 = (s1 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
+        double ialpha2 = (s2 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
-        double interc2 = (s2 - 0.5) * BST_geo.Constants.PITCH + BST_geo.Constants.STRIPTSTART;
+        double interc2 = (s2 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
 
         // Equation for strip line is x = mz + b [i.e. z is the direction of the length of the module]
         // -------------------------------------
         double m1 = -Math.tan(ialpha1);
         double m2 = Math.tan(ialpha2);
-        double b1 = BST_geo.Constants.ACTIVESENWIDTH - interc1;
+        double b1 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID - interc1;
         double b2 = interc2;
 
         double z1 = (b - b1) / (m1 - m);
@@ -608,7 +622,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         //normal to plane of module
         Vector3D n = this.findBSTPlaneNormal(s, l1);
         //path length tranversed inbetween modules
-        double l = (BST_geo.Constants.MODULERADIUS[l2 - 1][0] - BST_geo.Constants.MODULERADIUS[l1 - 1][0]) / (n.dot(t));
+        double l = (org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[l2 - 1][0] - org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[l1 - 1][0]) / (n.dot(t));
         //Point inbetween the modules			
 
         Point3D Point = new Point3D(Point1.x() + t.x() * ((double) l / 2), Point1.y() + t.y() * ((double) l / 2), Point1.z() + t.z() * ((double) l / 2));
@@ -629,15 +643,15 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         // -------------------------------------
         if (slyr == 0) {
             double s1 = strip;
-            double ialpha1 = (s1 - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+            double ialpha1 = (s1 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
             //the active area starts at the first strip 	
-            double interc1 = (s1 - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
+            double interc1 = (s1 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
             double m1 = -Math.tan(ialpha1);
-            double b1 = Constants.ACTIVESENWIDTH - interc1;
+            double b1 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID - interc1;
 
             z1 = 0;
             x1 = m1 * z1 + b1;
-            z2 = Constants.MODULELENGTH;
+            z2 = org.jlab.detector.geant4.v2.SVT.SVTConstants.MODULELEN;
             x2 = m1 * z2 + b1;
 
             if (x2 < 0) {
@@ -648,19 +662,19 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
         if (slyr == 1) {
             double s2 = strip;
-            double ialpha2 = (s2 - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+            double ialpha2 = (s2 - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
             //the active area starts at the first strip 	
-            double interc2 = (s2 - 0.5) * Constants.PITCH + Constants.STRIPTSTART;
+            double interc2 = (s2 - 0.5) * org.jlab.detector.geant4.v2.SVT.SVTConstants.READOUTPITCH + org.jlab.detector.geant4.v2.SVT.SVTConstants.STRIPOFFSETWID;
             double m2 = Math.tan(ialpha2);
             double b2 = interc2;
 
             z1 = 0;
             x1 = m2 * z1 + b2;
-            z2 = Constants.MODULELENGTH;
+            z2 = org.jlab.detector.geant4.v2.SVT.SVTConstants.MODULELEN;
             x2 = m2 * z2 + b2;
 
-            if (x2 > Constants.ACTIVESENWIDTH) {
-                x2 = Constants.ACTIVESENWIDTH;
+            if (x2 > org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID) {
+                x2 = org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID;
                 z2 = (x2 - b2) / m2;
             }
         }
@@ -673,11 +687,11 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
     }
 
-    public void applyShift( Point3D cross, int region, int sector ) {
+    /*public void applyShift( Point3D cross, int region, int sector ) {
         Vector3d aPoint = new Vector3d(cross.x(), cross.y(), cross.z());
-        Vector3d Cu_m = new Vector3d( -Constants.FIDCUX, 0.0, -Constants.FIDCUZ );
-        Vector3d Cu_p = new Vector3d( Constants.FIDCUX, 0.0, -Constants.FIDCUZ );
-        Vector3d Pk = new Vector3d( Constants.FIDPKX, 0.0, Constants.FIDPKZ0 + Constants.FIDPKZ1 );
+        Vector3d Cu_m = new Vector3d( -SVTConstants.FIDCUX, 0.0, -SVTConstants.FIDCUZ );
+        Vector3d Cu_p = new Vector3d( SVTConstants.FIDCUX, 0.0, -SVTConstants.FIDCUZ );
+        Vector3d Pk = new Vector3d( SVTConstants.FIDPKX, 0.0, SVTConstants.FIDPKZ0 + SVTConstants.FIDPKZ1 );
         double fidOriginZ = SVTConstants.Z0ACTIVE[region-1] - SVTConstants.DEADZNLEN - SVTConstants.FIDORIGINZ;
         double heatSinkTotalThk = SVTConstants.MATERIALDIMENSIONS.get("heatSink")[1];
         double radius = SVTConstants.SUPPORTRADIUS[region-1] + heatSinkTotalThk;
@@ -695,14 +709,14 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         }
 
         // do the rotation here.
-        if( !(Constants.RA[region-1][sector-1] < 1E-3) ) {			
+        if( !(SVTConstants.RA[region-1][sector-1] < 1E-3) ) {			
                 aCenter.times( -1 ); // reverse translation
                 aPoint.add( aCenter ) ; // move origin to center of rotation axis
                 System.out.printf("        --> before rotat : % 8.4f % 8.4f % 8.4f\n", aPoint.x, aPoint.y, aPoint.z );
-                Vector3d vecAxis = new Vector3d(Constants.RX[region-1][sector-1], Constants.RY[region-1][sector-1], Constants.RZ[region-1][sector-1] ).normalized();			
-                vecAxis.rotate( aPoint, Math.toRadians(Constants.RA[region-1][sector-1]) );
+                Vector3d vecAxis = new Vector3d(SVTConstants.RX[region-1][sector-1], SVTConstants.RY[region-1][sector-1], SVTConstants.RZ[region-1][sector-1] ).normalized();			
+                vecAxis.rotate( aPoint, Math.toRadians(SVTConstants.RA[region-1][sector-1]) );
                 //aPoint.rotateZ(Math.toRadians(Constants.RA[region-1][sector-1]));
-                System.out.printf(Constants.RA[region-1][sector-1]+"        --> rotat ax : % 8.4f % 8.4f % 8.4f\n", vecAxis.x, vecAxis.y, vecAxis.z );
+                System.out.printf(SVTConstants.RA[region-1][sector-1]+"        --> rotat ax : % 8.4f % 8.4f % 8.4f\n", vecAxis.x, vecAxis.y, vecAxis.z );
                 System.out.printf("        --> after rotat : % 8.4f % 8.4f % 8.4f\n", aPoint.x, aPoint.y, aPoint.z );
                 aCenter.times( -1 ); // reverse translation
                 aPoint.add( aCenter ) ;
@@ -711,14 +725,14 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         }
 
         // do the translation here.
-        Vector3d translationVec = new Vector3d( Constants.TX[region-1][sector-1], Constants.TY[region-1][sector-1], Constants.TZ[region-1][sector-1] );
+        Vector3d translationVec = new Vector3d( SVTConstants.TX[region-1][sector-1], SVTConstants.TY[region-1][sector-1], SVTConstants.TZ[region-1][sector-1] );
         aPoint.set( aPoint.add( translationVec ) ); 
         //if(Math.abs(cross.x()-aPoint.x)<1 && Math.abs(cross.y()-aPoint.y)<1) {
         System.out.println("  unshifted \n"+cross.toString()+" in sector "+sector+" region "+region);
         cross.set(aPoint.x, aPoint.y, aPoint.z);
         System.out.printf("        --> shifted : % 8.4f % 8.4f % 8.4f\n", aPoint.x, aPoint.y, aPoint.z );
        // }
-    }
+    }*/
 
 
 
@@ -830,21 +844,20 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		double dist=0;
 		Point3D Loc=new Point3D(this.transformToFrame(sector, layer, point.x(), point.y(), point.z(), "local", ""));
 		double x_strip=this.getXAtZ(layer, strip, Loc.z());
-		double ialpha1 = (strip - 1) * Constants.STEREOANGLE / (double) (Constants.NSTRIP - 1);
+		double ialpha1 = (strip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
 		dist=(Loc.x()-x_strip)*Math.cos(ialpha1);
 		return dist;
 	}
 	
     public static void main(String arg[]) throws FileNotFoundException {
 
-        Constants.Load();
-
+        
         int s1 = 1;
         int s2 = 1;
 
         Geometry geo = new Geometry();
 
-        System.out.println("  old geom strip inter " + geo.getLocCoord(s1, s2)[0] + "," + geo.getLocCoord(s1, s2)[1]);
+        //System.out.println("  old geom strip inter " + geo.getLocCoord(s1, s2)[0] + "," + geo.getLocCoord(s1, s2)[1]);
 
         /*
 	    	 * X[0][0] = x1;
@@ -914,7 +927,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 
 	public int getNbModule(int lay) {
 		// TODO Auto-generated method stub
-		return Constants.NSECT[lay-1];
+		return org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(lay-1)/2];
 	}
 
 }

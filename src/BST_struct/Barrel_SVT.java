@@ -20,7 +20,6 @@ public class Barrel_SVT {
 		
 	public Barrel_SVT(){
 		geo= new BST_geo.Geometry();
-		BST_geo.Constants.Load();
 		nb_hit=0;
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
