@@ -28,7 +28,6 @@ public class Geometry {
     	org.jlab.detector.geant4.v2.SVT.SVTConstants.VERBOSE = true;
     	cp = new DatabaseConstantProvider(10, "default");
     	org.jlab.detector.geant4.v2.SVT.SVTConstants.connect(cp);
-    	
     	interTol=20; //mm // Tolerance for strip intersection
     	ToModuleEdge=1.0; //mm // Tolerance for track trajectory point at layer to module fiducial edge (mm
     }
@@ -319,8 +318,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
     }*/
 
-    private double getCorrectedStrip(int sector, int upperlayer, double s2,
-            Vector3D trkDir, double ZalongModule) {
+    private double getCorrectedStrip(int sector, int upperlayer, double s2, Vector3D trkDir, double ZalongModule) {
         double s2corr = s2;
         // second iteration: there is a track direction
         if (trkDir != null) {
@@ -474,7 +472,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double strip_sigma_sq = (firstTerm - secondTerm) * invPsum;
 
         double strip_sigma = Math.sqrt(strip_sigma_sq);
-
+       
         return strip_sigma;
     }
     //****
@@ -518,7 +516,6 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
     public double getXAtZ(int layer, double centroidstrip, double Z) {
         double X = 0;
-        double Zloc=Z-org.jlab.detector.geant4.v2.SVT.SVTConstants.DEADZNLEN;
         // local angle of  line graded from 0 to 3 deg.
         double ialpha = (centroidstrip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
         //the active area starts at the first strip 	
@@ -533,11 +530,11 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
         if (layer % 2 == 0) { //layers 2,4,6 == top ==j ==>(2) : regular configuration
 
-            X = m2 * Zloc + b2;
+            X = m2 * Z + b2;
         }
         if (layer % 2 == 1) { //layers 1,3,5 == bottom ==i ==>(1) : regular configuration
 
-            X = m1 * Zloc + b1;
+            X = m1 * Z + b1;
         }
 
         return X;

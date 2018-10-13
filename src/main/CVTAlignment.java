@@ -21,15 +21,16 @@ public class CVTAlignment {
 	
 	public static void main(String[] args) throws IOException {
 		
-		//String ConstantFile=args[0];
-		//int layer=Integer.parseInt(args[1]);
-		//int sector=Integer.parseInt(args[2]);
-		
 		String ConstantFile="/home/mdefurne/Bureau/CLAS12/Test.txt";
+		String fileName=args[0];
+		HipoDataSource reader = new HipoDataSource();
+		reader.open(fileName);
 		
 		CVTAlignment CVTAli=new CVTAlignment();
 				
 		BMT.getGeometry().LoadMisalignmentFromFile(ConstantFile);
+		
+		
 	}
 			 
 	
