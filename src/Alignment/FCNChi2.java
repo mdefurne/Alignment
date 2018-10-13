@@ -18,9 +18,9 @@ public class FCNChi2 implements FCNBase {
 	public double valueOf(double[] par)
 	   {
 		
-		  StraightLine line=new StraightLine();
 		  double val=0;	  
 		  int count=0;
+		  
 		  //First three parameters are Rotations
 		  BMT_geo.Constants.setRx(layer, sector, par[0]);
 		  BMT_geo.Constants.setRy(layer, sector, par[1]);
@@ -34,9 +34,7 @@ public class FCNChi2 implements FCNBase {
 			  DataEvent event = reader.gotoEvent(count);
 			
 				count++;
-			    	   
-			    
-			    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
+			    if(event.hasBank("CVTRec::Cosmics")&&event.hasBank("CVTRec::Trajectory")) {
 			    	
 			    }
 		  }

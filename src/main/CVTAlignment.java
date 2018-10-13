@@ -7,6 +7,7 @@ import java.io.*;
 
 import BMT_struct.Barrel;
 import BST_struct.Barrel_SVT;
+import Alignment.Aligner;
 
 
 public class CVTAlignment {
@@ -30,6 +31,9 @@ public class CVTAlignment {
 				
 		BMT.getGeometry().LoadMisalignmentFromFile(ConstantFile);
 		
+		Aligner Alignment=new Aligner();
+		
+		Alignment.DoAlignment(BMT, BST, reader, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 		
 	}
 			 
