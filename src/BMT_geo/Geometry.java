@@ -195,7 +195,7 @@ public class Geometry {
         	if (num_strip > 0) {
         		for (int j = 1; j < num_strip + 1; j++) {
 
-        			if (j >= limit) { //test if we change the width
+        			if (j > limit) { //test if we change the width
         				group++;
         				limit += Constants.getCRCGROUP()[num_region][group];
         			}
@@ -207,7 +207,7 @@ public class Geometry {
         if (this.getZorC(layer)==1) {
         	pitch=Constants.getCRZWIDTH()[num_region];
         }
-
+        
         return pitch; //
     }
     

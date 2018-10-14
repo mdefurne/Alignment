@@ -103,12 +103,14 @@ public class Barrel {
 			clus.setX(geo.getRadius(layer)*Math.cos(phi));
 			clus.setY(geo.getRadius(layer)*Math.sin(phi));
 			clus.setZ(Double.NaN);
+			clus.setErr(geo.CRCStrip_GetPitch(layer, (int) strip)/Math.sqrt(12));
 		}
 		if (geo.getZorC(layer)==0) { //C-tile
 			double Zclus=(1-weight)*geo.CRCStrip_GetZ(layer, (int) strip)+weight*geo.CRCStrip_GetZ(layer, (int)(strip+1));
 			clus.setX(Double.NaN);
 			clus.setY(Double.NaN);
 			clus.setZ(Zclus);
+			clus.setErr(geo.CRCStrip_GetPitch(layer, (int) strip)/Math.sqrt(12));
 		}
 		return clus;
 	}

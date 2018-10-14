@@ -204,6 +204,10 @@ public class Cluster {
 		return Err;
 	}
 	
+	public void setErr(double error) {
+		Err=error;
+	}
+	
 	public void InTheFit(boolean infit) {
 		InTheFit=infit;
 	}

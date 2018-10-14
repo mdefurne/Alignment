@@ -24,9 +24,9 @@ public class CVTAlignment {
 		
 		String ConstantFile="/home/mdefurne/Bureau/CLAS12/Test.txt";
 		String fileName=args[0];
-		HipoDataSource reader = new HipoDataSource();
+		HipoDataSource reader=new HipoDataSource();
 		reader.open(fileName);
-		
+				
 		CVTAlignment CVTAli=new CVTAlignment();
 				
 		BMT.getGeometry().LoadMisalignmentFromFile(ConstantFile);
