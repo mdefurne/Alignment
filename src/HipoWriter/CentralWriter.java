@@ -374,9 +374,9 @@ public class CentralWriter {
 						bank.getNode("ID").setShort(index, (short) track);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
-						bank.getNode("XtrackIntersPlane").setFloat(index, (float) inter.x());
-						bank.getNode("YtrackIntersPlane").setFloat(index, (float) inter.y());
-						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) inter.z());
+						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
+						bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
+						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
 						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiSVT.angle(normSVT)));
 						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaSVT.angle(normSVT)));
 						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(normSVT)));

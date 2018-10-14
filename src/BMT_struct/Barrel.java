@@ -91,6 +91,28 @@ public class Barrel {
 		}
 	}
 	
+	public Cluster RecreateCluster(int layer, int sector, float centroid) {
+		Cluster clus=new Cluster();
+		clus.setLayer(layer);
+		clus.setSector(sector);
+		clus.setRadius(geo.getRadius(layer)); 
+		double strip=Math.floor(centroid);
+		double weight=centroid-strip;
+		if (geo.getZorC(layer)==1) { //Z-tile
+			double phi=(1-weight)*geo.CRZStrip_GetPhi(sector, layer, (int) strip)+weight*geo.CRZStrip_GetPhi(sector, layer, (int)(strip+1));
+			clus.setX(geo.getRadius(layer)*Math.cos(phi));
+			clus.setY(geo.getRadius(layer)*Math.sin(phi));
+			clus.setZ(Double.NaN);
+		}
+		if (geo.getZorC(layer)==0) { //C-tile
+			double Zclus=(1-weight)*geo.CRCStrip_GetZ(layer, (int) strip)+weight*geo.CRCStrip_GetZ(layer, (int)(strip+1));
+			clus.setX(Double.NaN);
+			clus.setY(Double.NaN);
+			clus.setZ(Zclus);
+		}
+		return clus;
+	}
+	
 	@SuppressWarnings("static-access")
 	public void fillBarrel(DataBank pbank, boolean isMC) {
 		clear();

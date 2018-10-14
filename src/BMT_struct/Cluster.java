@@ -263,5 +263,11 @@ public class Cluster {
 		return centroidResidual;
 	}
 		
-				
+	public void setRadius(double d) {
+		centroid_r=d;
+	}
+	
+	public void setPhi(double phi) {
+		centroid_phi=phi;
+	}
 }
