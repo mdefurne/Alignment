@@ -87,12 +87,12 @@ public class Cluster {
 		
 		centroid_r=aHit.getRadius();
 		Err=Edep*Err+aHit.getADC()*aHit.getErr();
-		centroid+=Edep*centroid+id_hit*aHit.getADC();
+		centroid=Edep*centroid+id_hit*aHit.getADC();
 		
 		if(!Double.isNaN(aHit.getPhi())) {
 			centroid_x=Edep*centroid_x+centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
 			centroid_y=Edep*centroid_y+centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
-			Edep+=aHit.getADC();
+			Edep+=(double) aHit.getADC();
 			centroid_x=centroid_x/Edep;
 			centroid_y=centroid_y/Edep;
 			centroid_z=Double.NaN;
@@ -104,12 +104,12 @@ public class Cluster {
 			centroid_y=Double.NaN;
 			centroid_phi=Double.NaN;
 			centroid_z=Edep*centroid_z+aHit.getADC()*aHit.getZ();
-			Edep+=aHit.getADC();
+			Edep+= (double) aHit.getADC();
 			centroid_z=centroid_z/Edep;
 		}
 	
 		centroid=centroid/Edep;
-		if (centroid>1152&&layer_clus==6) System.out.println(hit_id.get(0)+" "+hit_id.get(hit_id.size()-1));
+		
 		Err=Err/Edep;
 	}
 	

@@ -757,24 +757,24 @@ public class Geometry {
 	
 	public void LoadMisalignmentFromFile(String FileName) throws IOException{
 		File GeoTrans=new File(FileName);
-		int rowwidth=6;
+		
 		String separator = "\\s+";
 		
 		if (GeoTrans.exists()) {
-			String[] line=new String[6];
+			String[] line=new String[8];
 			int linenumber=0;
 			Scanner input = new Scanner(GeoTrans);
             while (input.hasNextLine()) {
             	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
                
             	//Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
-            	Constants.setRx(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[0]));
-            	Constants.setRy(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[1]));
-            	Constants.setRz(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[2]));
-            	Constants.setCx(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[3]));
-            	Constants.setCy(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[4]));
-            	Constants.setCz(linenumber/3+1, linenumber%3+1, Double.parseDouble(line[5]));
-			linenumber++;
+            	Constants.setRx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[2]));
+            	Constants.setRy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[3]));
+            	Constants.setRz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[4]));
+            	Constants.setCx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[5]));
+            	Constants.setCy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[6]));
+            	Constants.setCz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[7]));
+			//linenumber++;
 			}
 		}
 		

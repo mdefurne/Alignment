@@ -1,5 +1,7 @@
 package main;
 
+import java.io.IOException;
+
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataSource;
 
@@ -73,6 +75,12 @@ public class StraightTracker {
 		
 		StraightTracker Straight=new StraightTracker();
 		Asimov.setOuputFileName(Output);
+		try {
+			BMT.getGeometry().LoadMisalignmentFromFile("Test.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
@@ -105,7 +113,7 @@ public class StraightTracker {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
-		    	 //System.out.println(count);
+			System.out.println(count);
 		    //Load all the constant needed but only for the first event
 		   
 		    
@@ -132,6 +140,8 @@ public class StraightTracker {
 			Tracky.draw();
 			Sherlock.draw();		
 		}
+		System.out.println(BMT_geo.Constants.getRx(6,2)+" "+BMT_geo.Constants.getCz(6,2));
+		System.out.println(BMT_geo.Constants.getRx(6,1)+" "+BMT_geo.Constants.getCz(6,1));
 		System.out.println("Done! "+count);
  }
 }
