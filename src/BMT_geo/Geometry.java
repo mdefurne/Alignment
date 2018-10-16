@@ -207,7 +207,7 @@ public class Geometry {
         if (this.getZorC(layer)==1) {
         	pitch=Constants.getCRZWIDTH()[num_region];
         }
-        
+       
         return pitch; //
     }
     
@@ -602,11 +602,11 @@ public class Geometry {
         return axis;
     }
     
-    public double getRadius(int layer) {
+    public double getClusterRadius(int layer) {
     	int num_region = (int) (layer + 1) / 2 - 1;
     	double r=0;
-    	if (getZorC(layer)==1) r=BMT_geo.Constants.getCRZRADIUS()[num_region];
-    	if (getZorC(layer)==0) r=BMT_geo.Constants.getCRCRADIUS()[num_region];
+    	if (getZorC(layer)==1) r=BMT_geo.Constants.getCRZRADIUS()[num_region]+BMT_geo.Constants.hStrip2Det;
+    	if (getZorC(layer)==0) r=BMT_geo.Constants.getCRCRADIUS()[num_region]+BMT_geo.Constants.hStrip2Det;
     	//r=r+BMT_geo.Constants.hStrip2Det;
     	return r;
     }
@@ -693,7 +693,7 @@ public class Geometry {
 		//Find the intersection
 		double a=sx*sx+sy*sy;
 		double b=2*(sx*ix+sy*iy);
-		double c=ix*ix+iy*iy-(this.getRadius(layer)+Constants.hStrip2Det)*(this.getRadius(layer)+Constants.hStrip2Det);
+		double c=ix*ix+iy*iy-this.getClusterRadius(layer)*this.getClusterRadius(layer);
 			 
 		double delta=b*b-4*a*c;
 		if (delta==0) {

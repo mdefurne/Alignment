@@ -79,7 +79,9 @@ public class FCNChi2 implements FCNBase {
 			    							(layer-6)==BMTClusbank.getByte("layer",clus)&&
 			    							sector==BMTClusbank.getByte("sector",clus)&&
 			    							Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
+			    						
 			    							BMT_struct.Cluster Clus=BMT.RecreateCluster(layer-6,sector,BMTClusbank.getFloat("centroid",clus));
+			    							if (Clus.getCentroid()>1152||BMTClusbank.getFloat("centroid",clus)>1152) System.out.println(i+1);
 			    							val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);
 			    					}
 			    				}

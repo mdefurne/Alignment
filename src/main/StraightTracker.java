@@ -105,7 +105,7 @@ public class StraightTracker {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
-		    	 System.out.println(count);
+		    	 //System.out.println(count);
 		    //Load all the constant needed but only for the first event
 		   
 		    

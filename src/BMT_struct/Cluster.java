@@ -85,7 +85,7 @@ public class Cluster {
 			seed=id_hit;
 		}
 		
-		centroid_r=aHit.getRadius()+BMT_geo.Constants.hStrip2Det;
+		centroid_r=aHit.getRadius();
 		Err=Edep*Err+aHit.getADC()*aHit.getErr();
 		centroid+=Edep*centroid+id_hit*aHit.getADC();
 		
@@ -107,8 +107,9 @@ public class Cluster {
 			Edep+=aHit.getADC();
 			centroid_z=centroid_z/Edep;
 		}
-		
+	
 		centroid=centroid/Edep;
+		if (centroid>1152&&layer_clus==6) System.out.println(hit_id.get(0)+" "+hit_id.get(hit_id.size()-1));
 		Err=Err/Edep;
 	}
 	

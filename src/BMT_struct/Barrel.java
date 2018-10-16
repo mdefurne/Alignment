@@ -95,13 +95,14 @@ public class Barrel {
 		Cluster clus=new Cluster();
 		clus.setLayer(layer);
 		clus.setSector(sector);
-		clus.setRadius(geo.getRadius(layer)); 
+		clus.setRadius(geo.getClusterRadius(layer)); 
 		double strip=Math.floor(centroid);
+		
 		double weight=centroid-strip;
 		if (geo.getZorC(layer)==1) { //Z-tile
 			double phi=(1-weight)*geo.CRZStrip_GetPhi(sector, layer, (int) strip)+weight*geo.CRZStrip_GetPhi(sector, layer, (int)(strip+1));
-			clus.setX(geo.getRadius(layer)*Math.cos(phi));
-			clus.setY(geo.getRadius(layer)*Math.sin(phi));
+			clus.setX(geo.getClusterRadius(layer)*Math.cos(phi));
+			clus.setY(geo.getClusterRadius(layer)*Math.sin(phi));
 			clus.setZ(Double.NaN);
 			clus.setErr(geo.CRCStrip_GetPitch(layer, (int) strip)/Math.sqrt(12));
 		}
@@ -127,11 +128,11 @@ public class Barrel {
 			if (!isMC) time= pbank.getFloat("time",row );
 						
 			if (geo.getZorC(layer)==1&&strip>0&&ADC>0) { 
-				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
+				Tiles[layer-1][sector-1].addHit(strip, geo.getClusterRadius(layer) , geo.CRZStrip_GetPhi(sector, layer, strip), Double.NaN, ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
 				nb_hit++;
 			}
 			if (geo.getZorC(layer)==0&&strip>0&&ADC>0) { 
-				Tiles[layer-1][sector-1].addHit(strip, geo.getRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
+				Tiles[layer-1][sector-1].addHit(strip, geo.getClusterRadius(layer) , Double.NaN, geo.CRCStrip_GetZ(layer, strip), ADC, time, geo.CRCStrip_GetPitch(layer, strip)/Math.sqrt(12));
 				nb_hit++;
 			}
 		}
