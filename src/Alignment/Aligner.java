@@ -24,9 +24,9 @@ public class Aligner {
 				upar.add("Rx", 0, Math.toRadians(10), Math.toRadians(-5), Math.toRadians(5));
 				upar.add("Ry", 0, Math.toRadians(10), Math.toRadians(-5), Math.toRadians(5));
 				upar.add("Rz", 0, Math.toRadians(10), Math.toRadians(-5), Math.toRadians(5));
-				upar.add("Cx", 0, 4, -2, 2);
-				upar.add("Cy", 0, 4, -2, 2);
-				upar.add("Cz", 0, 4, -2, 2);
+				upar.add("Cx", 0, 6, -3, 3);
+				upar.add("Cy", 0, 6, -3, 3);
+				upar.add("Cz", 0, 6, -3, 3);
 				if (BMT.getGeometry().getZorC(layer-6)==1) upar.fix("Cz");
 				if (BMT.getGeometry().getZorC(layer-6)==0) upar.fix("Rz");
 							  	    

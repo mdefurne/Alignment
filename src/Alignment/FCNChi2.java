@@ -38,6 +38,7 @@ public class FCNChi2 implements FCNBase {
 			  BMT_geo.Constants.setCy(layer-6, sector, par[4]);
 			  BMT_geo.Constants.setCz(layer-6, sector, par[5]);
 		  }
+		  System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]+" "+par[4]+" "+par[5]);
 		 
 		 for (int i=0; i<reader.getSize();i++) {
 			  DataEvent event = reader.gotoEvent(i);
@@ -77,12 +78,13 @@ public class FCNChi2 implements FCNBase {
 			    					System.out.println(Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))+" "+DeltaCentroid);*/
 			    					if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&
 			    							(layer-6)==BMTClusbank.getByte("layer",clus)&&
-			    							sector==BMTClusbank.getByte("sector",clus)&&
-			    							Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
+			    							sector==BMTClusbank.getByte("sector",clus)){
+			    						if (Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
 			    						
 			    							BMT_struct.Cluster Clus=BMT.RecreateCluster(layer-6,sector,BMTClusbank.getFloat("centroid",clus));
-			    							if (Clus.getCentroid()>1152||BMTClusbank.getFloat("centroid",clus)>1152) System.out.println(i+1);
+			    							
 			    							val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);
+			    						}
 			    					}
 			    				}
 			    			}

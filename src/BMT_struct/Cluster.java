@@ -275,4 +275,8 @@ public class Cluster {
 	public void setPhi(double phi) {
 		centroid_phi=phi;
 	}
+	
+	public void setCentroid(double cent) {
+		centroid=cent;
+	}
 }

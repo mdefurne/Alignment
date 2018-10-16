@@ -97,10 +97,11 @@ public class Barrel {
 		clus.setSector(sector);
 		clus.setRadius(geo.getClusterRadius(layer)); 
 		double strip=Math.floor(centroid);
-		
+		clus.setCentroid(centroid);
 		double weight=centroid-strip;
 		if (geo.getZorC(layer)==1) { //Z-tile
 			double phi=(1-weight)*geo.CRZStrip_GetPhi(sector, layer, (int) strip)+weight*geo.CRZStrip_GetPhi(sector, layer, (int)(strip+1));
+			clus.setPhi(phi);
 			clus.setX(geo.getClusterRadius(layer)*Math.cos(phi));
 			clus.setY(geo.getClusterRadius(layer)*Math.sin(phi));
 			clus.setZ(Double.NaN);
