@@ -27,8 +27,9 @@ public class Aligner {
 				upar.add("Cx", 0, 6, -3, 3);
 				upar.add("Cy", 0, 6, -3, 3);
 				upar.add("Cz", 0, 6, -3, 3);
-				if (BMT.getGeometry().getZorC(layer-6)==1) upar.fix("Cz");
+				if (BMT.getGeometry().getZorC(layer-6)==1||layer<=6) upar.fix("Cz");
 				if (BMT.getGeometry().getZorC(layer-6)==0) upar.fix("Rz");
+				
 							  	    
 			    //Create function to minimize
 			    FCNChi2 Align=new FCNChi2();
