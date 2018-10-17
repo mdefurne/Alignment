@@ -33,8 +33,14 @@ public class CVTAlignment {
 		
 		Aligner Alignment=new Aligner();
 		
-		Alignment.DoAlignment(BMT, BST, reader, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+		int layer=Integer.parseInt(args[1]);
+		int sector=Integer.parseInt(args[2]);
 		
+		Alignment.DoAlignment(BMT, BST, reader, layer, sector);
+		if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
+				BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector));
+		else System.out.println(BST.getGeometry().getRx(layer-6, sector)+" "+BST.getGeometry().getRy(layer-6, sector)+" "+BST.getGeometry().getRz(layer-6, sector)+" "+
+				BST.getGeometry().getCx(layer-6, sector)+" "+BST.getGeometry().getCy(layer-6, sector)+" "+BST.getGeometry().getCz(layer-6, sector));
 	}
 			 
 	

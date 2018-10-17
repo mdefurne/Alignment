@@ -766,14 +766,15 @@ public class Geometry {
 			Scanner input = new Scanner(GeoTrans);
             while (input.hasNextLine()) {
             	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
-               
+            	if (Integer.parseInt(line[0])>6) {
             	//Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
-            	Constants.setRx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[2]));
-            	Constants.setRy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[3]));
-            	Constants.setRz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[4]));
-            	Constants.setCx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[5]));
-            	Constants.setCy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[6]));
-            	Constants.setCz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[7]));
+            		Constants.setRx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[2]));
+            		Constants.setRy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[3]));
+            		Constants.setRz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[4]));
+            		Constants.setCx(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[5]));
+            		Constants.setCy(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[6]));
+            		Constants.setCz(Integer.parseInt(line[0])-6,Integer.parseInt(line[1]), Double.parseDouble(line[7]));
+            	}
 			//linenumber++;
 			}
 		}

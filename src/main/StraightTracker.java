@@ -77,6 +77,7 @@ public class StraightTracker {
 		Asimov.setOuputFileName(Output);
 		try {
 			BMT.getGeometry().LoadMisalignmentFromFile("Test.txt");
+			BST.getGeometry().LoadMisalignmentFromFile("Test.txt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

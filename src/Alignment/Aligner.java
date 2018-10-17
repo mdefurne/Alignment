@@ -49,7 +49,22 @@ public class Aligner {
 			    	for (int i=0;i<migrad.covariance().nrow();i++) {
 			    		err_res[i]=Math.sqrt(migrad.covariance().get(i, i));
 			    	}
-			    	System.out.println(res[0]+" "+res[1]+" "+res[2]+" "+res[3]+" "+res[4]+" "+res[5]);
+			    	if (layer>6) {
+			    		BMT_geo.Constants.setRx(layer-6, sector, res[0]);
+			    		BMT_geo.Constants.setRy(layer-6, sector, res[1]);
+			    		BMT_geo.Constants.setRz(layer-6, sector, res[2]);
+			    		BMT_geo.Constants.setCx(layer-6, sector, res[3]);
+			    		BMT_geo.Constants.setCy(layer-6, sector, res[4]);
+			    		BMT_geo.Constants.setCz(layer-6, sector, res[5]);
+			    	}
+			    	else{
+			    		BST.getGeometry().setRx(layer, sector, res[0]);
+			    		BST.getGeometry().setRy(layer, sector, res[1]);
+			    		BST.getGeometry().setRz(layer, sector, res[2]);
+			    		BST.getGeometry().setCx(layer, sector, res[3]);
+			    		BST.getGeometry().setCy(layer, sector, res[4]);
+			    		BST.getGeometry().setCz(layer, sector, res[5]);
+			    	}
 			   	}
 			    
 			

@@ -39,6 +39,14 @@ public class FCNChi2 implements FCNBase {
 			  BMT_geo.Constants.setCy(layer-6, sector, par[4]);
 			  BMT_geo.Constants.setCz(layer-6, sector, par[5]);
 		  }
+		  else {
+			  BST.getGeometry().setRx(layer, sector, par[0]);
+			  BST.getGeometry().setRy(layer, sector, par[1]);
+			  BST.getGeometry().setRz(layer, sector, par[2]);
+			  BST.getGeometry().setCx(layer, sector, par[3]);
+			  BST.getGeometry().setCy(layer, sector, par[4]);
+			  BST.getGeometry().setCz(layer, sector, par[5]);
+		  }
 		  System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]+" "+par[4]+" "+par[5]);
 		 
 		 for (int i=0; i<reader.getSize();i++) {
@@ -98,6 +106,7 @@ public class FCNChi2 implements FCNBase {
 			    	}
 			    }
 		  }
+		 		 
 		  System.out.println(val);
 	      return val;
 	   }

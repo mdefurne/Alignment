@@ -5,6 +5,8 @@ import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.io.*;
+import java.util.Scanner;
 
 import org.jlab.detector.geant4.v2.SVT.SVTConstants;
 
@@ -1034,6 +1036,32 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	
 	public double getCz(int lay, int sec) {
 		return Cz[lay-1][sec-1];
+	}
+	
+	public void LoadMisalignmentFromFile(String FileName) throws IOException{
+		File GeoTrans=new File(FileName);
+		
+		String separator = "\\s+";
+		
+		if (GeoTrans.exists()) {
+			String[] line=new String[8];
+			int linenumber=0;
+			Scanner input = new Scanner(GeoTrans);
+            while (input.hasNextLine()) {
+            	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
+            	if (Integer.parseInt(line[0])<=6) {
+            	//Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
+            		this.setRx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[2]));
+            		this.setRy(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[3]));
+            		this.setRz(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[4]));
+            		this.setCx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[5]));
+            		this.setCy(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[6]));
+            		this.setCz(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[7]));
+            	}
+			//linenumber++;
+			}
+		}
+		
 	}
 
 }
