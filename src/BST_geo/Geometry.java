@@ -22,6 +22,12 @@ public class Geometry {
 	
 	double interTol;
 	double ToModuleEdge;
+	double[][] Rx=new double[6][18];
+	double[][] Ry=new double[6][18];
+	double[][] Rz=new double[6][18];
+	double[][] Cx=new double[6][18];
+	double[][] Cy=new double[6][18];
+	double[][] Cz=new double[6][18];
 	
     public Geometry() {
     	SVTConstants=new org.jlab.detector.geant4.v2.SVT.SVTConstants();
@@ -30,6 +36,12 @@ public class Geometry {
     	org.jlab.detector.geant4.v2.SVT.SVTConstants.connect(cp);
     	interTol=20; //mm // Tolerance for strip intersection
     	ToModuleEdge=1.0; //mm // Tolerance for track trajectory point at layer to module fiducial edge (mm
+    	for (int lay=0; lay<6;lay++) {
+    		for (int sec=0; sec<18;sec++) {
+    			this.setRx(lay+1,sec+1,0);this.setRy(lay+1,sec+1,0);this.setRz(lay+1,sec+1,0);
+    			this.setCx(lay+1,sec+1,0);this.setCy(lay+1,sec+1,0);this.setCz(lay+1,sec+1,0);
+    		}
+     	}
     }
 
     // Comments on the Geometry of the BST 
@@ -794,13 +806,62 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
         System.out.printf("PS: % 8.3f % 8.3f % 8.3f\n", aPoint.x, aPoint.y, aPoint.z );
     }
 
-	public Vector3D getIntersectWithRay(int layer, int sectorcluster, Vector3D dir_line, Vector3D pt_line) {
+	public Vector3D Slope_LabToDetFrame(int layer, int sector, Vector3D slope) {	
+		Vector3D new_slope = new Vector3D();
+		new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+		new_slope.rotateX(this.getRx(layer,sector));
+		new_slope.rotateY(this.getRy(layer,sector));
+		new_slope.rotateZ(this.getRz(layer,sector));
+	
+		return new_slope;
+	}
+ 
+	public Vector3D Point_LabToDetFrame(int layer, int sector, Vector3D point) {	
+		Vector3D new_point = new Vector3D();
+		new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+		new_point.rotateX(this.getRx(layer,sector));
+		new_point.rotateY(this.getRy(layer,sector));
+		new_point.rotateZ(this.getRz(layer,sector));
+		new_point.setX(new_point.x()+this.getCx(layer,sector));
+		new_point.setY(new_point.y()+this.getCy(layer,sector));
+		new_point.setZ(new_point.z()+this.getCz(layer,sector));
+	
+		return new_point;
+	}
+ 
+	public Vector3D Slope_DetToLabFrame(int layer, int sector, Vector3D slope) {	
+		Vector3D new_slope = new Vector3D();
+		new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+		new_slope.rotateZ(-this.getRz(layer,sector));
+		new_slope.rotateY(-this.getRy(layer,sector));
+		new_slope.rotateX(-this.getRx(layer,sector));
+	
+		return new_slope;
+	}
+  
+	public Vector3D Point_DetToLabFrame(int layer, int sector, Vector3D point) {	
+		Vector3D new_point = new Vector3D();
+		new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+		new_point.setX(new_point.x()-this.getCx(layer,sector));
+		new_point.setY(new_point.y()-this.getCy(layer,sector));
+		new_point.setZ(new_point.z()-this.getCz(layer,sector));
+		new_point.rotateZ(-this.getRz(layer,sector));
+		new_point.rotateY(-this.getRy(layer,sector));
+		new_point.rotateX(-this.getRx(layer,sector));
+	
+		return new_point;
+	}
+
+	public Vector3D getIntersectWithRay(int layer, int sectorcluster, Vector3D slope_lab, Vector3D pt_lab) {
 		Vector3D inter=new Vector3D();
 		//int sector=findSectorFromAngle(layer,pt_line);
 		inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		if (sectorcluster>0) {
 			Vector3D n=findBSTPlaneNormal(sectorcluster, layer);
 			Point3D p=getPlaneModuleOrigin(sectorcluster, layer);
+			
+			Vector3D dir_line=this.Slope_LabToDetFrame(layer, sectorcluster, slope_lab);
+			Vector3D pt_line=this.Point_LabToDetFrame(layer, sectorcluster, pt_lab);
 		
 			if (dir_line.x()*n.x()+dir_line.y()*n.y()+dir_line.z()*n.z()==0) inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 			else {
@@ -925,6 +986,54 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	public int getNbModule(int lay) {
 		// TODO Auto-generated method stub
 		return org.jlab.detector.geant4.v2.SVT.SVTConstants.NSECTORS[(lay-1)/2];
+	}
+	
+	public void setRx(int lay, int sec, double rx) {
+		Rx[lay-1][sec-1]=rx;
+	}
+	
+	public void setRy(int lay, int sec, double ry) {
+		Ry[lay-1][sec-1]=ry;
+	}
+	
+	public void setRz(int lay, int sec, double rz) {
+		Rz[lay-1][sec-1]=rz;
+	}
+	
+	public void setCx(int lay, int sec, double cx) {
+		Cx[lay-1][sec-1]=cx;
+	}
+	
+	public void setCy(int lay, int sec, double cy) {
+		Cy[lay-1][sec-1]=cy;
+	}
+	
+	public void setCz(int lay, int sec, double cz) {
+		Cz[lay-1][sec-1]=cz;
+	}
+	
+	public double getRx(int lay, int sec) {
+		return Rx[lay-1][sec-1];
+	}
+	
+	public double getRy(int lay, int sec) {
+		return Ry[lay-1][sec-1];
+	}
+	
+	public double getRz(int lay, int sec) {
+		return Rz[lay-1][sec-1];
+	}
+	
+	public double getCx(int lay, int sec) {
+		return Cx[lay-1][sec-1];
+	}
+	
+	public double getCy(int lay, int sec) {
+		return Cy[lay-1][sec-1];
+	}
+	
+	public double getCz(int lay, int sec) {
+		return Cz[lay-1][sec-1];
 	}
 
 }

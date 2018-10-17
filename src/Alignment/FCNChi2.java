@@ -7,6 +7,7 @@ import Trajectory.StraightLine;
 import BMT_struct.*;
 import BST_struct.*;
 import org.jlab.io.base.DataBank;
+import org.jlab.geom.prim.Vector3D;
 
 public class FCNChi2 implements FCNBase {
 
@@ -48,6 +49,7 @@ public class FCNChi2 implements FCNBase {
 			    	DataBank raybank=event.getBank("CVTRec::Cosmics");
 			    	DataBank Trajbank=event.getBank("CVTRec::Trajectory");
 			    	DataBank BMTClusbank=event.getBank("BMTRec::Clusters");
+			    	DataBank BSTClusbank=event.getBank("BSTRec::Clusters");
 			    	for (int nray=0;nray<raybank.rows();nray++) {
 			    		ThroughTile=false;
 			    		ClusterExpect=-20;
@@ -68,22 +70,26 @@ public class FCNChi2 implements FCNBase {
 			    			}
 			    		
 			    			//Since the track is supposed to have crossed the tile, let's find the corresponding cluster
-			    			if (ThroughTile) {
-			    				
+			    			if (ThroughTile&&layer>6) {
 			    				for (int clus=0; clus<BMTClusbank.rows(); clus++) {
-			    					/*System.out.println("///////////////////");
-			    					System.out.println(raybank.getShort("ID",nray)+" "+BMTClusbank.getShort("trkID",clus));
-			    					System.out.println(layer+" "+BMTClusbank.getByte("layer",clus));
-			    					System.out.println(sector+" "+BMTClusbank.getByte("sector",clus));
-			    					System.out.println(Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))+" "+DeltaCentroid);*/
-			    					if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&
-			    							(layer-6)==BMTClusbank.getByte("layer",clus)&&
-			    							sector==BMTClusbank.getByte("sector",clus)){
+			    					if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&(layer-6)==BMTClusbank.getByte("layer",clus)&&sector==BMTClusbank.getByte("sector",clus)){
 			    						if (Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
 			    						
 			    							BMT_struct.Cluster Clus=BMT.RecreateCluster(layer-6,sector,BMTClusbank.getFloat("centroid",clus));
 			    							
 			    							val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);
+			    						}
+			    					}
+			    				}
+			    			}
+			    			if (ThroughTile&&layer<=6) {
+			    				for (int clus=0; clus<BSTClusbank.rows(); clus++) {
+			    					if (raybank.getShort("ID",nray)==BSTClusbank.getShort("trkID",clus)&&layer==BSTClusbank.getByte("layer",clus)&&sector==BSTClusbank.getByte("sector",clus)){
+			    						if (Math.abs(ClusterExpect-BSTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
+			    							BST_struct.Cluster Clus=BST.RecreateCluster(layer,sector,BSTClusbank.getFloat("centroid",clus));
+			    							Vector3D inter=BST.getGeometry().getIntersectWithRay(Clus.getLayer(), Clus.getSector(), ray.getSlope(), ray.getPoint());
+			    				    		  if (!Double.isNaN(inter.x())) val+=Math.pow(BST.getGeometry().getResidual_line(Clus.getLayer(),Clus.getSector(),Clus.getCentroid(),inter)
+			    				    				  /BST.getGeometry().getSingleStripResolution(Clus.getLayer(), (int)Clus.getCentroid(), inter.z()),2);
 			    						}
 			    					}
 			    				}

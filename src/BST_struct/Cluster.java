@@ -165,4 +165,8 @@ public class Cluster {
 		return InTheFit;
 	}
 	
+	public void setCentroid(double cent) {
+		centroid=cent;
+	}
+	
 }

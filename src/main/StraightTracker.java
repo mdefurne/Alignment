@@ -129,7 +129,6 @@ public class StraightTracker {
 		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
 		    	
 		    		///////////////////////////////////////
-		    		//Asimov.LoadADC(event.getBank("BST::adc"), event.getBank("BMT::adc"));
 		    		Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
 		    	}
 		    }

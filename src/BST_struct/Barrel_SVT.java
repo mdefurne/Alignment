@@ -66,6 +66,14 @@ public class Barrel_SVT {
 		return Modules[lay-1][sec-1];
 	}
 	
+	public Cluster RecreateCluster(int layer, int sector, float centroid) {
+		Cluster clus=new Cluster(layer,sector);
+		double strip=Math.floor(centroid);
+		clus.setCentroid(centroid);
+		double weight=centroid-strip;
+		return clus;
+	}
+	
 	public void MakeClusters() {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<18;sec++) {
