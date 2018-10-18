@@ -761,6 +761,7 @@ public class Geometry {
 		String separator = "\\s+";
 		
 		if (GeoTrans.exists()) {
+			System.out.println("Opening misalignment file for MVT: "+FileName);
 			String[] line=new String[8];
 			int linenumber=0;
 			Scanner input = new Scanner(GeoTrans);

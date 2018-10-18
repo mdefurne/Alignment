@@ -36,13 +36,14 @@ public class StraightTracker {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
-			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE -l X/Y)");
+			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE -l X/Y -a ALIGNFILE)");
 			System.out.println("TRACKER_TYPE: MVT, SVT or CVT");
 			System.out.println("RUN_TYPE: cosmic or target\n");
 			System.out.println("with a few options which might be useful");
 			System.out.println("NUM_EVENTS: to set a maximum number of events");
 			System.out.println("DRAW: Display residuals and beam info if DRAW is entered");
 			System.out.println("X/Y: will disable layer X sector Y. If Y=*, disable an entire layer");
+			System.out.println("ALIGNFILE: If path to a file with misalignement parameters is entered, reconstruction will use it");
 			System.out.println("MODE can be chosen among:");
 			System.out.println("       -EFFICENCY: Prevent from merging tracks from different sectors in cosmic mode\n");
 			System.out.println("For more info, please contact Maxime DEFURNE");
@@ -75,18 +76,13 @@ public class StraightTracker {
 		
 		StraightTracker Straight=new StraightTracker();
 		Asimov.setOuputFileName(Output);
-		try {
-			BMT.getGeometry().LoadMisalignmentFromFile("Test.txt");
-			BST.getGeometry().LoadMisalignmentFromFile("Test.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		String AlignFile="";
+				
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
+			if (args[i].equals("-a")) AlignFile=args[i+1];
 			if (args[i].equals("-l")) {
 				int LayToDisable=Integer.parseInt(args[i+1].substring(0, args[i+1].indexOf('/')));
 				if (args[i+1].charAt(args[i+1].length()-1)=='*') {
@@ -102,6 +98,14 @@ public class StraightTracker {
 			
 		}
 		
+		//Try to fetch alignment file if one is entered
+		try {
+			BMT.getGeometry().LoadMisalignmentFromFile(AlignFile);
+			BST.getGeometry().LoadMisalignmentFromFile(AlignFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";

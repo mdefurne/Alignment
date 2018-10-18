@@ -22,8 +22,18 @@ public class CVTAlignment {
 	
 	public static void main(String[] args) throws IOException {
 		
-		String ConstantFile="/home/mdefurne/Bureau/CLAS12/Test_bis.txt";
+		if (args.length<4) {
+			System.out.println("Execution line is as follows, in this specific order:\n");
+			System.out.println("java -jar Alignator.jar INPUT_FILE LAYER SECTOR ALIGNMENTFILE");
+			System.out.println("INPUT_FILE: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
+			System.out.println("LAYER: Layer of the detector to be aligned");
+			System.out.println("SECTOR: Sector of the detector to be aligned");
+			System.out.println("ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
+			System.exit(0);
+		}
+		
 		String fileName=args[0];
+		String ConstantFile=args[3];
 		HipoDataSource reader=new HipoDataSource();
 		reader.open(fileName);
 				
@@ -47,14 +57,14 @@ public class CVTAlignment {
 		File AlignCst=new File(ConstantFile);
 		try {
 			if (!AlignCst.exists()) AlignCst.createNewFile();
-			FileWriter Writer=new FileWriter(AlignCst);
+			FileWriter Writer=new FileWriter(AlignCst, true);
 			try {
 				//If BMT constants, write BMT constants
 				if (layer>6) Writer.write(layer+" "+sector+" "+BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
-						BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector));
+						BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector)+"\n");
 				//If BST constants, write BST constants
 				else Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
-						BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector));
+						BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
 			} finally {
 				Writer.close();
 			}

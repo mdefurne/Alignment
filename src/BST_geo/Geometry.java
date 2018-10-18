@@ -1049,6 +1049,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 			Scanner input = new Scanner(GeoTrans);
             while (input.hasNextLine()) {
             	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
+            	System.out.println("Opening misalignment file for SVT: "+FileName);
             	if (Integer.parseInt(line[0])<=6) {
             	//Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
             		this.setRx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[2]));
