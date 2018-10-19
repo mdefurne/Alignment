@@ -114,11 +114,14 @@ public class StraightTracker {
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/muon_off.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
+		System.out.println("Starting Reconstruction.....");
+		
 		while(reader.hasEvent()&&count<main.constant.max_event) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
-			System.out.println(count);
+			//System.out.println(count);
+			
 		    //Load all the constant needed but only for the first event
 		   
 		    
@@ -144,8 +147,7 @@ public class StraightTracker {
 			Tracky.draw();
 			Sherlock.draw();		
 		}
-		System.out.println(BMT_geo.Constants.getRx(6,2)+" "+BMT_geo.Constants.getCz(6,2));
-		System.out.println(BMT_geo.Constants.getRx(6,1)+" "+BMT_geo.Constants.getCz(6,1));
+		
 		System.out.println("Done! "+count);
  }
 }

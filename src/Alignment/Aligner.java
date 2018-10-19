@@ -31,12 +31,12 @@ public class Aligner {
 					Cz=BMT_geo.Constants.getCz(layer-6, sector);
 				}
 				else {
-					Rx=BST.getGeometry().getRx(layer-6, sector);
-					Ry=BST.getGeometry().getRy(layer-6, sector);
-					Rz=BST.getGeometry().getRz(layer-6, sector);
-					Cx=BST.getGeometry().getCx(layer-6, sector);
-					Cy=BST.getGeometry().getCy(layer-6, sector);
-					Cz=BST.getGeometry().getCz(layer-6, sector);
+					Rx=BST.getGeometry().getRx(layer, sector);
+					Ry=BST.getGeometry().getRy(layer, sector);
+					Rz=BST.getGeometry().getRz(layer, sector);
+					Cx=BST.getGeometry().getCx(layer, sector);
+					Cy=BST.getGeometry().getCy(layer, sector);
+					Cz=BST.getGeometry().getCz(layer, sector);
 				}
 				
 				double DeltaRot=Math.toRadians(5);
