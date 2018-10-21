@@ -61,7 +61,7 @@ public class FCNChi2 implements FCNBase {
 			    	for (int nray=0;nray<raybank.rows();nray++) {
 			    		ThroughTile=false;
 			    		ClusterExpect=-20;
-			    		if (raybank.getShort("ndf",nray)>=3) {
+			    		if (raybank.getShort("ndf",nray)>=1) {//if (raybank.getShort("ndf",nray)>=3) {
 			    			
 			    			ray.setSlope_XYZ(raybank.getFloat("trkline_yx_slope", nray), 1, raybank.getFloat("trkline_yz_slope", nray));
 			    			ray.setPoint_XYZ(raybank.getFloat("trkline_yx_interc", nray)*10, 0, raybank.getFloat("trkline_yz_interc", nray)*10);
@@ -82,7 +82,7 @@ public class FCNChi2 implements FCNBase {
 			    				for (int clus=0; clus<BMTClusbank.rows(); clus++) {
 			    					if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&(layer-6)==BMTClusbank.getByte("layer",clus)&&sector==BMTClusbank.getByte("sector",clus)){
 			    						if (Math.abs(ClusterExpect-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
-			    						
+			    							
 			    							BMT_struct.Cluster Clus=BMT.RecreateCluster(layer-6,sector,BMTClusbank.getFloat("centroid",clus));
 			    							
 			    							val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);

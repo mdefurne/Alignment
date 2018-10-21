@@ -389,7 +389,7 @@ public class CentralWriter {
 								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
 						}
 					
-						if (clus_id!=-1&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
+						if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
 							//Update the cluster X,Y,Z info with track info
 							for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
 								if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
@@ -428,7 +428,7 @@ public class CentralWriter {
 								clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
 						}
 					
-						if (clus_id!=-1&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
+						if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
 							//Update the cluster X,Y,Z info with track info
 							for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
 								if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
