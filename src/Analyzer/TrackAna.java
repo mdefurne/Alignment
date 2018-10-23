@@ -23,8 +23,8 @@ public class TrackAna {
 		Chi2_track=new H1F("Chi2 of track","Chi2 angle for track",90,0,500);
 		for (int lay=0;lay<3;lay++) {
 			for (int sec=0;sec<3;sec++) {
-				Z_residual[lay][sec]=new H1F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
-				C_residual[lay][sec]=new H1F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-10,10);
+				Z_residual[lay][sec]=new H1F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.5,0.5);
+				C_residual[lay][sec]=new H1F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.5,0.5);
 			}
 		}
 	}

@@ -25,7 +25,7 @@ public class BSTAna {
 					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.25,0.25);
 				}
 				if (!main.constant.isMC) {
-					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-1,1);
+					SVT_residual[lay][sec]=new H1F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.25,0.25);
 				}
 				residual_vs_z[lay][sec]=new H2F("Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for L"+(lay+1)+" S"+(sec+1)+" in mm",14,-100, 180, 11,-0.1,0.1);
 			}
@@ -83,7 +83,7 @@ public class BSTAna {
 		 for (int sec=0;sec<18;sec++) {
 			 F1D funcres;
 			 if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
-			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-1.,1.);
+			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
 			 funcres.setParameter(0, 100);
 			funcres.setParameter(1, 0);
 			funcres.setParameter(2, 0.050);

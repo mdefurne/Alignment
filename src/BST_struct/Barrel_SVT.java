@@ -92,14 +92,16 @@ public class Barrel_SVT {
 			int strip= pbank.getShort("component",row );
 			int ADC= pbank.getInt("ADC",row );
 			if (!isMC) time= pbank.getFloat("time",row );
-			double [][] endpoints=geo.getStripEndPoints(strip, (layer-1)%2);
-			Point3D begin=new Point3D(geo.transformToFrame(sector, layer, endpoints[0][0], 0, endpoints[0][1], "lab", ""));
-			Point3D end=new Point3D(geo.transformToFrame(sector, layer, endpoints[1][0], 0, endpoints[1][1], "lab", ""));
-			double phi_begin=Math.atan2(begin.y(),begin.x());
-			double phi_end=Math.atan2(end.y(),end.x());
-			if (ADC>0&&strip>0) {
-				nb_hit++;
-				Modules[layer-1][sector-1].addHit(nb_hit, strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), Double.NaN, ADC+1, time);
+			if (layer>0) {
+				double [][] endpoints=geo.getStripEndPoints(strip, (layer-1)%2);
+				Point3D begin=new Point3D(geo.transformToFrame(sector, layer, endpoints[0][0], 0, endpoints[0][1], "lab", ""));
+				Point3D end=new Point3D(geo.transformToFrame(sector, layer, endpoints[1][0], 0, endpoints[1][1], "lab", ""));
+				double phi_begin=Math.atan2(begin.y(),begin.x());
+				double phi_end=Math.atan2(end.y(),end.x());
+				if (ADC>0&&strip>0) {
+					nb_hit++;
+					Modules[layer-1][sector-1].addHit(nb_hit, strip, (end.x()+begin.x())/2., (end.y()+begin.y())/2., Double.NaN, (phi_begin+phi_end)/2., Math.abs((phi_begin-phi_end)/2.), Double.NaN, ADC+1, time);
+				}
 			}
 		}
 		MakeClusters();
