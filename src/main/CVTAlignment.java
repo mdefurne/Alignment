@@ -44,33 +44,44 @@ public class CVTAlignment {
 		
 		Aligner Alignment=new Aligner();
 		
-		int layer=Integer.parseInt(args[1]);
-		int sector=Integer.parseInt(args[2]);
+		/**********************************************************************************************************************************************************************************************/
+		//We align a specific tile or module
+		if (!args[1].equals("*")&&!args[2].equals("*")) {
 		
-		Alignment.DoAlignment(BMT, BST, reader, layer, sector);
-		if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
+			int layer=Integer.parseInt(args[1]);
+			int sector=Integer.parseInt(args[2]);
+		
+			Alignment.DoAlignment(BMT, BST, reader, layer, sector);
+			if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
 				BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector));
-		else System.out.println(BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
+			else System.out.println(BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
 				BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector));
 		
-		//Need to write down the file
-		File AlignCst=new File(ConstantFile);
-		try {
-			if (!AlignCst.exists()) AlignCst.createNewFile();
-			FileWriter Writer=new FileWriter(AlignCst, true);
+			//Need to write down the file
+			File AlignCst=new File(ConstantFile);
 			try {
-				//If BMT constants, write BMT constants
-				if (layer>6) Writer.write(layer+" "+sector+" "+BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
-						BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector)+"\n");
-				//If BST constants, write BST constants
-				else Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
-						BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
-			} finally {
-				Writer.close();
+				if (!AlignCst.exists()) AlignCst.createNewFile();
+				FileWriter Writer=new FileWriter(AlignCst, true);
+				try {
+					//If BMT constants, write BMT constants
+					if (layer>6) Writer.write(layer+" "+sector+" "+BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
+							BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector)+"\n");
+					//If BST constants, write BST constants
+					else Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
+							BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
+				} finally {
+					Writer.close();
+				}
+			} catch (Exception e) {
+				System.out.println("Impossible to write results in file");
 			}
-		} catch (Exception e) {
-            System.out.println("Impossible to write results in file");
-        }
+		}
+		
+		/**********************************************************************************************************************************************************************************************/
+		//We want to align MVT wrt to SVT
+		else {
+			Alignment.DoMVTSVTAlignment(BMT, reader);
+		}
 	}
 			 
 	

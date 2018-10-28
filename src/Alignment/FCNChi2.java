@@ -14,8 +14,8 @@ public class FCNChi2 implements FCNBase {
 	HipoDataSource reader;
 	Barrel BMT;
 	Barrel_SVT BST;
-	int layer;
-	int sector;
+	int layer=-1;
+	int sector=-1;
 	
 	public double valueOf(double[] par)
 	   {
