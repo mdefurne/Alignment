@@ -782,4 +782,25 @@ public class Geometry {
 		
 	}
 	
+	public void LoadMVTSVTMisalignment(String FileName) throws IOException{
+		File GeoTrans=new File(FileName);
+		
+		String separator = "\\s+";
+		
+		if (GeoTrans.exists()) {
+			System.out.println("Opening misalignment file for MVT versus SVT: "+FileName);
+			String[] line=new String[8];
+			Scanner input = new Scanner(GeoTrans);
+           	line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
+            //Rx   Ry    Rz    Tx    Ty     Tz => order of columns inside the file
+            Constants.setRxCVT(Double.parseDouble(line[0]));
+            Constants.setRyCVT(Double.parseDouble(line[1]));
+            Constants.setRzCVT(Double.parseDouble(line[2]));
+            Constants.setCxCVT(Double.parseDouble(line[3]));
+            Constants.setCyCVT(Double.parseDouble(line[4]));
+            Constants.setCzCVT(Double.parseDouble(line[5]));
+         }
+		
+	}
+	
 }

@@ -62,6 +62,12 @@ public class Constants {
     public static double[][] Cx= new double[NREGIONS*2][3];   //x-position of Center of detector frame
     public static double[][] Cy= new double[NREGIONS*2][3];   //y-position of Center of detector frame
     public static double[][] Cz= new double[NREGIONS*2][3];   //z-position of Center of detector frame
+    public static double RxCVT=0.0;  
+    public static double RyCVT=0.0; 
+    public static double RzCVT=0.0;  
+    public static double CxCVT=0.0;  
+    public static double CyCVT=0.0; 
+    public static double CzCVT=0.0;  
     public static double[] ThetaL_grid = new double[405];    //Lorentz angle grid
     public static double[] E_grid = new double[405];         //Electric field value of the grid
     public static double[] B_grid = new double[405];        //Magnetic field value of the grid
@@ -405,6 +411,54 @@ public class Constants {
  
  public static double getCz(int layer, int sector) {
 		return Cz[layer-1][sector-1];
+ }
+ 
+ public static void setRxCVT(double cRx) {
+	   	RxCVT  = cRx;
+	  }
+	  
+ public static double getRxCVT() {
+	 return RxCVT;
+ }
+	  
+ public static void setRyCVT(double cRy) {
+	 RyCVT  = cRy;
+ }
+	  
+ public static double getRyCVT() {
+	 return RyCVT;
+ }
+	  
+ public static void setRzCVT(double cRz) {
+	 RzCVT  = cRz;
+ }
+ 
+ public static double getRzCVT() {
+	 return RzCVT;
+ }
+	  
+ public static void setCxCVT(double cCx) {
+	 CxCVT  = cCx;
+ }
+	  
+ public static double getCxCVT() {
+	 return CxCVT;
+ }
+	  
+ public static void setCyCVT(double cCy) {
+	 CyCVT  = cCy;
+ }
+	  
+ public static double getCyCVT() {
+	 return CyCVT;
+ }
+	  
+ public static void setCzCVT(double cCz) {
+	 CzCVT  = cCz;
+ }
+	 
+ public static double getCzCVT() {
+	 return CzCVT;
  }
  
 }
