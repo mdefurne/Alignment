@@ -340,7 +340,7 @@ public class Geometry {
         return randomNumber;
     }
    
-     public Vector3D Slope_LabToDetFrame(int layer, int sector, Vector3D slope) {	
+     public Vector3D Slope_CVTToDetFrame(int layer, int sector, Vector3D slope) {	
      	Vector3D new_slope = new Vector3D();
      	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
      	new_slope.rotateX(BMT_geo.Constants.getRx(layer,sector));
@@ -350,7 +350,7 @@ public class Geometry {
      	return new_slope;
      }
      
-     public Vector3D Point_LabToDetFrame(int layer, int sector, Vector3D point) {	
+     public Vector3D Point_CVTToDetFrame(int layer, int sector, Vector3D point) {	
       	Vector3D new_point = new Vector3D();
       	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
       	new_point.rotateX(BMT_geo.Constants.getRx(layer,sector));
@@ -363,7 +363,7 @@ public class Geometry {
       	return new_point;
       }
      
-     public Vector3D Slope_DetToLabFrame(int layer, int sector, Vector3D slope) {	
+     public Vector3D Slope_DetToCVTFrame(int layer, int sector, Vector3D slope) {	
       	Vector3D new_slope = new Vector3D();
       	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
       	new_slope.rotateZ(-BMT_geo.Constants.getRz(layer,sector));
@@ -373,7 +373,7 @@ public class Geometry {
       	return new_slope;
       }
       
-      public Vector3D Point_DetToLabFrame(int layer, int sector, Vector3D point) {	
+      public Vector3D Point_DetToCVTFrame(int layer, int sector, Vector3D point) {	
        	Vector3D new_point = new Vector3D();
        	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
        	new_point.setX(new_point.x()-BMT_geo.Constants.getCx(layer,sector));
@@ -385,6 +385,53 @@ public class Geometry {
    	
        	return new_point;
        }
+      
+      public Vector3D Slope_LabToCVTFrame(Vector3D slope) {	
+       	Vector3D new_slope = new Vector3D();
+       	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+       	new_slope.rotateX(BMT_geo.Constants.getRxCVT());
+  		new_slope.rotateY(BMT_geo.Constants.getRyCVT());
+  		new_slope.rotateZ(BMT_geo.Constants.getRzCVT());
+   	
+       	return new_slope;
+       }
+       
+       public Vector3D Point_LabToCVTFrame(Vector3D point) {	
+        	Vector3D new_point = new Vector3D();
+        	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+        	new_point.rotateX(BMT_geo.Constants.getRxCVT());
+        	new_point.rotateY(BMT_geo.Constants.getRyCVT());
+        	new_point.rotateZ(BMT_geo.Constants.getRzCVT());
+        	new_point.setX(new_point.x()+BMT_geo.Constants.getCxCVT());
+        	new_point.setY(new_point.y()+BMT_geo.Constants.getCyCVT());
+        	new_point.setZ(new_point.z()+BMT_geo.Constants.getCzCVT());
+    	
+        	return new_point;
+        }
+       
+       public Vector3D Slope_CVTToLabFrame(Vector3D slope) {	
+        	Vector3D new_slope = new Vector3D();
+        	new_slope.setX(slope.x()); new_slope.setY(slope.y()); new_slope.setZ(slope.z());
+        	new_slope.rotateZ(-BMT_geo.Constants.getRzCVT());
+        	new_slope.rotateY(-BMT_geo.Constants.getRyCVT());
+        	new_slope.rotateX(-BMT_geo.Constants.getRxCVT());
+    	
+        	return new_slope;
+        }
+        
+        public Vector3D Point_CVTToLabFrame(Vector3D point) {	
+         	Vector3D new_point = new Vector3D();
+         	new_point.setX(point.x()); new_point.setY(point.y()); new_point.setZ(point.z());
+         	new_point.setX(new_point.x()-BMT_geo.Constants.getCxCVT());
+         	new_point.setY(new_point.y()-BMT_geo.Constants.getCyCVT());
+         	new_point.setZ(new_point.z()-BMT_geo.Constants.getCzCVT());
+         	new_point.rotateZ(-BMT_geo.Constants.getRzCVT());
+         	new_point.rotateY(-BMT_geo.Constants.getRyCVT());
+         	new_point.rotateX(-BMT_geo.Constants.getRxCVT());
+     	
+         	return new_point;
+         }
+      
  
  
     /**
@@ -618,8 +665,10 @@ public class Geometry {
 		Vector3D point_inter_b=new Vector3D();
 		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
 		
-		Vector3D slope=this.Slope_LabToDetFrame(clus.getLayer(), clus.getSector(), slope_lab);
-		Vector3D point=this.Point_LabToDetFrame(clus.getLayer(), clus.getSector(), point_lab);
+		Vector3D slope_cvt=this.Slope_LabToCVTFrame(slope_lab);
+		Vector3D point_cvt=this.Point_LabToCVTFrame(point_lab);
+		Vector3D slope=this.Slope_CVTToDetFrame(clus.getLayer(), clus.getSector(), slope_cvt);
+		Vector3D point=this.Point_CVTToDetFrame(clus.getLayer(), clus.getSector(), point_cvt);
 				
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
 		double sx=slope.x(); double sy=slope.y(); 
@@ -683,9 +732,11 @@ public class Geometry {
 		Vector3D point_inter_b=new Vector3D();
 		point_inter.setXYZ(Double.NaN,Double.NaN,Double.NaN);
 		
-		Vector3D slope=this.Slope_LabToDetFrame(layer, sector, slope_lab);
-		Vector3D point=this.Point_LabToDetFrame(layer, sector, point_lab);
-				
+		Vector3D slope_cvt=this.Slope_LabToCVTFrame(slope_lab);
+		Vector3D point_cvt=this.Point_LabToCVTFrame(point_lab);
+		Vector3D slope=this.Slope_CVTToDetFrame(layer, sector, slope_cvt);
+		Vector3D point=this.Point_CVTToDetFrame(layer, sector, point_cvt);
+								
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
 		double sx=slope.x(); double sy=slope.y(); 
 		double ix=point.x(); double iy=point.y();
@@ -708,8 +759,8 @@ public class Geometry {
 		    if (this.isinsector(point_inter_b)==sector) point_inter=point_inter_b;
 		    if (this.isinsector(point_inter_a)==sector) point_inter=point_inter_a;
 		}
-		 
-		Vector3D point_final=this.Point_DetToLabFrame(layer, sector, point_inter);  		
+		Vector3D point_CVT=this.Point_DetToCVTFrame(layer, sector, point_inter);  
+		Vector3D point_final=this.Point_CVTToLabFrame(point_CVT);  		
 		return point_final;
 	}
 	
