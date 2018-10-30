@@ -24,29 +24,37 @@ public class CVTAlignment {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows, in this specific order:\n");
-			System.out.println("java -jar Alignator.jar INPUT_FILE LAYER SECTOR ALIGNMENTFILE");
+			System.out.println("java -jar Alignator.jar INPUT_FILE LAYER SECTOR (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT)");
 			System.out.println("INPUT_FILE: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
 			System.out.println("LAYER: Layer of the detector to be aligned");
 			System.out.println("SECTOR: Sector of the detector to be aligned");
-			System.out.println("ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
+			System.out.println("optional: ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
 			System.exit(0);
 		}
 		
 		String fileName=args[0];
-		String ConstantFile=args[3];
+		String ConstantFileMVT=""; //File containing internal misalignments of MVT
+		String ConstantFileSVT=""; //File containing internal misalignments of SVT
+		String ConstantFileCVT=""; //File contaning MVT wrt SVT misalignments
+		for (int i=3; i<args.length; i++) {
+			if (args[i].equals("-svt")) ConstantFileSVT=args[i+1];
+			if (args[i].equals("-mvt")) ConstantFileMVT=args[i+1];
+			if (args[i].equals("-cvt")) ConstantFileCVT=args[i+1];
+		}
 		HipoDataSource reader=new HipoDataSource();
 		reader.open(fileName);
 				
 		CVTAlignment CVTAli=new CVTAlignment();
-				
-		BMT.getGeometry().LoadMisalignmentFromFile(ConstantFile);
-		BST.getGeometry().LoadMisalignmentFromFile(ConstantFile);
+		
+		BMT.getGeometry().LoadMVTSVTMisalignment(ConstantFileCVT);
+		BMT.getGeometry().LoadMisalignmentFromFile(ConstantFileMVT);
+		BST.getGeometry().LoadMisalignmentFromFile(ConstantFileSVT);
 		
 		Aligner Alignment=new Aligner();
 		
 		/**********************************************************************************************************************************************************************************************/
 		//We align a specific tile or module
-		if (!args[1].equals("*")&&!args[2].equals("*")) {
+		if (args[1].charAt(args[1].length()-1)!='*'&&args[2].charAt(args[2].length()-1)!='*') {
 		
 			int layer=Integer.parseInt(args[1]);
 			int sector=Integer.parseInt(args[2]);
@@ -58,7 +66,9 @@ public class CVTAlignment {
 				BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector));
 		
 			//Need to write down the file
-			File AlignCst=new File(ConstantFile);
+			File AlignCst;
+			if (layer<7) AlignCst=new File(ConstantFileSVT);
+			else AlignCst=new File(ConstantFileMVT);
 			try {
 				if (!AlignCst.exists()) AlignCst.createNewFile();
 				FileWriter Writer=new FileWriter(AlignCst, true);
