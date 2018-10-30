@@ -76,13 +76,16 @@ public class StraightTracker {
 		
 		StraightTracker Straight=new StraightTracker();
 		Asimov.setOuputFileName(Output);
-		String AlignFile="";
-				
+		String AlignFileSVT="";
+		String AlignFileMVT="";
+		String AlignFileCVT="";
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
-			if (args[i].equals("-a")) AlignFile=args[i+1];
+			if (args[i].equals("-svt")) AlignFileSVT=args[i+1];
+			if (args[i].equals("-mvt")) AlignFileMVT=args[i+1];
+			if (args[i].equals("-cvt")) AlignFileCVT=args[i+1];
 			if (args[i].equals("-l")) {
 				int LayToDisable=Integer.parseInt(args[i+1].substring(0, args[i+1].indexOf('/')));
 				if (args[i+1].charAt(args[i+1].length()-1)=='*') {
@@ -100,8 +103,9 @@ public class StraightTracker {
 		
 		//Try to fetch alignment file if one is entered
 		try {
-			BMT.getGeometry().LoadMisalignmentFromFile(AlignFile);
-			BST.getGeometry().LoadMisalignmentFromFile(AlignFile);
+			BMT.getGeometry().LoadMisalignmentFromFile(AlignFileMVT);
+			BMT.getGeometry().LoadMVTSVTMisalignment(AlignFileCVT);
+			BST.getGeometry().LoadMisalignmentFromFile(AlignFileSVT);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -32,7 +32,7 @@ public class CVTAlignment {
 			System.exit(0);
 		}
 		
-		String fileName=args[0];
+		String InputfileName=args[0];
 		String ConstantFileMVT=""; //File containing internal misalignments of MVT
 		String ConstantFileSVT=""; //File containing internal misalignments of SVT
 		String ConstantFileCVT=""; //File contaning MVT wrt SVT misalignments
@@ -42,7 +42,7 @@ public class CVTAlignment {
 			if (args[i].equals("-cvt")) ConstantFileCVT=args[i+1];
 		}
 		HipoDataSource reader=new HipoDataSource();
-		reader.open(fileName);
+		reader.open(InputfileName);
 				
 		CVTAlignment CVTAli=new CVTAlignment();
 		
@@ -54,7 +54,7 @@ public class CVTAlignment {
 		
 		/**********************************************************************************************************************************************************************************************/
 		//We align a specific tile or module
-		if (args[1].charAt(args[1].length()-1)!='*'&&args[2].charAt(args[2].length()-1)!='*') {
+		if (!args[1].equals("all")&&!args[2].equals("all")) {
 		
 			int layer=Integer.parseInt(args[1]);
 			int sector=Integer.parseInt(args[2]);
