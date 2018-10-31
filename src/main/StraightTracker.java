@@ -93,7 +93,7 @@ public class StraightTracker {
 					else BST.DisableLayer(LayToDisable);
 				}
 				else {
-					int sectorToDisable=Integer.parseInt(args[i+1].substring(args[i+1].indexOf('/'),args[i+1].length()));
+					int sectorToDisable=Integer.parseInt(args[i+1].substring(args[i+1].indexOf('/')+1,args[i+1].length()));
 					if (LayToDisable>=7) BMT.DisableTile(LayToDisable-6,sectorToDisable);
 					else BST.DisableModule(LayToDisable,sectorToDisable);
 				}

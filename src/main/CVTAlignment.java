@@ -4,6 +4,7 @@ import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataSource;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import BMT_struct.Barrel;
 import BST_struct.Barrel_SVT;
@@ -24,26 +25,32 @@ public class CVTAlignment {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows, in this specific order:\n");
-			System.out.println("java -jar Alignator.jar INPUT_FILE LAYER SECTOR (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT)");
-			System.out.println("INPUT_FILE: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
+			System.out.println("java -jar Alignator.jar LAYER SECTOR -i INPUT1 -i INPUT2 (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT)");
+			System.out.println("INPUT1: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
 			System.out.println("LAYER: Layer of the detector to be aligned");
 			System.out.println("SECTOR: Sector of the detector to be aligned");
 			System.out.println("optional: ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
 			System.exit(0);
 		}
 		
-		String InputfileName=args[0];
+		ArrayList<String> Inputsfile=new ArrayList<String>();
 		String ConstantFileMVT=""; //File containing internal misalignments of MVT
 		String ConstantFileSVT=""; //File containing internal misalignments of SVT
 		String ConstantFileCVT=""; //File contaning MVT wrt SVT misalignments
-		for (int i=3; i<args.length; i++) {
+		for (int i=2; i<args.length; i++) {
+			if (args[i].equals("-i")) Inputsfile.add(args[i+1]);
 			if (args[i].equals("-svt")) ConstantFileSVT=args[i+1];
 			if (args[i].equals("-mvt")) ConstantFileMVT=args[i+1];
 			if (args[i].equals("-cvt")) ConstantFileCVT=args[i+1];
+			
 		}
-		HipoDataSource reader=new HipoDataSource();
-		reader.open(InputfileName);
-				
+		
+		HipoDataSource[] reader=new HipoDataSource[Inputsfile.size()];
+		for (int infile=0; infile<Inputsfile.size(); infile++) {
+			reader[infile]=new HipoDataSource();
+			reader[infile].open(Inputsfile.get(infile));
+		}
+		System.out.println(reader.length);		
 		CVTAlignment CVTAli=new CVTAlignment();
 		
 		BMT.getGeometry().LoadMVTSVTMisalignment(ConstantFileCVT);
@@ -54,10 +61,10 @@ public class CVTAlignment {
 		
 		/**********************************************************************************************************************************************************************************************/
 		//We align a specific tile or module
-		if (!args[1].equals("all")&&!args[2].equals("all")) {
+		if (!args[0].equals("all")&&!args[1].equals("all")) {
 		
-			int layer=Integer.parseInt(args[1]);
-			int sector=Integer.parseInt(args[2]);
+			int layer=Integer.parseInt(args[0]);
+			int sector=Integer.parseInt(args[1]);
 		
 			Alignment.DoAlignment(BMT, BST, reader, layer, sector);
 			if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+

@@ -15,7 +15,7 @@ public class Aligner {
 		
 	}
 			
-	public void DoAlignment(Barrel BMT, Barrel_SVT BST, HipoDataSource reader, int layer, int sector) {
+	public void DoAlignment(Barrel BMT, Barrel_SVT BST, HipoDataSource[] reader, int layer, int sector) {
 			//Use minimizer
 									
 				//Create parameters
@@ -104,7 +104,7 @@ public class Aligner {
 	}
 	
 	//For aligning MVT versus SVT all at once
-	public void DoMVTSVTAlignment(Barrel BMT, HipoDataSource reader) {
+	public void DoMVTSVTAlignment(Barrel BMT, HipoDataSource[] reader) {
 		//Use minimizer
 								
 			//Create parameters
@@ -163,4 +163,5 @@ public class Aligner {
 	    		BMT_geo.Constants.setCzCVT(res[5]);
 		    }
 	}
+
 }
