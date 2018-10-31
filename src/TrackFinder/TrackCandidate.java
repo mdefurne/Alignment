@@ -473,7 +473,7 @@ public class TrackCandidate{
 	public boolean IsGoodCandidate() {
 		boolean good=true;
 		if (main.constant.TrackerType.equals("MVT")) {
-			if ((chi2>50&&!main.constant.isCosmic)||(chi2>100&&main.constant.isCosmic)) good=false;
+			if ((chi2>50&&!main.constant.isCosmic)||((chi2>100||nz<3||nc<4)&&main.constant.isCosmic)) good=false;
 			if (nz<2) good=false;
 			if (nc<2) good=false;
 		}
