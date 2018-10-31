@@ -53,6 +53,7 @@ public class Tracker {
 		
 		//Keep first only good tracks
 		for (int i=0;i<cand.size();i++) {
+			//System.out.println(cand.get(i+1).get_chi2()+" "+cand.get(i+1).get_Nz()+" "+cand.get(i+1).get_Nc());
 			if (cand.get(i+1).IsGoodCandidate()) {
 				Temp_good.add(cand.get(i+1));
 			}
