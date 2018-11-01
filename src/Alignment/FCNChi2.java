@@ -47,10 +47,10 @@ public class FCNChi2 implements FCNBase {
 			  BST.getGeometry().setCy(layer, sector, par[4]);
 			  BST.getGeometry().setCz(layer, sector, par[5]);
 		  }
-		  System.out.println(reader.length);
+		
 		  System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]+" "+par[4]+" "+par[5]);
 		  for (int infile=0; infile<reader.length; infile++) {	
-			  System.out.println(reader[infile].getSize());
+			 
 			  for (int i=0; i<reader[infile].getSize();i++) {
 				  DataEvent event = reader[infile].gotoEvent(i);
 				

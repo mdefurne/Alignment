@@ -84,16 +84,17 @@ public class BSTAna {
 			 F1D funcres;
 			 if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
 			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
-			 funcres.setParameter(0, 100);
-			funcres.setParameter(1, 0);
-			funcres.setParameter(2, 0.050);
+			
 				residual[lay].cd(sec);
 				//residual[lay].draw(residual_vs_z[lay][sec]);
 				residual[lay].draw(SVT_residual[lay][sec]);
 				if (SVT_residual[lay][sec].getEntries()>20) {
+					 funcres.setParameter(0, SVT_residual[lay][sec].getMax());
+					 funcres.setParameter(1, SVT_residual[lay][sec].getMean());
+					 funcres.setParameter(2, SVT_residual[lay][sec].getRMS());
 					DataFitter.fit(funcres, SVT_residual[lay][sec], "Q");
 					funcres.setOptStat(1100);
-					funcres.setLineColor(1);
+					funcres.setLineColor(2);
 					funcres.setLineWidth(2);
 					residual[lay].draw(funcres,"same");
 				}

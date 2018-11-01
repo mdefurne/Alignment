@@ -3,7 +3,8 @@ package Analyzer;
 import javax.swing.JFrame;
 
 import org.jlab.groot.data.*;
-//import org.root.histogram.*;
+import org.jlab.groot.fitter.DataFitter;
+import org.jlab.groot.math.F1D;
 import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
 import Analyzer.ClusterAna;
@@ -73,8 +74,35 @@ public class TrackAna {
 				for (int sec=0;sec<3;sec++) {
 					c_res.cd(3*lay+sec);
 					c_res.draw(C_residual[lay][sec]);
+					if (C_residual[lay][sec].getEntries()>20) {
+						F1D funcres;
+						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+						else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+						funcres.setParameter(0, 100);
+						funcres.setParameter(1, C_residual[lay][sec].getMean());
+						funcres.setParameter(2, C_residual[lay][sec].getRMS());
+						DataFitter.fit(funcres, C_residual[lay][sec], "Q");
+						funcres.setOptStat(1100);
+						funcres.setLineColor(2);
+						funcres.setLineWidth(2);
+						c_res.draw(funcres,"same");
+					}
+					
 					z_res.cd(3*lay+sec);
 					z_res.draw(Z_residual[lay][sec]);
+					if (Z_residual[lay][sec].getEntries()>20) {
+						F1D funcres;
+						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+						else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+						funcres.setParameter(0, 100);
+						funcres.setParameter(1, Z_residual[lay][sec].getMean());
+						funcres.setParameter(2, Z_residual[lay][sec].getRMS());
+						DataFitter.fit(funcres, Z_residual[lay][sec], "Q");
+						funcres.setOptStat(1100);
+						funcres.setLineColor(2);
+						funcres.setLineWidth(2);
+						z_res.draw(funcres,"same");
+					}
 				}
 		 }
 		 

@@ -50,7 +50,7 @@ public class CVTAlignment {
 			reader[infile]=new HipoDataSource();
 			reader[infile].open(Inputsfile.get(infile));
 		}
-		System.out.println(reader.length);		
+				
 		CVTAlignment CVTAli=new CVTAlignment();
 		
 		BMT.getGeometry().LoadMVTSVTMisalignment(ConstantFileCVT);
