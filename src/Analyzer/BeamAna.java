@@ -32,17 +32,17 @@ public class BeamAna {
 		
 		funcres_x=new F1D("vx", "[amp]*gaus(x,[mean],[sigma])",-25,25);
 		funcres_y=new F1D("vy", "[amp]*gaus(x,[mean],[sigma])",-25,25);
-		funcres_zu=new F1D("vz_up", "[amp]*gaus(x,[mean],[sigma])",-30,-20);
+		funcres_zu=new F1D("vz_up", "[amp]*gaus(x,[mean],[sigma])",-30,-25);
 		funcres_zu.setParameter(0, 2000.);
 		funcres_zu.setParameter(1, -25.);
 		funcres_zu.setParameter(2, 1.);
-		funcres_zd=new F1D("vz_down", "[amp]*gaus(x,[mean],[sigma])",20,30);
+		funcres_zd=new F1D("vz_down", "[amp]*gaus(x,[mean],[sigma])",22.5,27.5);
 		funcres_zd.setParameter(0, 2000.);
 		funcres_zd.setParameter(1, 25.);
 		funcres_zd.setParameter(2, 1.);
 		funcres_z_sc=new F1D("v_sc", "[amp]*gaus(x,[mean],[sigma])",30,80);
 		funcres_z_sc.setParameter(0, 400);
-		funcres_z_sc.setParameter(1, 25.);
+		funcres_z_sc.setParameter(1, 50);
 		funcres_z_sc.setParameter(2, 1.);
 		
 		xz_beam=new H1F("xz_beam angle (degrees)","xz_beam angle (degrees)",50,-10,10);
