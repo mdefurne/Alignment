@@ -31,8 +31,9 @@ public class TrackCandidate{
 	private ArrayList<Double> Phi_track;
 	private ArrayList<Double> Theta_track;
 	private int cand_prim;
-	private int nz;
-	private int nc;
+	private int nz; //Number of "usable" Z hit for tracking
+	private int nc; //Number of "usable" C hit for tracking
+	private int nsvt; //Number of usable hit in SVT for tracking
 	
 	//Seeder Searcher
 	//Indexes are going from outer CVT to inner CVT
@@ -82,6 +83,7 @@ public class TrackCandidate{
 		mean_Phi=0;
 		nz=0;
 		nc=0;
+		nsvt=0;
 		mean_X=0;
 		mean_Y=0;
 		mean_Z=0;
@@ -201,6 +203,7 @@ public class TrackCandidate{
 	
 	public void addBST(BST_struct.Cluster clus) {
 		BSTClus.add(clus);
+		if (clus.IsInFit()) nsvt++;
 	}
 	
 	public void clear() {
@@ -295,7 +298,7 @@ public class TrackCandidate{
 				}
 			}
 		}
-		if (main.constant.TrackerType.equals("SVT")&&(this.BSTsize()<4||nz==0||nc==0)) fit=false; 
+		if (main.constant.TrackerType.equals("SVT")&&(nsvt<4||nz==0||nc==0)) fit=false; 
 		return fit;
 	}
 	
