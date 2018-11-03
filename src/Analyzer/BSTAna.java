@@ -74,6 +74,7 @@ public class BSTAna {
 	
 	public void draw() {
 		 TCanvas SVTHit = new TCanvas("SVT Layer Hit", 1100, 700);
+		 SVTHit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 SVTHit.draw(SVT_LayerHit);
 		 TCanvas[] residual = new TCanvas[6];
 		 for (int lay=0;lay<6;lay++) {

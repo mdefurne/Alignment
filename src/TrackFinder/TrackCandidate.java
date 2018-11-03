@@ -269,9 +269,10 @@ public class TrackCandidate{
 	//Is fittable... one of the most important method... Avoid to give crap to JMinuit
 	public boolean IsFittable() {
 		boolean fit=true;
-		if ((nz<2||nc<2)&&main.constant.TrackerType.equals("MVT")) fit=false;
-		if ((nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2)&&main.constant.TrackerType.equals("CVT")) fit=false;
-		if (main.constant.isCosmic&&main.constant.TrackerType.equals("CVT")&&BSTClus.size()<8&&(nz<2||nc<2)) fit=false;
+		if (!main.constant.isCosmic&&(nz<2||nc<2)&&main.constant.TrackerType.equals("MVT")) fit=false;
+		if (main.constant.isCosmic&&main.constant.TrackerType.equals("MVT")&&(nz<3||nc<4)) fit=false;
+		if ((nz==0||nc==0||(nsvt+nc+nz)<6||nsvt<2)&&main.constant.TrackerType.equals("CVT")) fit=false;
+		if (main.constant.isCosmic&&main.constant.TrackerType.equals("CVT")&&nsvt<8&&(nz<2||nc<2)) fit=false;
 		if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
 			for (int i=0;i<BMTClus.size();i++) {
 				double sx=Math.cos(phi_seed); double sy=Math.sin(phi_seed); 
@@ -298,7 +299,8 @@ public class TrackCandidate{
 				}
 			}
 		}
-		if (main.constant.TrackerType.equals("SVT")&&(nsvt<4||nz==0||nc==0)) fit=false; 
+		if (main.constant.TrackerType.equals("SVT")&&(nsvt<4||nz==0||nc==0)&&!main.constant.isCosmic) fit=false; 
+		if (main.constant.TrackerType.equals("SVT")&&(nsvt<7||nz==0||nc==0)&&main.constant.isCosmic) fit=false; 
 		return fit;
 	}
 	
@@ -363,6 +365,7 @@ public class TrackCandidate{
 			if (checked) temp.addBST(ToMerge.GetBSTCluster(dup));
 		}
 		// For cosmic, we might have duplicated BST	
+		
 		return temp;
 	}
 	

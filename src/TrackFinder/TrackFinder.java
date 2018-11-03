@@ -108,7 +108,7 @@ public class TrackFinder {
 			}
 			
 			//If we want to include SVT, we will try to find the strips compatible with the track candidates built with BMT
-			if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
+			if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
 				for (int lay=6; lay>0;lay--) {
 					
 					for (int ray=0; ray<Candidates.size();ray++) {
@@ -189,9 +189,9 @@ public class TrackFinder {
 			ArrayList<Integer> index_fittable_sec1=new ArrayList<Integer>();
 			ArrayList<Integer> index_fittable_sec3=new ArrayList<Integer>();
 			for (int track=1;track<Candidates.size()+1;track++) {
-				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==2)	index_fittable_sec2.add(track);
-				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==1)	index_fittable_sec1.add(track);
-				if (Candidates.get(track).IsFittable()&&Candidates.get(track).GetBMTCluster(0).getSector()==3)	index_fittable_sec3.add(track);
+				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==2)	index_fittable_sec2.add(track);
+				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==1)	index_fittable_sec1.add(track);
+				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==3)	index_fittable_sec3.add(track);
 			}
 			int sector_hit=0;
 			if (index_fittable_sec1.size()>0) sector_hit++;

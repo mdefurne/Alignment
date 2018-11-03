@@ -7,6 +7,7 @@ import java.util.*;
 import Trajectory.StraightLine;
 import org.jlab.groot.fitter.DataFitter;
 import org.jlab.groot.math.F1D;
+import javax.swing.JFrame;
 
 public class BeamAna {
 	
@@ -73,6 +74,7 @@ public class BeamAna {
 	
 	public void draw() {
 		 TCanvas BeamViewer = new TCanvas("Beam Viewer", 1100, 700);
+		 BeamViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 BeamViewer.divide(3, 1);
 		 BeamViewer.cd(0);
 		 BeamViewer.draw(xy_beam);
@@ -82,6 +84,7 @@ public class BeamAna {
 		 BeamViewer.draw(yz_beam);
 		 
 		 TCanvas TargetViewer = new TCanvas("Target Viewer", 1100, 700);
+		 TargetViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 TargetViewer.divide(1, 3);
 		 TargetViewer.cd(0);
 		 TargetViewer.draw(vx);
