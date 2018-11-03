@@ -166,7 +166,7 @@ public class TrackCandidate{
 			mean_Y=(mean_Y*nz+clus.getY())/((double)(nz+1));
 			X_hit.add(clus.getX());
 			Y_hit.add(clus.getY());
-			nz++;
+			if (clus.IsInFit()) nz++;
 		}
 		
 		//If it is a C-layer
@@ -191,7 +191,7 @@ public class TrackCandidate{
 			R_hit.add(clus.getRadius());
 			Z_hit.add(clus.getZ());
 		
-			nc++;
+			if (clus.IsInFit()) nc++;
 		}
 		double Rphi=Math.sqrt(mean_X*mean_X+mean_Y*mean_Y);
 		vec_track.setXYZ(Math.cos(phi_seed)*Math.sin(theta_seed), Math.sin(phi_seed)*Math.sin(theta_seed), Math.cos(theta_seed));
