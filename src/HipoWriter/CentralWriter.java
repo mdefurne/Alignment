@@ -317,12 +317,12 @@ public class CentralWriter {
 			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
 			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
 			bank.getNode("chi2").setFloat(index, (float) (candidates.get(i).get_chi2()));
-			bank.getNode("NbBSTHits").setShort(index, (short) (candidates.get(i).BSTsize()));
-			bank.getNode("NbBMTHits").setShort(index, (short) (candidates.get(i).size()));
+			bank.getNode("NbBSTHits").setShort(index, (short) (candidates.get(i).get_Nsvt()));
+			bank.getNode("NbBMTHits").setShort(index, (short) (candidates.get(i).get_Nc()+candidates.get(i).get_Nz()));
 			int ndf=0;
-			if (main.constant.TrackerType.equals("SVT")) ndf=candidates.get(i).BSTsize()-4;
-			if (main.constant.TrackerType.equals("MVT")) ndf=candidates.get(i).size()-4;
-			if (main.constant.TrackerType.equals("CVT")) ndf=candidates.get(i).size()+candidates.get(i).BSTsize()-4;
+			if (main.constant.TrackerType.equals("SVT")) ndf=candidates.get(i).get_Nsvt()-4;
+			if (main.constant.TrackerType.equals("MVT")) ndf=candidates.get(i).get_Nc()+candidates.get(i).get_Nz()-4;
+			if (main.constant.TrackerType.equals("CVT")) ndf=candidates.get(i).get_Nc()+candidates.get(i).get_Nz()+candidates.get(i).get_Nsvt()-4;
 			bank.getNode("ndf").setShort(index, (short) ndf);
 			index++;
 		}

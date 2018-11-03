@@ -599,4 +599,8 @@ public class TrackCandidate{
 			System.out.println(this.GetBMTCluster(i).getPhi()+" "+this.GetBMTCluster(i).getZ()+" "+this.GetBMTCluster(i).getT_min());
 		}
 	}
+
+	public int get_Nsvt() {
+		return nsvt;
+	}
 }
