@@ -39,11 +39,11 @@ public class Aligner {
 					Cz=BST.getGeometry().getCz(layer, sector);
 				}
 				
-				double DeltaRot=Math.toRadians(5);
-				double DeltaTrans=3;
+				double DeltaRot=Math.toRadians(2);
+				double DeltaTrans=1;
 				if (Cx!=0||Cy!=0||Cz!=0||Rx!=0||Ry!=0||Rz!=0) {
-					DeltaRot=Math.toRadians(1.5);
-					DeltaTrans=1;
+					DeltaRot=Math.toRadians(1);
+					DeltaTrans=0.5;
 				}
 				double RotErr=2*DeltaRot;
 				double TransErr=2*DeltaTrans;
@@ -97,6 +97,13 @@ public class Aligner {
 			    		BST.getGeometry().setCx(layer, sector, res[3]);
 			    		BST.getGeometry().setCy(layer, sector, res[4]);
 			    		BST.getGeometry().setCz(layer, sector, res[5]);
+			    		
+			    		BST.getGeometry().setRx(layer+1, sector, res[0]);
+			    		BST.getGeometry().setRy(layer+1, sector, res[1]);
+			    		BST.getGeometry().setRz(layer+1, sector, res[2]);
+			    		BST.getGeometry().setCx(layer+1, sector, res[3]);
+			    		BST.getGeometry().setCy(layer+1, sector, res[4]);
+			    		BST.getGeometry().setCz(layer+1, sector, res[5]);
 			    	}
 			   	}
 			    

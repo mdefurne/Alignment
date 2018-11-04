@@ -76,8 +76,8 @@ public class TrackAna {
 					c_res.draw(C_residual[lay][sec]);
 					if (C_residual[lay][sec].getEntries()>20) {
 						F1D funcres;
-						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
-						else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.5,0.5);
+						else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.5,0.5);
 						funcres.setParameter(0, 100);
 						funcres.setParameter(1, C_residual[lay][sec].getMean());
 						funcres.setParameter(2, C_residual[lay][sec].getRMS());

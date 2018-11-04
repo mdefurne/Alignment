@@ -84,8 +84,12 @@ public class CVTAlignment {
 					if (layer>6) Writer.write(layer+" "+sector+" "+BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
 							BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector)+"\n");
 					//If BST constants, write BST constants
-					else Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
+					else {
+						Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
 							BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
+						Writer.write((layer+1)+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
+								BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
+					}
 				} finally {
 					Writer.close();
 				}

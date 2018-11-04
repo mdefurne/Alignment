@@ -345,7 +345,7 @@ public class CentralWriter {
 	//This method is filling cosmic traj bank... And Update crosses if they are linked to a trajectory!!!!
 	public HipoGroup fillCosmicTrajBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
 		int groupsize=12*candidates.size();
-		if (main.constant.isCosmic) groupsize=groupsize*2;
+		if (main.constant.isCosmic) groupsize=groupsize*2+3;
 		
 		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Trajectory").createGroup(groupsize);
 		
@@ -370,7 +370,7 @@ public class CentralWriter {
 						Vector3D ProjThetaSVT=new Vector3D();
 						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
 						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
-												
+						
 						bank.getNode("ID").setShort(index, (short) track);
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
