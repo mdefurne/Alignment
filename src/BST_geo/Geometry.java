@@ -14,8 +14,6 @@ import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
-import org.jlab.geometry.prim.Triangle3d;
-import Trajectory.*;
 
 public class Geometry {
 	
