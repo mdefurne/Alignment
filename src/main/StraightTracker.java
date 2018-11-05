@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataSource;
@@ -21,7 +22,8 @@ public class StraightTracker {
 	static CentralWriter Asimov;
 	static Analyzer Sherlock;
 	static Tracker Tracky;
-	
+	static ArrayList<Integer> DisabledLayer;
+	static ArrayList<Integer> DisabledSector;
 	
 	public StraightTracker() {
 		BST=new Barrel_SVT();
@@ -30,6 +32,33 @@ public class StraightTracker {
 		Tracky=new Tracker();
 		Sherlock=new Analyzer();
 		Asimov=new CentralWriter();
+		
+		DisabledLayer=new ArrayList<Integer>();
+		DisabledSector=new ArrayList<Integer>();
+		
+	}
+	
+	public boolean IsGoodEvent() {
+		boolean Interesting=false;
+		
+		if (BMT.getNbHits()<50&&(BST.getNbHits()<50||!main.constant.isCosmic)) {//Cut on 50 hits if cosmic (most likely shower)
+			if (DisabledLayer.size()==0) Interesting=true;
+			else {
+				// If a tile or module is disabled, we are interested in aligning or analyzing this specific one... 
+				//so no need to do tracking for events without a single hit in this specific module
+				for (int lay=0;lay<DisabledLayer.size();lay++) {
+					for (int sec=0;sec<DisabledSector.size();sec++) {
+						if (DisabledLayer.get(lay)<7) {
+							if (BST.getModule(DisabledLayer.get(lay), DisabledSector.get(sec)).getHits().size()!=0) Interesting=true;
+						}
+						if (DisabledLayer.get(lay)>=7) {
+							if (BMT.getTile(DisabledLayer.get(lay)-7, DisabledSector.get(sec)-1).getHits().size()!=0) Interesting=true;
+						}
+					}
+				}
+			}
+		}
+		return Interesting;
 	}
 	
 	public static void main(String[] args) {
@@ -96,6 +125,7 @@ public class StraightTracker {
 					int sectorToDisable=Integer.parseInt(args[i+1].substring(args[i+1].indexOf('/')+1,args[i+1].length()));
 					if (LayToDisable>=7) BMT.DisableTile(LayToDisable-6,sectorToDisable);
 					else BST.DisableModule(LayToDisable,sectorToDisable);
+					DisabledLayer.add(LayToDisable); DisabledSector.add(sectorToDisable);
 				}
 			}
 			
@@ -132,7 +162,7 @@ public class StraightTracker {
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	if (BMT.getNbHits()<50&&(BST.getNbHits()<50||!main.constant.isCosmic)) { //Cut on 50 hits if cosmic (most likely shower)
+		    	if (Straight.IsGoodEvent()) { 
 		    		TrackFinder Lycos=new TrackFinder(BMT,BST);
 		    		Lycos.BuildCandidates();
 		    		Lycos.FetchTrack();
@@ -154,4 +184,5 @@ public class StraightTracker {
 		
 		System.out.println("Done! "+count);
  }
+	
 }
