@@ -47,13 +47,11 @@ public class StraightTracker {
 				// If a tile or module is disabled, we are interested in aligning or analyzing this specific one... 
 				//so no need to do tracking for events without a single hit in this specific module
 				for (int lay=0;lay<DisabledLayer.size();lay++) {
-					for (int sec=0;sec<DisabledSector.size();sec++) {
-						if (DisabledLayer.get(lay)<7) {
-							if (BST.getModule(DisabledLayer.get(lay), DisabledSector.get(sec)).getHits().size()!=0) Interesting=true;
-						}
-						if (DisabledLayer.get(lay)>=7) {
-							if (BMT.getTile(DisabledLayer.get(lay)-7, DisabledSector.get(sec)-1).getHits().size()!=0) Interesting=true;
-						}
+					if (DisabledLayer.get(lay)<7) {
+						if (BST.getModule(DisabledLayer.get(lay), DisabledSector.get(lay)).getHits().size()!=0) Interesting=true;
+					}
+					if (DisabledLayer.get(lay)>=7) {
+						if (BMT.getTile(DisabledLayer.get(lay)-7, DisabledSector.get(lay)-1).getHits().size()!=0) Interesting=true;
 					}
 				}
 			}
@@ -118,8 +116,18 @@ public class StraightTracker {
 			if (args[i].equals("-l")) {
 				int LayToDisable=Integer.parseInt(args[i+1].substring(0, args[i+1].indexOf('/')));
 				if (args[i+1].charAt(args[i+1].length()-1)=='*') {
-					if (LayToDisable>=7) BMT.DisableLayer(LayToDisable-6);
-					else BST.DisableLayer(LayToDisable);
+					if (LayToDisable>=7) {
+						BMT.DisableLayer(LayToDisable-6);
+						for (int sec=1;sec<=3;sec++) {
+							DisabledLayer.add(LayToDisable); DisabledSector.add(sec);	
+						}
+					}
+					else {
+						BST.DisableLayer(LayToDisable);
+						for (int sec=1;sec<=BST.getGeometry().getNbModule(LayToDisable);sec++) {
+							DisabledLayer.add(LayToDisable); DisabledSector.add(sec);	
+						}
+					}
 				}
 				else {
 					int sectorToDisable=Integer.parseInt(args[i+1].substring(args[i+1].indexOf('/')+1,args[i+1].length()));
