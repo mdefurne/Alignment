@@ -69,7 +69,7 @@ public class FCNChi2 implements FCNBase {
 					  DataBank BSTClusbank=event.getBank("BSTRec::Clusters");
 					  for (int nray=0;nray<raybank.rows();nray++) {
 						 					  
-						  if (raybank.getShort("ndf",nray)>=1) {//if (raybank.getShort("ndf",nray)>=3) {
+						  //if (raybank.getShort("ndf",nray)>=1) {//if (raybank.getShort("ndf",nray)>=3) {
 			    			
 							  ray.setSlope_XYZ(raybank.getFloat("trkline_yx_slope", nray), 1, raybank.getFloat("trkline_yz_slope", nray));
 							  ray.setPoint_XYZ(raybank.getFloat("trkline_yx_interc", nray)*10, 0, raybank.getFloat("trkline_yz_interc", nray)*10);
@@ -77,7 +77,7 @@ public class FCNChi2 implements FCNBase {
 							  //Check the calcCentroid of the track and make sure the track went through the tile we want to align
 							  for (int npt=0; npt<Trajbank.rows(); npt++) {
 								   if (raybank.getShort("ID",nray)==Trajbank.getShort("ID",npt)&&
-										  (layer==Trajbank.getByte("LayerTrackIntersPlane",npt))/*||((layer+1)==Trajbank.getByte("LayerTrackIntersPlane",npt)&&layer<7))*/&&
+										  (layer==Trajbank.getByte("LayerTrackIntersPlane",npt)||((layer+1)==Trajbank.getByte("LayerTrackIntersPlane",npt)&&layer<7))&&
 										  	sector==Trajbank.getByte("SectorTrackIntersPlane",npt)) {
 									  		ClusterExpect=-20;
 			    							int StudiedLayer= (int) Trajbank.getByte("LayerTrackIntersPlane",npt);
@@ -118,7 +118,7 @@ public class FCNChi2 implements FCNBase {
 					  }
 				  }
 			  }
-		  } 
+		  
 		  System.out.println(val);
 	      return val;
 	   }
