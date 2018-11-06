@@ -28,6 +28,7 @@ public class Geometry {
 	double[][] Cx=new double[6][18];
 	double[][] Cy=new double[6][18];
 	double[][] Cz=new double[6][18];
+	double[][] LocTx=new double[6][18];
 	
     public Geometry() {
     	SVTConstants=new org.jlab.detector.geant4.v2.SVT.SVTConstants();
@@ -40,6 +41,7 @@ public class Geometry {
     		for (int sec=0; sec<18;sec++) {
     			this.setRx(lay+1,sec+1,0);this.setRy(lay+1,sec+1,0);this.setRz(lay+1,sec+1,0);
     			this.setCx(lay+1,sec+1,0);this.setCy(lay+1,sec+1,0);this.setCz(lay+1,sec+1,0);
+    			this.setLocTx(lay+1,sec+1,0);
     		}
      	}
     }
@@ -1012,6 +1014,10 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		Cz[lay-1][sec-1]=cz;
 	}
 	
+	public void setLocTx(int lay, int sec, double ltx) {
+		LocTx[lay-1][sec-1]=ltx;
+	}
+	
 	public double getRx(int lay, int sec) {
 		return Rx[lay-1][sec-1];
 	}
@@ -1034,6 +1040,10 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	
 	public double getCz(int lay, int sec) {
 		return Cz[lay-1][sec-1];
+	}
+	
+	public double getLocTx(int lay, int sec) {
+		return LocTx[lay-1][sec-1];
 	}
 	
 	public void LoadMisalignmentFromFile(String FileName) throws IOException{

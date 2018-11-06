@@ -28,7 +28,7 @@ public class CVTAlignment {
 			System.out.println("java -jar Alignator.jar LAYER SECTOR -i INPUT1 -i INPUT2 (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT)");
 			System.out.println("INPUT1: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
 			System.out.println("LAYER: Layer of the detector to be aligned");
-			System.out.println("SECTOR: Sector of the detector to be aligned");
+			System.out.println("SECTOR: Sector of the detector to be aligned... If Layer=all and sector=all, alignment is all MVT wrt all SVT");
 			System.out.println("optional: ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
 			System.exit(0);
 		}
@@ -102,6 +102,18 @@ public class CVTAlignment {
 		//We want to align MVT wrt to SVT
 		else {
 			Alignment.DoMVTSVTAlignment(BMT, reader);
+			File AlignCst=new File(ConstantFileCVT);
+			try {
+				if (!AlignCst.exists()) AlignCst.createNewFile();
+				FileWriter Writer=new FileWriter(AlignCst, true);
+				try {
+					Writer.write(BMT_geo.Constants.getRxCVT()+" "+BMT_geo.Constants.getRyCVT()+" "+BMT_geo.Constants.getRzCVT()+" "+BMT_geo.Constants.getCxCVT()+" "+BMT_geo.Constants.getCyCVT()+" "+BMT_geo.Constants.getCzCVT());
+				} finally {
+					Writer.close();
+				}
+			} catch (Exception e) {
+				System.out.println("Impossible to write results in file");
+			}
 		}
 	}
 			 
