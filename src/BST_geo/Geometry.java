@@ -239,12 +239,12 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double zt = 0;
 
         if (frame.equals("lab")) {
-            xt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(sector, layer))  * cosRotation - y * sinRotation + lTx;
-            yt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(sector, layer)) * sinRotation + y * cosRotation + lTy;
+            xt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(layer, sector))  * cosRotation - y * sinRotation + lTx;
+            yt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(layer, sector)) * sinRotation + y * cosRotation + lTy;
             zt = z + lTz;
         }
         if (frame.equals("local")) {
-            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID+this.getLocTx(sector, layer);
+            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID+this.getLocTx(layer,sector);
             yt = -(x - lTx) * sinRotation + (y - lTy) * cosRotation;
             zt = z - lTz;
         }

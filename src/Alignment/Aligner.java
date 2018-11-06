@@ -107,6 +107,32 @@ public class Aligner {
 			    	}
 			   	}
 			    
+			    else {
+			    	if (layer>6) {
+			    		BMT_geo.Constants.setRx(layer-6, sector, 0);
+			    		BMT_geo.Constants.setRy(layer-6, sector, 0);
+			    		BMT_geo.Constants.setRz(layer-6, sector, 0);
+			    		BMT_geo.Constants.setCx(layer-6, sector, 0);
+			    		BMT_geo.Constants.setCy(layer-6, sector, 0);
+			    		BMT_geo.Constants.setCz(layer-6, sector, 0);
+			    	}
+			    	else{
+			    		BST.getGeometry().setRx(layer, sector, 0);
+			    		BST.getGeometry().setRy(layer, sector, 0);
+			    		BST.getGeometry().setRz(layer, sector, 0);
+			    		BST.getGeometry().setCx(layer, sector, 0);
+			    		BST.getGeometry().setCy(layer, sector, 0);
+			    		BST.getGeometry().setCz(layer, sector, 0);
+			    		
+			    		BST.getGeometry().setRx(layer+1, sector, 0);
+			    		BST.getGeometry().setRy(layer+1, sector, 0);
+			    		BST.getGeometry().setRz(layer+1, sector, 0);
+			    		BST.getGeometry().setCx(layer+1, sector, 0);
+			    		BST.getGeometry().setCy(layer+1, sector, 0);
+			    		BST.getGeometry().setCz(layer+1, sector, 0);
+			    	}
+			    }
+			    
 			
 	}
 	
@@ -178,8 +204,8 @@ public class Aligner {
 			MnUserParameters upar = new MnUserParameters();
 			double LocTx_1=0;double LocTx_2=0;
 						
-			LocTx_1=BST.getGeometry().getRx(layer, sector);
-			LocTx_2=BST.getGeometry().getRy(layer, sector);
+			LocTx_1=BST.getGeometry().getLocTx(layer, sector);
+			LocTx_2=BST.getGeometry().getLocTx(layer+1, sector);
 						
 			double DeltaTrans=0.5;
 			if (LocTx_1!=0||LocTx_2!=0) DeltaTrans=0.25;
@@ -216,6 +242,10 @@ public class Aligner {
 		    	BST.getGeometry().setLocTx(layer+1, sector, res[1]);
 		    	
 		   	}
+		    else {
+		    	BST.getGeometry().setLocTx(layer, sector, 0);
+		    	BST.getGeometry().setLocTx(layer+1, sector, 0);
+		    }
 		    
 		
 	}
