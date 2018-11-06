@@ -20,7 +20,7 @@ public class Aligner {
 									
 				//Create parameters
 				MnUserParameters upar = new MnUserParameters();
-				double Rx=0; double Ry=0; double Rz=0; double Cx=0; double Cy=0; double Cz=0;	
+				double Rx=0; double Ry=0; double Rz=0; double Cx=0; double Cy=0; double Cz=0;
 				
 				if (layer>6) {
 					Rx=BMT_geo.Constants.getRx(layer-6, sector);
@@ -169,6 +169,55 @@ public class Aligner {
 	    		BMT_geo.Constants.setCyCVT(res[4]);
 	    		BMT_geo.Constants.setCzCVT(res[5]);
 		    }
+	}
+	
+	public void DoSVTLocAlignment(Barrel_SVT BST, HipoDataSource[] reader, int layer, int sector) {
+		//Use minimizer
+								
+			//Create parameters
+			MnUserParameters upar = new MnUserParameters();
+			double LocTx_1=0;double LocTx_2=0;
+						
+			LocTx_1=BST.getGeometry().getRx(layer, sector);
+			LocTx_2=BST.getGeometry().getRy(layer, sector);
+						
+			double DeltaTrans=0.5;
+			if (LocTx_1!=0||LocTx_2!=0) DeltaTrans=0.25;
+		
+			double TransErr=2*DeltaTrans;
+			double LocTx1min=LocTx_1-DeltaTrans; double LocTx1max=LocTx_1+DeltaTrans; 
+			double LocTx2min=LocTx_2-DeltaTrans; double LocTx2max=LocTx_2+DeltaTrans; 
+			
+			
+			upar.add("LocTx1", LocTx_1, TransErr, LocTx1min, LocTx1max);
+			upar.add("LocTx2", LocTx_2, TransErr, LocTx2min, LocTx2max);
+									  	    
+		    //Create function to minimize
+			LocSVTAlign Align=new LocSVTAlign();
+		    
+		    //Give clusters to Chi2 to compute distance
+		    Align.SetLocToAlign(BST,reader,layer,sector);
+		    
+		 
+		    //Create Minuit (parameters and function to minimize)
+		    MnMigrad migrad = new MnMigrad(Align, upar);
+		 			    
+		    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
+		    FunctionMinimum min = migrad.minimize();
+		    
+		    if (min.isValid()) {
+		    	double[] res=migrad.params(); //res[0] and res[1] are phi and theta for vec, res[2] is phi for intersection point on cylinder and  res[3] is z_inter
+		    	double[] err_res=new double[migrad.covariance().nrow()];
+		    	for (int i=0;i<migrad.covariance().nrow();i++) {
+		    		err_res[i]=Math.sqrt(migrad.covariance().get(i, i));
+		    	}
+		    	
+		    	BST.getGeometry().setLocTx(layer, sector, res[0]);
+		    	BST.getGeometry().setLocTx(layer+1, sector, res[1]);
+		    	
+		   	}
+		    
+		
 	}
 
 }

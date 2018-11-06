@@ -68,7 +68,9 @@ public class CVTAlignment {
 			int layer=Integer.parseInt(args[0]);
 			int sector=Integer.parseInt(args[1]);
 		
-			Alignment.DoAlignment(BMT, BST, reader, layer, sector);
+			if (LocalAlign) Alignment.DoSVTLocAlignment(BST, reader, layer, sector);
+			else Alignment.DoAlignment(BMT, BST, reader, layer, sector);
+			
 			if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
 				BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector));
 			else System.out.println(BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
@@ -88,9 +90,9 @@ public class CVTAlignment {
 					//If BST constants, write BST constants
 					else {
 						Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
-							BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
+							BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+" "+BST.getGeometry().getLocTx(layer, sector)+"\n");
 						Writer.write((layer+1)+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
-								BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+"\n");
+								BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+" "+BST.getGeometry().getLocTx(layer+1, sector)+"\n");
 					}
 				} finally {
 					Writer.close();
