@@ -239,12 +239,12 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
         double zt = 0;
 
         if (frame.equals("lab")) {
-            xt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID)  * cosRotation - y * sinRotation + lTx;
-            yt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID) * sinRotation + y * cosRotation + lTy;
+            xt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(sector, layer))  * cosRotation - y * sinRotation + lTx;
+            yt = (x - 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID-this.getLocTx(sector, layer)) * sinRotation + y * cosRotation + lTy;
             zt = z + lTz;
         }
         if (frame.equals("local")) {
-            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID;
+            xt = (x - lTx) * cosRotation + (y - lTy) * sinRotation + 0.5 * org.jlab.detector.geant4.v2.SVT.SVTConstants.ACTIVESENWID+this.getLocTx(sector, layer);
             yt = -(x - lTx) * sinRotation + (y - lTy) * cosRotation;
             zt = z - lTz;
         }
@@ -1066,6 +1066,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
             		this.setCx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[5]));
             		this.setCy(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[6]));
             		this.setCz(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[7]));
+            		if (line.length>8) this.setLocTx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[8]));
             	}
 			//linenumber++;
 			}

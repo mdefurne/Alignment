@@ -25,11 +25,12 @@ public class CVTAlignment {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows, in this specific order:\n");
-			System.out.println("java -jar Alignator.jar LAYER SECTOR -i INPUT1 -i INPUT2 (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT)");
+			System.out.println("java -jar Alignator.jar LAYER SECTOR -i INPUT1 -i INPUT2 (-svt ALIGNMENTFILESVT -mvt ALIGNMENTFILEMVT -cvt ALIGNMENTFILECVT -loc LOCAL)");
 			System.out.println("INPUT1: File on which alignment code will run. It should be a file produced with Tracker.jar, with the requirement to exclude the detector to be aligned from reconstruction.");
 			System.out.println("LAYER: Layer of the detector to be aligned");
 			System.out.println("SECTOR: Sector of the detector to be aligned... If Layer=all and sector=all, alignment is all MVT wrt all SVT");
 			System.out.println("optional: ALIGNMENTFILE: Path and name of the file in which alignment results must be written");
+			System.out.println("optional: LOCAL: Alignment within local frame of SVT sensors (ONLY for SVT)");
 			System.exit(0);
 		}
 		
@@ -37,12 +38,13 @@ public class CVTAlignment {
 		String ConstantFileMVT=""; //File containing internal misalignments of MVT
 		String ConstantFileSVT=""; //File containing internal misalignments of SVT
 		String ConstantFileCVT=""; //File contaning MVT wrt SVT misalignments
+		Boolean LocalAlign=false;
 		for (int i=2; i<args.length; i++) {
 			if (args[i].equals("-i")) Inputsfile.add(args[i+1]);
 			if (args[i].equals("-svt")) ConstantFileSVT=args[i+1];
 			if (args[i].equals("-mvt")) ConstantFileMVT=args[i+1];
 			if (args[i].equals("-cvt")) ConstantFileCVT=args[i+1];
-			
+			if (args[i].equals("-loc")) LocalAlign=Boolean.parseBoolean(args[i+1]);
 		}
 		
 		HipoDataSource[] reader=new HipoDataSource[Inputsfile.size()];
@@ -70,7 +72,7 @@ public class CVTAlignment {
 			if (layer>6) System.out.println(BMT_geo.Constants.getRx(layer-6, sector)+" "+BMT_geo.Constants.getRy(layer-6, sector)+" "+BMT_geo.Constants.getRz(layer-6, sector)+" "+
 				BMT_geo.Constants.getCx(layer-6, sector)+" "+BMT_geo.Constants.getCy(layer-6, sector)+" "+BMT_geo.Constants.getCz(layer-6, sector));
 			else System.out.println(BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
-				BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector));
+				BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+" "+BST.getGeometry().getLocTx(layer, sector));
 		
 			//Need to write down the file
 			File AlignCst;
