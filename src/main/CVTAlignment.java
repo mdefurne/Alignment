@@ -111,7 +111,7 @@ public class CVTAlignment {
 				if (!AlignCst.exists()) AlignCst.createNewFile();
 				FileWriter Writer=new FileWriter(AlignCst, true);
 				try {
-					Writer.write(BMT_geo.Constants.getRxCVT()+" "+BMT_geo.Constants.getRyCVT()+" "+BMT_geo.Constants.getRzCVT()+" "+BMT_geo.Constants.getCxCVT()+" "+BMT_geo.Constants.getCyCVT()+" "+BMT_geo.Constants.getCzCVT());
+					Writer.write(BMT_geo.Constants.getRxCVT()+" "+BMT_geo.Constants.getRyCVT()+" "+BMT_geo.Constants.getRzCVT()+" "+BMT_geo.Constants.getCxCVT()+" "+BMT_geo.Constants.getCyCVT()+" "+BMT_geo.Constants.getCzCVT()+"\n");
 				} finally {
 					Writer.close();
 				}
