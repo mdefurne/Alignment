@@ -73,7 +73,7 @@ public class Layer {
 		clustermap.clear();
 	}
 	
-	public HashMap<Integer, Cluster> getCLusterList(){
+	public HashMap<Integer, Cluster> getClusterList(){
 		return clustermap;
 	}
 }

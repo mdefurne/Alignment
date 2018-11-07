@@ -39,12 +39,9 @@ public class Aligner {
 					Cz=BST.getGeometry().getCz(layer, sector);
 				}
 				
-				double DeltaRot=Math.toRadians(2);
-				double DeltaTrans=1;
-				if (Cx!=0||Cy!=0||Cz!=0||Rx!=0||Ry!=0||Rz!=0) {
-					DeltaRot=Math.toRadians(1);
-					DeltaTrans=0.5;
-				}
+				double DeltaRot=Math.toRadians(3);
+				double DeltaTrans=1.5;
+			
 				double RotErr=2*DeltaRot;
 				double TransErr=2*DeltaTrans;
 				double Rxmin=Rx-DeltaRot; double Rymin=Ry-DeltaRot; double Rzmin=Rz-DeltaRot; double Cxmin=Cx-DeltaTrans; double Cymin=Cy-DeltaTrans; double Czmin=Cz-DeltaTrans;
@@ -106,33 +103,7 @@ public class Aligner {
 			    		BST.getGeometry().setCz(layer+1, sector, res[5]);
 			    	}
 			   	}
-			    
-			    else {
-			    	if (layer>6) {
-			    		BMT_geo.Constants.setRx(layer-6, sector, 0);
-			    		BMT_geo.Constants.setRy(layer-6, sector, 0);
-			    		BMT_geo.Constants.setRz(layer-6, sector, 0);
-			    		BMT_geo.Constants.setCx(layer-6, sector, 0);
-			    		BMT_geo.Constants.setCy(layer-6, sector, 0);
-			    		BMT_geo.Constants.setCz(layer-6, sector, 0);
-			    	}
-			    	else{
-			    		BST.getGeometry().setRx(layer, sector, 0);
-			    		BST.getGeometry().setRy(layer, sector, 0);
-			    		BST.getGeometry().setRz(layer, sector, 0);
-			    		BST.getGeometry().setCx(layer, sector, 0);
-			    		BST.getGeometry().setCy(layer, sector, 0);
-			    		BST.getGeometry().setCz(layer, sector, 0);
-			    		
-			    		BST.getGeometry().setRx(layer+1, sector, 0);
-			    		BST.getGeometry().setRy(layer+1, sector, 0);
-			    		BST.getGeometry().setRz(layer+1, sector, 0);
-			    		BST.getGeometry().setCx(layer+1, sector, 0);
-			    		BST.getGeometry().setCy(layer+1, sector, 0);
-			    		BST.getGeometry().setCz(layer+1, sector, 0);
-			    	}
-			    }
-			    
+			    			    
 			
 	}
 	

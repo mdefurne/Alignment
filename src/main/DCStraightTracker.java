@@ -151,17 +151,16 @@ public class DCStraightTracker {
 		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
 		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
 		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	if (Straight.IsGoodEvent()) { 
-		    		TrackFinder Lycos=new TrackFinder(BMT,BST);
-		    		Lycos.BuildCandidates();
-		    		Lycos.FetchTrack();
-		    		if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
-		    		Tracky.addEvent(count, Lycos.get_Candidates());
-		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
+		    	TrackFinder Lycos=new TrackFinder(BMT,BST);
+		    	Lycos.BuildCandidates();
+		    	Lycos.FetchTrack();
+		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
+		    	Tracky.addEvent(count, Lycos.get_Candidates());
+		    	Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
+		    		
+		    	///////////////////////////////////////
+		    	Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
 		    	
-		    		///////////////////////////////////////
-		    		Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
-		    	}
 		    }
 		   		   		         
 		}
