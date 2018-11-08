@@ -29,10 +29,10 @@ public class LocSVTAlign implements FCNBase {
 		  float DeltaCentroid=10;
 		  
 		  BST.getGeometry().setLocTx(layer, sector, par[0]);
-		  BST.getGeometry().setLocTx(layer+1, sector, par[1]);
+		  BST.getGeometry().setLocTx(layer+1, sector, -par[0]);
 			 
 		
-		  System.out.println(par[0]+" "+par[1]);
+		  System.out.println(par[0]);
 		  for (int infile=0; infile<reader.length; infile++) {	
 			 
 			  for (int i=0; i<reader[infile].getSize();i++) {

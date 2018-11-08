@@ -248,6 +248,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
             yt = -(x - lTx) * sinRotation + (y - lTy) * cosRotation;
             zt = z - lTz;
         }
+      
         return new Point3D(xt, yt, zt);
     }
     //*** point and its error
@@ -856,7 +857,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 
 	public Vector3D getIntersectWithRay(int layer, int sectorcluster, Vector3D slope_lab, Vector3D pt_lab) {
 		Vector3D inter=new Vector3D();
-		//int sector=findSectorFromAngle(layer,pt_line);
+		
 		inter.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		if (sectorcluster>0) {
 			Vector3D n=findBSTPlaneNormal(sectorcluster, layer);
@@ -1053,7 +1054,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		
 		if (GeoTrans.exists()) {
 			System.out.println("Opening misalignment file for SVT: "+FileName);
-			String[] line=new String[8];
+			String[] line=new String[9];
 			int linenumber=0;
 			Scanner input = new Scanner(GeoTrans);
             while (input.hasNextLine()) {
@@ -1066,12 +1067,11 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
             		this.setCx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[5]));
             		this.setCy(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[6]));
             		this.setCz(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[7]));
-            		if (line.length>8) this.setLocTx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[8]));
+            		this.setLocTx(Integer.parseInt(line[0]),Integer.parseInt(line[1]), Double.parseDouble(line[8]));
             	}
 			//linenumber++;
 			}
 		}
-		
 	}
 
 }

@@ -173,21 +173,20 @@ public class Aligner {
 								
 			//Create parameters
 			MnUserParameters upar = new MnUserParameters();
-			double LocTx_1=0;double LocTx_2=0;
+			double LocTx_1=0;
 						
 			LocTx_1=BST.getGeometry().getLocTx(layer, sector);
-			LocTx_2=BST.getGeometry().getLocTx(layer+1, sector);
-						
+			
 			double DeltaTrans=0.5;
-			if (LocTx_1!=0||LocTx_2!=0) DeltaTrans=0.25;
+			if (LocTx_1!=0) DeltaTrans=0.25;
 		
 			double TransErr=2*DeltaTrans;
 			double LocTx1min=LocTx_1-DeltaTrans; double LocTx1max=LocTx_1+DeltaTrans; 
-			double LocTx2min=LocTx_2-DeltaTrans; double LocTx2max=LocTx_2+DeltaTrans; 
+			//double LocTx2min=LocTx_2-DeltaTrans; double LocTx2max=LocTx_2+DeltaTrans; 
 			
 			
 			upar.add("LocTx1", LocTx_1, TransErr, LocTx1min, LocTx1max);
-			upar.add("LocTx2", LocTx_2, TransErr, LocTx2min, LocTx2max);
+			//upar.add("LocTx2", LocTx_2, TransErr, LocTx2min, LocTx2max);
 									  	    
 		    //Create function to minimize
 			LocSVTAlign Align=new LocSVTAlign();
@@ -210,13 +209,10 @@ public class Aligner {
 		    	}
 		    	
 		    	BST.getGeometry().setLocTx(layer, sector, res[0]);
-		    	BST.getGeometry().setLocTx(layer+1, sector, res[1]);
+		    	BST.getGeometry().setLocTx(layer+1, sector, res[0]);
 		    	
 		   	}
-		    else {
-		    	BST.getGeometry().setLocTx(layer, sector, 0);
-		    	BST.getGeometry().setLocTx(layer+1, sector, 0);
-		    }
+		    
 		    
 		
 	}
