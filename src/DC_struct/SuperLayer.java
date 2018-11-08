@@ -4,23 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SuperLayer {
-	
+	//0 is upstream SL, and 1 downstream
 	public int region;
 	public int SuperLayer;
 	public Layer[] StackLayer= new Layer[6];
-	HashMap<Integer, Segment> segmap;
+	ArrayList<Segment> segmap;
 	public double DeltaCluster; //Authorized to associate to layer from one to the next if DeltaCluster<1.5
-	boolean[] GoodSegments;
+	
 	ArrayList<Segment> BufferLayer;
 	
-	public SuperLayer(int reg, int SL) {
-		region=reg;
+	public SuperLayer(int SL) {
+		region=(SL-1)/2+1;
 		SuperLayer=SL;
-		segmap = new HashMap<Integer, Segment>();
-		GoodSegments=new boolean[6];
+		segmap = new ArrayList<Segment>();
+		BufferLayer = new ArrayList<Segment>();
+		
 		for (int lay=0; lay<6;lay++) {
 			StackLayer[lay]=new Layer(lay+1);
-			GoodSegments[lay]=false;
+			
 		}
 		DeltaCluster=1.5;
 	}
@@ -39,7 +40,7 @@ public class SuperLayer {
 	
 	public void MakeSegment() {
 		boolean IsAttributed=true;
-		boolean noHit_yet_sector=true;
+		boolean noHit_yet_SL=true;
 		int cand_newlay=0;
 		
 		for (int lay=6; lay>0;lay--) {
@@ -47,7 +48,7 @@ public class SuperLayer {
 			if (this.getLayer(lay).getClusterList().size()<7) {
 				//If we have already some hit in the sector, there are track candidate to check
 				cand_newlay=segmap.size();
-				if (!noHit_yet_sector) {
+				if (!noHit_yet_SL) {
 					for (int clus=0;clus<this.getLayer(lay).getClusterList().size();clus++) {
 						//Here we always test if we have a match by time
 						IsAttributed=false;
@@ -70,26 +71,26 @@ public class SuperLayer {
 						}
 				
 						if (!IsAttributed) {
-							Segment seg=new Segment();
+							Segment seg=new Segment(SuperLayer);
 							seg.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
-							segmap.put(segmap.size()+1, seg);
+							segmap.add(seg);
 						}
 				
 					}
 					for (int buf=0;buf<BufferLayer.size();buf++) {
-						segmap.put(segmap.size()+1, BufferLayer.get(buf));
+						segmap.add(BufferLayer.get(buf));
 					}
 					BufferLayer.clear();
 				}	
 	
 				//We just enter the sector
-				if (noHit_yet_sector) {
+				if (noHit_yet_SL) {
 					//Create a new Track Candidate for each cluster of first layer
 					for (int clus=0;clus<this.getLayer(lay).getClusterList().size();clus++) {
-						Segment cand=new Segment();
+						Segment cand=new Segment(SuperLayer);
 						cand.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
-						segmap.put(segmap.size()+1, cand);
-						noHit_yet_sector=false;
+						segmap.add(cand);
+						noHit_yet_SL=false;
 					}
 			
 				}
@@ -100,8 +101,22 @@ public class SuperLayer {
 		
 	}
 	
-	public boolean IsCompatible() {
+	public boolean IsCompatible(DC_struct.Cluster clus,Segment seg) {
 		boolean Compatible=true;
+		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())>2) Compatible=false;
+		if (Math.abs(clus.getCentroid()-seg.getLastCentroid())>DeltaCluster*Math.abs(clus.getLayer()-seg.getLayerLastEntry())) Compatible=false;
+		return Compatible;
+	}
+	
+	public ArrayList<Segment> getSegments(){
+		return segmap;
+	}
+	
+	public void clear() {
+		for (int lay=0; lay<6;lay++) {
+			StackLayer[lay].clear();
+		}
+		segmap.clear();
 	}
 
 }
