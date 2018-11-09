@@ -9,6 +9,7 @@ public class Cluster {
 	private ArrayList<Integer> hit_id;
 	private ArrayList<DC_struct.Wire> hit_list;
 	private int layer_clus;
+	private int LayerInSector;
 	private int sector_clus;
 	boolean InTheFit;
 	private int trkID;
@@ -21,10 +22,19 @@ public class Cluster {
 		InTheFit=true;
 		trkID=-1;
 		centroidResidual=Double.NaN;
+		LayerInSector=-1;
 	}
 	
 	public ArrayList<Integer> getListOfHits(){
 		return hit_id;
+	}
+	
+	public int getLayerInSector() {
+		return LayerInSector;
+	}
+	
+	public void setLayerInSector(int NumLay) {
+		if (LayerInSector==-1) LayerInSector=NumLay;
 	}
 	
 	public void add(int id_hit, Wire aWire) {

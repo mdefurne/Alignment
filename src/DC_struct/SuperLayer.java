@@ -44,18 +44,18 @@ public class SuperLayer {
 		int cand_newlay=0;
 		
 		for (int lay=6; lay>0;lay--) {
-			
-			if (this.getLayer(lay).getClusterList().size()<7) {
+			this.getLayer(lay).DoClustering();
+			if (this.getLayer(lay).getClusterList().size()<4) {
 				//If we have already some hit in the sector, there are track candidate to check
 				cand_newlay=segmap.size();
 				if (!noHit_yet_SL) {
 					for (int clus=0;clus<this.getLayer(lay).getClusterList().size();clus++) {
 						//Here we always test if we have a match by time
 						IsAttributed=false;
-						for (int num_seg=cand_newlay;num_seg<segmap.size();num_seg++) {
+						for (int num_seg=cand_newlay-1;num_seg<segmap.size();num_seg++) {
 							//If we have a match in time and will add a new layer
-							if (!this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg+1))) {
-								Segment seg=segmap.get(num_seg+1).Duplicate();
+							if (!this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
+								Segment seg=segmap.get(num_seg).Duplicate();
 								//if (this.IsCompatible(get(clus+1),cand)) { /// Commented because it might be useful to deal with time info
 									seg.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
 									BufferLayer.add(seg);
@@ -63,8 +63,8 @@ public class SuperLayer {
 								//}
 							}
 					
-							if (this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg+1))) {
-								segmap.get(num_seg+1).addCluster(this.getLayer(lay).getClusterList().get(clus+1));
+							if (this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
+								segmap.get(num_seg).addCluster(this.getLayer(lay).getClusterList().get(clus+1));
 								IsAttributed=true;
 							}
 					
@@ -103,7 +103,9 @@ public class SuperLayer {
 	
 	public boolean IsCompatible(DC_struct.Cluster clus,Segment seg) {
 		boolean Compatible=true;
-		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())>2) Compatible=false;
+		
+		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())>3) Compatible=false;
+		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())==0) Compatible=false;
 		if (Math.abs(clus.getCentroid()-seg.getLastCentroid())>DeltaCluster*Math.abs(clus.getLayer()-seg.getLayerLastEntry())) Compatible=false;
 		return Compatible;
 	}
@@ -117,6 +119,14 @@ public class SuperLayer {
 			StackLayer[lay].clear();
 		}
 		segmap.clear();
+	}
+	
+	public boolean hasGoodSegments() {
+		boolean good=false;
+		for (int el=0;el<segmap.size();el++) {
+			if (segmap.get(el).isGoodSLSegment()) good=true;
+		}
+		return good;
 	}
 
 }

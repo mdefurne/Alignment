@@ -24,6 +24,7 @@ public class Segment {
 	
 	public void addCluster(Cluster clus) {
 		clusterlist.add(clus);
+		clusterlist.get(clusterlist.size()-1).setLayerInSector(clus.getLayer()+6*(SuperLayer-1));
 		nbLayer++;
 	}
 	
@@ -55,12 +56,16 @@ public class Segment {
 		return Dupli;
 	}
 	
-	public void Merge(Segment ToMerge) {
-		for (int cl=0;cl<ToMerge.getSize();cl++) {
-			this.addCluster(ToMerge.getClusters().get(cl));
+	public Segment Merge(Segment ToMerge) {
+		Segment Merged=new Segment(ToMerge.getSuperLayer());
+		for (int cl=0;cl<this.getSize();cl++) {
+			Merged.addCluster(this.getClusters().get(cl));
 		}
-		SuperLayer=ToMerge.getSuperLayer();
-		nbSuperLayer++;
+		for (int cl=0;cl<ToMerge.getSize();cl++) {
+			Merged.addCluster(ToMerge.getClusters().get(cl));
+		}
+		Merged.setNbSuperLayer(this.getNbSuperLayer()+ToMerge.getNbSuperLayer());
+		return Merged;
 	}
 	
 	public int getNbLayer() {
@@ -68,16 +73,32 @@ public class Segment {
 	}
 	
 	public int getNbSuperLayer() {
-		return nbLayer;
+		return nbSuperLayer;
 	}
 	
+	
+	public void setNbSuperLayer(int nSL) {
+		nbSuperLayer=nSL;
+	}
 	public int getSuperLayer() {
 		return SuperLayer;
 	}
 	
 	public boolean isGoodSLSegment() {
 		boolean good=false;
-		if (this.nbLayer>=3&&(this.getClusters().get(0).getLayer()==1||this.getClusters().get(0).getLayer()==2)&&(this.getClusters().get(this.getSize()-1).getLayer()==5||this.getClusters().get(this.getSize()-1).getLayer()==6)) good=true;
+		if (this.nbLayer>=3&&(this.getClusters().get(0).getLayer()==6||this.getClusters().get(0).getLayer()==5)&&(this.getClusters().get(this.getSize()-1).getLayer()==1||this.getClusters().get(this.getSize()-1).getLayer()==2)) good=true;
 		return good;
+	}
+	
+	public boolean isGoodSectorSegment() {
+		boolean good=false;
+		if (this.nbSuperLayer==6) good=true;
+		return good;
+	}
+	
+	public void PrintSegment() {
+		for (int clus=0;clus<clusterlist.size();clus++) {
+			System.out.println(clusterlist.get(clus).getLayerInSector()+" "+clusterlist.get(clus).getCentroid());
+		}
 	}
 }

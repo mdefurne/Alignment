@@ -29,9 +29,7 @@ public class LocSVTAlign implements FCNBase {
 		  float DeltaCentroid=10;
 		  
 		  BST.getGeometry().setLocTx(layer, sector, par[0]);
-		  BST.getGeometry().setLocTx(layer+1, sector, -par[0]);
-			 
-		
+		 		
 		  System.out.println(par[0]);
 		  for (int infile=0; infile<reader.length; infile++) {	
 			 
@@ -51,7 +49,7 @@ public class LocSVTAlign implements FCNBase {
 							  //Check the calcCentroid of the track and make sure the track went through the tile we want to align
 							  for (int npt=0; npt<Trajbank.rows(); npt++) {
 								   if (raybank.getShort("ID",nray)==Trajbank.getShort("ID",npt)&&
-										  (layer==Trajbank.getByte("LayerTrackIntersPlane",npt)||((layer+1)==Trajbank.getByte("LayerTrackIntersPlane",npt)&&layer<7))&&
+										  (layer==Trajbank.getByte("LayerTrackIntersPlane",npt))&&//||((layer+1)==Trajbank.getByte("LayerTrackIntersPlane",npt)&&layer<7))&&
 										  	sector==Trajbank.getByte("SectorTrackIntersPlane",npt)) {
 									  		ClusterExpect=-20;
 			    							int StudiedLayer= (int) Trajbank.getByte("LayerTrackIntersPlane",npt);

@@ -209,8 +209,7 @@ public class Aligner {
 		    	}
 		    	
 		    	BST.getGeometry().setLocTx(layer, sector, res[0]);
-		    	BST.getGeometry().setLocTx(layer+1, sector, res[0]);
-		    	
+		    			    	
 		   	}
 		    
 		    
