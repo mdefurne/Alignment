@@ -91,10 +91,11 @@ public class CVTAlignment {
 					else {
 						Writer.write(layer+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
 							BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+" "+BST.getGeometry().getLocTx(layer, sector)+"\n");
-						Writer.write((layer+1)+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
+						if (!LocalAlign) Writer.write((layer+1)+" "+sector+" "+BST.getGeometry().getRx(layer, sector)+" "+BST.getGeometry().getRy(layer, sector)+" "+BST.getGeometry().getRz(layer, sector)+" "+
 								BST.getGeometry().getCx(layer, sector)+" "+BST.getGeometry().getCy(layer, sector)+" "+BST.getGeometry().getCz(layer, sector)+" "+BST.getGeometry().getLocTx(layer+1, sector)+"\n");
 					}
 				} finally {
+					
 					Writer.close();
 				}
 			} catch (Exception e) {

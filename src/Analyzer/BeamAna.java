@@ -46,8 +46,8 @@ public class BeamAna {
 		funcres_z_sc.setParameter(1, 50);
 		funcres_z_sc.setParameter(2, 1.);
 		
-		xz_beam=new H1F("xz_beam angle (degrees)","xz_beam angle (degrees)",50,-10,10);
-		yz_beam=new H1F("yz_beam angle (degrees)","yz_beam angle (degrees)",50,-10,10);
+		xz_beam=new H1F("xz_beam angle (degrees)","xz_beam angle (degrees)",50,-2.5,2.5);
+		yz_beam=new H1F("yz_beam angle (degrees)","yz_beam angle (degrees)",50,-2.5,2.5);
 		
 		xy_beam=new H2F("Beam position in z=0",50,-5,5,50,-5,5);
 		

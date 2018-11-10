@@ -83,8 +83,8 @@ public class BSTAna {
 		 residual[lay].divide(4, 5);
 		 for (int sec=0;sec<18;sec++) {
 			 F1D funcres;
-			 if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
-			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
+			 if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.10,0.10);
+			 else funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.10,0.10);
 			
 				residual[lay].cd(sec);
 				//residual[lay].draw(residual_vs_z[lay][sec]);
