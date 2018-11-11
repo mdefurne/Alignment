@@ -89,4 +89,8 @@ public class Cluster {
 		return centroid;
 	}
 	
+	public ArrayList<DC_struct.Wire> getWires(){
+		return hit_list;
+	}
+	
 }

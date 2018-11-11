@@ -2,6 +2,7 @@ package main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataSource;
@@ -12,7 +13,11 @@ import TrackFinder.*;
 import Particles.*;
 import PostProcessor.*;
 import HipoWriter.*;
+
+import org.jlab.detector.base.DetectorType;
+import org.jlab.detector.base.GeometryFactory;
 import org.jlab.detector.geant4.v2.DCGeant4Factory;
+import org.jlab.geom.base.ConstantProvider;
 
 
 public class DCStraightTracker {
@@ -23,14 +28,17 @@ public class DCStraightTracker {
 	static Tracker Tracky;
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
+	static org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
 	
 	public DCStraightTracker() {
-		DC=new DriftChambers();
+		
 		MCParticles=new ParticleEvent();
 		Tracky=new Tracker();
 		Sherlock=new Analyzer();
 		Asimov=new CentralWriter();
-		
+		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
+		DCgeo = new DCGeant4Factory(provider, DCGeant4Factory.MINISTAGGERON);
+		DC=new DriftChambers(DCgeo);
 		DisabledLayer=new ArrayList<Integer>();
 		DisabledSector=new ArrayList<Integer>();
 		

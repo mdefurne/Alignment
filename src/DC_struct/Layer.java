@@ -3,6 +3,8 @@ package DC_struct;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import eu.mihosoft.vrl.v3d.Vector3d;
+
 public class Layer {
 	HashMap<Integer, Wire> hitmap;
 	TreeMap<Integer, Wire> sorted_hitmap;
@@ -19,8 +21,8 @@ public class Layer {
 		InTheTracking=true;
 	}
 	
-	public void addWire(int strip, int tdc) {
-		Wire aWire=new Wire(tdc);
+	public void addWire(int strip, int tdc, Vector3d dir, Vector3d point) {
+		Wire aWire=new Wire(dir, point, tdc);
 		hitmap.put(strip, aWire);
 	}
 	

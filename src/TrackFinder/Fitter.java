@@ -2,6 +2,9 @@ package TrackFinder;
 
 import BMT_struct.*;
 import BST_struct.*;
+import DC_struct.DriftChambers;
+import DC_struct.Segment;
+
 import java.util.*;
 import TrackFinder.*;
 import org.freehep.math.minuit.*;
@@ -80,6 +83,12 @@ public class Fitter {
 
 			}
 		}
+		
+	}
+
+	public void DCStraightTrack(Segment seg) {
+		//Use minimizer
+		
 		
 	}
 

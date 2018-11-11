@@ -2,6 +2,8 @@ package DC_struct;
 
 import java.util.ArrayList;
 
+import Trajectory.StraightLine;
+
 public class Segment {
 	
 	private ArrayList<DC_struct.Cluster> clusterlist;
@@ -100,5 +102,17 @@ public class Segment {
 		for (int clus=0;clus<clusterlist.size();clus++) {
 			System.out.println(clusterlist.get(clus).getLayerInSector()+" "+clusterlist.get(clus).getCentroid());
 		}
+	}
+
+	public double ComputeChi2(StraightLine line) {
+		double chi2=0;
+		for (int clus=0;clus<this.getSize();clus++) {
+			if (this.getClusters().get(clus).getSize()<3) {
+				for (int wire=0;wire<this.getClusters().get(clus).getSize();wire++) {
+					chi2+=this.getClusters().get(clus).getWires().get(wire).getWire().getDistanceToLine(line);
+				}
+			}
+		}
+		return chi2;
 	}
 }
