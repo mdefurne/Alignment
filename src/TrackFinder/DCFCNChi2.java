@@ -18,7 +18,7 @@ public class DCFCNChi2 implements FCNBase {
 	   {
 			//Radius of the middle layer which should be crossed by the track in anycase	
 		  StraightLine line=new StraightLine();
-		  line.setSlope_XYZ(par[0],par[1],1);
+		  line.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
 		  		  		  
 		  line.setPoint_XYZ(par[2], par[3], 100);
 		  

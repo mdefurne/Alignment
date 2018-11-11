@@ -88,8 +88,27 @@ public class Fitter {
 
 	public void DCStraightTrack(Segment seg) {
 		//Use minimizer
+		MnUserParameters upar = new MnUserParameters();
+		double phi_init=seg.getClusters().get(0).getWires().get(0).getWirePoint().phi();
+		double theta_init=seg.getClusters().get(0).getWires().get(0).getWirePoint().theta();
+		upar.add("phi",phi_init, 2*Math.toRadians(30) , phi_init-Math.toRadians(30) , phi_init+Math.toRadians(30));
+		upar.add("theta",theta_init, Math.toRadians(25), 0,  Math.toRadians(50));
+		upar.add("lx",0, 200,-100, 100);
+		upar.add("ly",0 , 200,-100, 100);
+	
+		DCFCNChi2 DCStraight=new DCFCNChi2();
 		
+		DCStraight.SetTrackCandidate(seg);
 		
+		//Create Minuit (parameters and function to minimize)
+	    MnMigrad migrad = new MnMigrad(DCStraight, upar);
+	 			    
+	    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
+	    FunctionMinimum min = migrad.minimize();
+	    if (min.isValid()) {
+	    	double[] res=migrad.params();
+	    	System.out.println(res);
+	    }
 	}
 
 }
