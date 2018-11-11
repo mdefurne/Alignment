@@ -100,7 +100,8 @@ public class Segment {
 	
 	public void PrintSegment() {
 		for (int clus=0;clus<clusterlist.size();clus++) {
-			System.out.println(clusterlist.get(clus).getLayerInSector()+" "+clusterlist.get(clus).getCentroid()+" "+clusterlist.get(clus).getWires().get(0).getWirePoint().x+" "+clusterlist.get(clus).getWires().get(0).getWirePoint().y);
+			System.out.println(clusterlist.get(clus).getLayerInSector()+" "+clusterlist.get(clus).getCentroid()+" "+clusterlist.get(clus).getWires().get(0).getWirePoint().x+" "+clusterlist.get(clus).getWires().get(0).getWirePoint().y
+					+" "+clusterlist.get(clus).getWires().get(0).getWirePoint().z);
 		}
 	}
 
