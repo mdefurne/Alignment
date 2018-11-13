@@ -54,8 +54,8 @@ public class Aligner {
 				upar.add("Cx", Cx, TransErr, Cxmin, Cxmax);
 				upar.add("Cy", Cy, TransErr, Cymin, Cymax);
 				upar.add("Cz", Cz, TransErr, Czmin, Czmax);
-				if (layer<=6) upar.fix("Cz");
-				else {
+				//if (layer<=6) upar.fix("Cz");
+				if (layer>6) {
 					if (BMT.getGeometry().getZorC(layer-6)==1) upar.fix("Cz");
 					if (BMT.getGeometry().getZorC(layer-6)==0) upar.fix("Rz");
 				}

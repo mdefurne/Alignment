@@ -345,7 +345,7 @@ public class CentralWriter {
 	//This method is filling cosmic traj bank... And Update crosses if they are linked to a trajectory!!!!
 	public HipoGroup fillCosmicTrajBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
 		int groupsize=12*candidates.size();
-		if (main.constant.isCosmic) groupsize=groupsize*2+3;
+		if (main.constant.isCosmic) groupsize=groupsize*2+10;
 		
 		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Trajectory").createGroup(groupsize);
 		
