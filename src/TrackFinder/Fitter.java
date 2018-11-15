@@ -17,7 +17,7 @@ public class Fitter {
 		
 	}
 			
-	public void StraightTrack(Barrel BMT, Barrel_SVT BST, HashMap<Integer, TrackCandidate> Candidates) {
+	public void CVTStraightTrack(Barrel BMT, Barrel_SVT BST, HashMap<Integer, TrackCandidate> Candidates) {
 		//Use minimizer
 		for (int num_cand=0;num_cand<Candidates.size();num_cand++) {
 			

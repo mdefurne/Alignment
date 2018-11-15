@@ -25,7 +25,7 @@ public class DCStraightTracker {
 	static ParticleEvent MCParticles;
 	static CentralWriter Asimov;
 	static Analyzer Sherlock;
-	static Tracker Tracky;
+	static Fitter Tracky;
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
 	static org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
@@ -33,7 +33,7 @@ public class DCStraightTracker {
 	public DCStraightTracker() {
 		
 		MCParticles=new ParticleEvent();
-		Tracky=new Tracker();
+		Tracky=new Fitter();
 		Sherlock=new Analyzer();
 		Asimov=new CentralWriter();
 		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
@@ -47,12 +47,12 @@ public class DCStraightTracker {
 	
 	public static void main(String[] args) {
 		
-		//String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/out_00001.hipo";
-		String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
+		String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/out_00001.hipo";
+		//String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
-		int count=6;
+		int count=5;
 		DataEvent event_zero = reader.gotoEvent(1);
 		
 		DCStraightTracker Straight=new DCStraightTracker();
@@ -61,7 +61,7 @@ public class DCStraightTracker {
 		
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<7) {
+		while(reader.hasEvent()&&count<6) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -75,8 +75,10 @@ public class DCStraightTracker {
 		    	DC.FindTrackCandidate();
 		    	System.out.println("/////////////////////// "+count);
 		    	for (int sec=1;sec<7;sec++) {
-		    		System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().size());
-		    		if (DC.getSector(sec).getSectorSegments().size()==1) DC.getSector(sec).getSectorSegments().get(0).PrintSegment();
+		    		if (DC.getSector(sec).getSectorSegments().size()==1) {
+		    			Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(0));
+		    			//DC.getSector(sec).getSectorSegments().get(0).PrintSegment();
+		    		}
 		    	}
 		    }
 		   		   		         

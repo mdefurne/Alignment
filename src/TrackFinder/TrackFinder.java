@@ -398,7 +398,7 @@ public class TrackFinder {
 			if (Candidates.get(i+1).IsFittable()) NbFittable++;
 			
 		}
-		 if (NbFittable<5||!main.constant.isCosmic) myfit.StraightTrack(BMT_det, BST_det, Candidates);
+		 if (NbFittable<5||!main.constant.isCosmic) myfit.CVTStraightTrack(BMT_det, BST_det, Candidates);
 		}
 	
 }	
