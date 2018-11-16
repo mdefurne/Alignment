@@ -23,7 +23,7 @@ public class DCFCNChi2 implements FCNBase {
 		  line.setPoint_XYZ(par[2], par[3], 100);
 		  
 	      double val=ToFit.ComputeChi2(line);
-	      System.out.println(par[0]+" "+par[1]+" "+par[2]+" "+par[3]+" "+val);
+	     
 	      return val;
 	   }
 	

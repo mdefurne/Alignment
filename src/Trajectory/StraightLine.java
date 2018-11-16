@@ -84,7 +84,9 @@ public class StraightLine {
 			dist=Math.sqrt((point_b.x()-point_a.x())*(point_b.x()-point_a.x())
 					+(point_b.y()-point_a.y())*(point_b.y()-point_a.y())
 					+(point_b.z()-point_a.z())*(point_b.z()-point_a.z()));
+			
 		}
+		
 		return dist;
 	}
 	
