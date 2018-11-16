@@ -45,7 +45,7 @@ public class SuperLayer {
 		
 		for (int lay=6; lay>0;lay--) {
 			this.getLayer(lay).DoClustering();
-			if (this.getLayer(lay).getClusterList().size()<4) {
+			if (this.getLayer(lay).getClusterList().size()<10) {
 				//If we have already some hit in the sector, there are track candidate to check
 				cand_newlay=segmap.size();
 				if (!noHit_yet_SL) {

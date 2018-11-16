@@ -12,6 +12,7 @@ public class Segment {
 	private int SuperLayer;
 	private int region;
 	private StraightLine HBtrack;
+	private double chi2;
 	
 	public Segment(int Super_Layer) {
 		clusterlist=new ArrayList<DC_struct.Cluster>();
@@ -20,6 +21,7 @@ public class Segment {
 		SuperLayer=Super_Layer;
 		region=(SuperLayer+1)/2;
 		HBtrack=new StraightLine();
+		chi2=Double.POSITIVE_INFINITY;
 	}
 	
 	public int getRegion() {
@@ -125,5 +127,13 @@ public class Segment {
 	
 	public StraightLine getHBtrack() {
 		return HBtrack;
+	}
+	
+	public void setChi2(double chisq) {
+		chi2=chisq;
+	}
+	
+	public double getChi2() {
+		return chi2;
 	}
 }
