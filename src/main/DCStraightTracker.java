@@ -37,7 +37,7 @@ public class DCStraightTracker {
 		Sherlock=new Analyzer();
 		Asimov=new CentralWriter();
 		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
-		DCgeo = new DCGeant4Factory(provider, DCGeant4Factory.MINISTAGGERON);
+		DCgeo = new DCGeant4Factory(provider, true);//DCGeant4Factory.MINISTAGGERON);
 		DC=new DriftChambers(DCgeo);
 		DisabledLayer=new ArrayList<Integer>();
 		DisabledSector=new ArrayList<Integer>();
@@ -47,12 +47,12 @@ public class DCStraightTracker {
 	
 	public static void main(String[] args) {
 		
-		String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/out_00001.hipo";
-		//String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
+		//String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/out_00001.hipo";
+		String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
-		int count=11;
+		int count=19;
 		DataEvent event_zero = reader.gotoEvent(1);
 		
 		DCStraightTracker Straight=new DCStraightTracker();
@@ -61,7 +61,7 @@ public class DCStraightTracker {
 		
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<12) {
+		while(reader.hasEvent()&&count<20) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -73,11 +73,14 @@ public class DCStraightTracker {
 		    if(event.hasBank("DC::tdc")) {
 		    	DC.fillDCs(event.getBank("DC::tdc"));
 		    	DC.FindTrackCandidate();
-		    	System.out.println("/////////////////////// "+count);
+		    	
 		    	for (int sec=1;sec<7;sec++) {
-		    		if (DC.getSector(sec).getSectorSegments().size()==1) {
-		    			Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(0));
-		    			DC.getSector(sec).getSectorSegments().get(0).PrintSegment();
+		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
+		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+		    				Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
+		    				System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
+		    				//DC.getSector(sec).getSectorSegments().get(0).PrintSegment();
+		    			}
 		    		}
 		    	}
 		    }

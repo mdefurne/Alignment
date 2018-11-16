@@ -107,7 +107,9 @@ public class Fitter {
 	    FunctionMinimum min = migrad.minimize();
 	    if (min.isValid()) {
 	    	double[] res=migrad.params();
-	    	System.out.println(res);
+	    	StraightLine HBtrack=new StraightLine();
+	    	HBtrack.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
+	    	HBtrack.setPoint_XYZ(res[2], res[3] ,100);
 	    }
 	}
 

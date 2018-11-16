@@ -11,6 +11,7 @@ public class Segment {
 	private int nbLayer;
 	private int SuperLayer;
 	private int region;
+	private StraightLine HBtrack;
 	
 	public Segment(int Super_Layer) {
 		clusterlist=new ArrayList<DC_struct.Cluster>();
@@ -18,6 +19,7 @@ public class Segment {
 		nbLayer=0;
 		SuperLayer=Super_Layer;
 		region=(SuperLayer+1)/2;
+		HBtrack=new StraightLine();
 	}
 	
 	public int getRegion() {
@@ -115,5 +117,13 @@ public class Segment {
 			}
 		}
 		return chi2;
+	}
+	
+	public void setHBtrack(StraightLine HB) {
+		HBtrack=HB;
+	}
+	
+	public StraightLine getHBtrack() {
+		return HBtrack;
 	}
 }
