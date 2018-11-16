@@ -110,6 +110,7 @@ public class Fitter {
 	    	StraightLine HBtrack=new StraightLine();
 	    	HBtrack.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
 	    	HBtrack.setPoint_XYZ(res[2], res[3] ,100);
+	    	seg.setHBtrack(HBtrack);
 	    }
 	}
 
