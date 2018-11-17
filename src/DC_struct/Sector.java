@@ -30,6 +30,11 @@ public class Sector {
 			//Make the segments in all superlayers
 			for (int slay=4;slay>-1;slay--) {
 				StackSL[slay].MakeSegment();
+				/*if (sector_number==3&&slay==3) {
+					for (int i=0; i<StackSL[slay].getSegments().size();i++) {
+						StackSL[slay].getSegments().get(i).PrintSegment();
+					}
+				}*/
 			}
 			
 			for (int segU=0;segU<this.getSuperLayer(6).getSegments().size();segU++) {
@@ -49,15 +54,15 @@ public class Sector {
 				ArrayList<Segment> BufTemp=new ArrayList<Segment>();
 				for (int slay=4; slay>0; slay--) {
 					for (int seg=0;seg<this.getSuperLayer(slay).getSegments().size();seg++) {
-						if (this.getSuperLayer(slay).getSegments().get(seg).isGoodSLSegment()) {
+						//if (this.getSuperLayer(slay).getSegments().get(seg).isGoodSLSegment()) {
 							//If we have a good segment in the layer, we try to merge it track candidate
 					
 							for (int track=0;track<SectorSegments.size();track++) {
-								if (this.AreCompatible(this.getSuperLayer(slay).getSegments().get(seg), SectorSegments.get(track))) {
+								if (this.AreRegionCompatible(this.getSuperLayer(slay).getSegments().get(seg), SectorSegments.get(track))) {
 									BufTemp.add(SectorSegments.get(track).Merge(this.getSuperLayer(slay).getSegments().get(seg)));
 								}
 							}
-						}
+						//}
 					}
 					//Clear SectorSegment and fill it with BufTemp... then clear BufTemp for next SuperLayer
 					SectorSegments.clear();
@@ -70,10 +75,30 @@ public class Sector {
 		}
 	}
 	
-	public boolean AreCompatible(Segment SegLDown, Segment SegLUp) {
+	public boolean AreCompatible(Segment SegLUp, Segment SegLDown) {
 		boolean arecompatible=true;
 		if (Math.abs(SegLDown.getSuperLayer()-SegLUp.getSuperLayer())>1) arecompatible=false;
 		if (Math.abs(SegLUp.getLastCentroid()-SegLDown.getFirstCentroid())>DeltaInterSL) arecompatible=false;
+		
+		return arecompatible;
+	}
+	
+	public boolean AreRegionCompatible(Segment SegLUp, Segment SegLDown) {
+		boolean arecompatible=false;
+		double dist=Double.POSITIVE_INFINITY;
+		for (int i=0;i<SegLUp.getSize();i++) {
+			for (int cl=0;cl<SegLUp.getClusters().get(i).getSize();cl++) {
+				dist=SegLUp.getClusters().get(i).getWires().get(cl).getWire().getDistanceToLine(SegLDown.getHBtrack());
+				//if (sector_number==3) System.out.println(SegLDown.getSuperLayer()+" "+SegLUp.getSuperLayer()+" "+dist);
+				double phi_tr=Math.toDegrees(Math.atan2(SegLDown.getHBtrack().getSlope().y(),SegLDown.getHBtrack().getSlope().x()));
+				if (phi_tr<0) phi_tr=phi_tr+360;
+				double Maxdist=10;//5+5*(Math.toDegrees(Math.acos(SegLDown.getHBtrack().getSlope().z()))-8)/35.
+						//+5*(Math.abs(phi_tr-(sector_number-1)*60))/30.;//Changing MaxDist de 8 a 43 ddegres.
+				
+				if (dist<Maxdist) arecompatible=true;
+			}
+		}
+		
 		return arecompatible;
 	}
 	

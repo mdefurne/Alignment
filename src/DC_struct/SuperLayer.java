@@ -41,20 +41,20 @@ public class SuperLayer {
 	public void MakeSegment() {
 		boolean IsAttributed=true;
 		boolean noHit_yet_SL=true;
-		int cand_newlay=0;
-		
+			
 		for (int lay=6; lay>0;lay--) {
 			this.getLayer(lay).DoClustering();
-			if (this.getLayer(lay).getClusterList().size()<10) {
+			if (this.getLayer(lay).getClusterList().size()<20) {
 				//If we have already some hit in the sector, there are track candidate to check
-				cand_newlay=segmap.size();
+				//cand_newlay=segmap.size();
 				if (!noHit_yet_SL) {
 					for (int clus=0;clus<this.getLayer(lay).getClusterList().size();clus++) {
 						//Here we always test if we have a match by time
 						IsAttributed=false;
-						for (int num_seg=cand_newlay-1;num_seg<segmap.size();num_seg++) {
+						for (int num_seg=0;num_seg<segmap.size();num_seg++) {
 							//If we have a match in time and will add a new layer
-							if (!this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
+							if (this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))&&
+									!this.IsLayerCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
 								Segment seg=segmap.get(num_seg).Duplicate();
 								//if (this.IsCompatible(get(clus+1),cand)) { /// Commented because it might be useful to deal with time info
 									seg.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
@@ -63,7 +63,8 @@ public class SuperLayer {
 								//}
 							}
 					
-							if (this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
+							if (this.IsCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))&&
+									this.IsLayerCompatible(this.getLayer(lay).getClusterList().get(clus+1),segmap.get(num_seg))) {
 								segmap.get(num_seg).addCluster(this.getLayer(lay).getClusterList().get(clus+1));
 								IsAttributed=true;
 							}
@@ -103,10 +104,15 @@ public class SuperLayer {
 	
 	public boolean IsCompatible(DC_struct.Cluster clus,Segment seg) {
 		boolean Compatible=true;
-		
-		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())>3) Compatible=false;
-		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())==0) Compatible=false;
 		if (Math.abs(clus.getCentroid()-seg.getLastCentroid())>DeltaCluster*Math.abs(clus.getLayer()-seg.getLayerLastEntry())) Compatible=false;
+		return Compatible;
+	}
+	
+	public boolean IsLayerCompatible(DC_struct.Cluster clus,Segment seg) {
+		boolean Compatible=true;
+		
+		if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())==0) Compatible=false;
+		//if (Math.abs(clus.getLayer()-seg.getLayerLastEntry())>3) Compatible=false;
 		return Compatible;
 	}
 	

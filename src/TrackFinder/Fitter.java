@@ -95,6 +95,8 @@ public class Fitter {
 		upar.add("theta",theta_init, Math.toRadians(25), 0,  Math.toRadians(50));
 		upar.add("lx",0, 200,-100, 100);
 		upar.add("ly",0 , 200,-100, 100);
+		upar.add("lz",100 , 200, 0, 300);
+		upar.fix("lz");
 	
 		DCFCNChi2 DCStraight=new DCFCNChi2();
 		
@@ -109,7 +111,38 @@ public class Fitter {
 	    	double[] res=migrad.params();
 	    	StraightLine HBtrack=new StraightLine();
 	    	HBtrack.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
-	    	HBtrack.setPoint_XYZ(res[2], res[3] ,100);
+	    	HBtrack.setPoint_XYZ(res[2], res[3] ,res[4]);
+	    	seg.setHBtrack(HBtrack);
+	    	seg.setChi2(min.fval());
+	    }
+	}
+	
+	public void DCStraightTrack_init(Segment seg) {
+		//Use minimizer
+		MnUserParameters upar = new MnUserParameters();
+		double phi_init=seg.getClusters().get(0).getWires().get(0).getWirePoint().phi();
+		double theta_init=seg.getClusters().get(0).getWires().get(0).getWirePoint().theta();
+		upar.add("phi",phi_init, 2*Math.toRadians(30) , phi_init-Math.toRadians(30) , phi_init+Math.toRadians(30));
+		upar.add("theta",theta_init, Math.toRadians(25), 0,  Math.toRadians(50));
+		upar.add("lx",0, 200,-100, 100);
+		upar.add("ly",0 , 200,-100, 100);
+		upar.add("lz",0 , 200, 0, 300);
+		upar.fix("lz");upar.fix("lx");upar.fix("ly");
+	
+		DCFCNChi2 DCStraight=new DCFCNChi2();
+		
+		DCStraight.SetTrackCandidate(seg);
+		
+		//Create Minuit (parameters and function to minimize)
+	    MnMigrad migrad = new MnMigrad(DCStraight, upar);
+	 			    
+	    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
+	    FunctionMinimum min = migrad.minimize();
+	    if (min.isValid()) {
+	    	double[] res=migrad.params();
+	    	StraightLine HBtrack=new StraightLine();
+	    	HBtrack.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
+	    	HBtrack.setPoint_XYZ(res[2], res[3] , res[4]);
 	    	seg.setHBtrack(HBtrack);
 	    	seg.setChi2(min.fval());
 	    }

@@ -2,6 +2,7 @@ package DC_struct;
 
 import java.util.ArrayList;
 
+import TrackFinder.Fitter;
 import Trajectory.StraightLine;
 
 public class Segment {
@@ -56,7 +57,7 @@ public class Segment {
 	
 	public Segment Duplicate() {
 		Segment Dupli=new Segment(SuperLayer);
-		for (int cl=0;cl<this.getClusters().size(); cl++) {
+		for (int cl=0;cl<this.getClusters().size()-1; cl++) {
 			Dupli.addCluster(this.getClusters().get(cl));
 		}
 		return Dupli;
@@ -64,6 +65,7 @@ public class Segment {
 	
 	public Segment Merge(Segment ToMerge) {
 		Segment Merged=new Segment(ToMerge.getSuperLayer());
+		Merged.setHBtrack(this.getHBtrack());
 		for (int cl=0;cl<this.getSize();cl++) {
 			Merged.addCluster(this.getClusters().get(cl));
 		}
@@ -71,6 +73,11 @@ public class Segment {
 			Merged.addCluster(ToMerge.getClusters().get(cl));
 		}
 		Merged.setNbSuperLayer(this.getNbSuperLayer()+ToMerge.getNbSuperLayer());
+		if (ToMerge.getSuperLayer()==5||ToMerge.getSuperLayer()==3) {
+			Fitter Tracklet=new Fitter();
+			if (ToMerge.getSuperLayer()==5) Tracklet.DCStraightTrack_init(Merged);
+			if (ToMerge.getSuperLayer()==3) Tracklet.DCStraightTrack(Merged);
+		}
 		return Merged;
 	}
 	

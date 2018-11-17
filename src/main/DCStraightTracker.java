@@ -52,7 +52,7 @@ public class DCStraightTracker {
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
-		int count=150;
+		int count=3;//150;
 		DataEvent event_zero = reader.gotoEvent(1);
 		
 		DCStraightTracker Straight=new DCStraightTracker();
@@ -61,7 +61,7 @@ public class DCStraightTracker {
 		
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<151) {
+		while(reader.hasEvent()&&count<4) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -71,16 +71,17 @@ public class DCStraightTracker {
 		   
 		    
 		    if(event.hasBank("DC::tdc")) {
+		    	System.out.println("///////////////// "+count);
 		    	DC.fillDCs(event.getBank("DC::tdc"));
 		    	DC.FindTrackCandidate();
 		    	
 		    	for (int sec=1;sec<7;sec++) {
+		    		
 		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
-		    			System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().size());
 		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
 		    				Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
 		    				System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
-		    				//DC.getSector(sec).getSectorSegments().get(0).PrintSegment();
+		    				//DC.getSector(sec).getSectorSegments().get(tr).PrintSegment();
 		    			}
 		    		}
 		    	}

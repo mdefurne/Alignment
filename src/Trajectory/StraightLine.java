@@ -71,7 +71,11 @@ public class StraightLine {
 		double c=-b;
 		double det=(a*d-b*c);
 
-		if (det==0) dist=Math.sqrt((i1x-i2x)*(i1x-i2x)+(i1y-i2y)*(i1y-i2y)+(i1z-i2z)*(i1z-i2z));
+		if (det==0) {
+			double lambda=(i2x-i1x+i2y-i1y+i2z-i1z)/(s1x+s1y+s1z);
+			Vector3D point_a=this.getPointOnTrack(lambda);
+			dist=Math.sqrt((point_a.x()-i2x)*(point_a.x()-i2x)+(point_a.y()-i2y)*(point_a.y()-i2y)+(point_a.z()-i2z)*(point_a.z()-i2z));
+		}
 		if (det!=0) {
 			double bx=s1x*(i1x-i2x)+s1y*(i1y-i2y)+s1z*(i1z-i2z);
 			double by=s2x*(i1x-i2x)+s2y*(i1y-i2y)+s2z*(i1z-i2z);

@@ -20,7 +20,7 @@ public class DCFCNChi2 implements FCNBase {
 		  StraightLine line=new StraightLine();
 		  line.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
 		  		  		  
-		  line.setPoint_XYZ(par[2], par[3], 100);
+		  line.setPoint_XYZ(par[2], par[3], par[4]);
 		  
 	      double val=ToFit.ComputeChi2(line);
 	     
