@@ -78,4 +78,8 @@ public class Layer {
 	public HashMap<Integer, Cluster> getClusterList(){
 		return clustermap;
 	}
+	
+	public HashMap<Integer, Wire> getHitList(){
+		return hitmap;
+	}
 }

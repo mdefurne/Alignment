@@ -4,12 +4,8 @@ import org.jlab.jnp.hipo.data.*;
 import org.jlab.jnp.hipo.io.HipoWriter;
 import org.jlab.jnp.hipo.schema.*;
 
-import BST_struct.*;
+import DC_struct.DriftChambers;
 import Particles.*;
-import BMT_struct.*;
-import TrackFinder.*;
-import java.util.*;
-import org.jlab.geom.prim.Vector3D;
 
 public class ForwardWriter {
 	HipoWriter writer;
@@ -29,7 +25,7 @@ public class ForwardWriter {
 		 		 
 	}
 	
-	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
+	public void WriteEvent(int eventnb, DriftChambers DC , ParticleEvent MCParticles) {
 		HipoEvent event=writer.createEvent();
 		 
 		 /*event.writeGroup(this.fillCosmicRecBank(candidates));
@@ -49,211 +45,30 @@ public class ForwardWriter {
 		writer.open(output);
 	}
 	
-	public HipoGroup fillBSTADCbank(Barrel_SVT BST) {
-		int groupsize=BST.getNbHits();
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BST::adc").createGroup(groupsize);
+	public HipoGroup fillDCTDCbank(DriftChambers DC) {
+		int groupsize=DC.getNbHits();
+		HipoGroup bank = writer.getSchemaFactory().getSchema("DC::tdc").createGroup(groupsize);
 		int index=0;
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
-					for (int str=0;str<BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
-						int strip=BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
-						bank.getNode("sector").setByte(index, (byte) sec);
-						bank.getNode("layer").setByte(index, (byte) lay);
-						bank.getNode("component").setShort(index, (short) strip);
-						bank.getNode("ADC").setInt(index, BST.getModule(lay,sec).getHits().get(strip).getADC());
-						bank.getNode("time").setFloat(index, BST.getModule(lay,sec).getHits().get(strip).getTime());
-						index++;
-					}
-				}					
+		for (int sec=1; sec<7; sec++) {
+			for (int slay=1; slay<7; slay++) {
+				for (int lay=1; lay<7; lay++) {
+			
+					for (int cl = 1; cl < DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getClusterList().size()+1; cl++) {
+						for (int wire = 0; wire < DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getClusterList().get(cl).getListOfHits().size(); wire++) {
+							
+							int strip=DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getClusterList().get(cl).getListOfHits().get(wire);
+							bank.getNode("sector").setByte(index, (byte) sec);
+							bank.getNode("layer").setByte(index, (byte) (6*(slay-1)+lay));
+							bank.getNode("component").setShort(index, (short) strip);
+							bank.getNode("order").setByte(index, (byte) 0);
+							bank.getNode("TDC").setInt(index, DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getHitList().get(strip).getTDC());
+							index++;
+						}
+					}					
+				}
 			}
 		}
-		
 		return bank;
-	}
-	
-	public HipoGroup fillBMTADCbank(Barrel BMT) {
-		int groupsize=BMT.getNbHits();
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BMT::adc").createGroup(groupsize);
-		
-		int index=0;
-		for (int lay=0; lay<6; lay++) {
-			for (int sec=0; sec<3; sec++) {
-				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
-					for (int str=0;str<BMT.getTile(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
-						int strip=BMT.getTile(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
-						bank.getNode("sector").setByte(index, (byte) (sec+1));
-						bank.getNode("layer").setByte(index, (byte) (lay+1));
-						bank.getNode("component").setShort(index, (short) strip);
-						bank.getNode("ADC").setInt(index, BMT.getTile(lay,sec).getHits().get(strip).getADC());
-						bank.getNode("time").setFloat(index, BMT.getTile(lay,sec).getHits().get(strip).getTime());
-						index++;
-					}
-				}					
-			}
-		}
-		
-		return bank;
-	}
-
-	public HipoGroup fillBMTCrossesBank(Barrel BMT) {
-		int groupsize=0;
-		for (int lay=0; lay<6; lay++) {
-			for (int sec=0; sec<3; sec++) {
-			groupsize+=BMT.getTile(lay,sec).getClusters().size();
-			}
-		}
-		
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BMTRec::Crosses").createGroup(groupsize);
-		int index=0;
-		
-		for (int lay=0; lay<6; lay++) {
-			for (int sec=0; sec<3; sec++) {
-				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
-					bank.getNode("ID").setShort(index, (short) index);
-					bank.getNode("sector").setByte(index, (byte) (sec+1));
-					bank.getNode("region").setByte(index, (byte) ((lay+1)/2));
-					bank.getNode("x").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getX()/10.));
-					bank.getNode("y").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getY()/10.));
-					bank.getNode("z").setFloat(index, (float) (BMT.getTile(lay,sec).getClusters().get(j+1).getZ()/10.));
-					if (!Double.isNaN(BMT.getTile(lay,sec).getClusters().get(j+1).getX())) {
-						bank.getNode("err_x").setFloat(index, (float) Math.abs(BMT.getTile(lay,sec).getClusters().get(j+1).getErr()*Math.sin(BMT.getTile(lay,sec).getClusters().get(j+1).getPhi())));
-						bank.getNode("err_y").setFloat(index, (float) Math.abs(BMT.getTile(lay,sec).getClusters().get(j+1).getErr()*Math.cos(BMT.getTile(lay,sec).getClusters().get(j+1).getPhi())));
-					}
-					else {
-						bank.getNode("err_x").setFloat(index, Float.NaN);
-						bank.getNode("err_y").setFloat(index, Float.NaN);
-					}
-					if (!Double.isNaN(BMT.getTile(lay,sec).getClusters().get(j+1).getZ())) bank.getNode("err_z").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getErr());
-					else bank.getNode("err_z").setFloat(index, Float.NaN);
-					index++;
-				}
-			}
-		}
-        return bank;
-	}
-	
-	public HipoGroup fillBSTCrossesBank(Barrel_SVT BST) {
-		int groupsize=0;
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-			groupsize+=BST.getModule(lay,sec).getClusters().size();
-			}
-		}
-		
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Crosses").createGroup(groupsize);
-		int index=0;
-		
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
-					bank.getNode("ID").setShort(index, (short) index);
-					bank.getNode("sector").setByte(index, (byte) sec);
-					bank.getNode("region").setByte(index, (byte) ((lay+1)/2));
-					bank.getNode("x").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getX()/10.));
-					bank.getNode("y").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getY()/10.));
-					bank.getNode("z").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getZ()/10.));
-					bank.getNode("err_x").setFloat(index, (float) Math.abs(BST.getModule(lay,sec).getClusters().get(j+1).getErrPhi()*Math.sin(BST.getModule(lay,sec).getClusters().get(j+1).getPhi())));
-					bank.getNode("err_y").setFloat(index, (float) Math.abs(BST.getModule(lay,sec).getClusters().get(j+1).getErrPhi()*Math.cos(BST.getModule(lay,sec).getClusters().get(j+1).getPhi())));
-					bank.getNode("err_z").setFloat(index, (float) (BST.getModule(lay,sec).getClusters().get(j+1).getErrZ()/10.));
-					index++;
-				}
-			}
-		}
-        return bank;
-	}
-	
-	public HipoGroup fillBSTHitsBank(Barrel_SVT BST) {
-		int groupsize=BST.getNbHits();
-				
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Hits").createGroup(groupsize);
-		
-		int index=0;
-		int index_clus=0;
-				
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
-					for (int str=0;str<BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size();str++) {
-						int strip=BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().get(str);
-						bank.getNode("clusterID").setShort(index, (short) index_clus);
-						bank.getNode("trkID").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).gettrkID());
-						bank.getNode("sector").setByte(index, (byte) sec);
-						bank.getNode("layer").setByte(index, (byte) lay);
-						bank.getNode("strip").setInt(index, strip);
-						bank.getNode("ID").setShort(index, (short) BST.getModule(lay,sec).getHits().get(strip).getHit_ID());
-						bank.getNode("fitResidual").setFloat(index, (float) BST.getModule(lay,sec).getHits().get(strip).getResidual());
-						index++;
-					}
-					index_clus++;
-				}
-			}
-		}
-        return bank;
-	}
-	
-	public HipoGroup fillBSTClusterBank(Barrel_SVT BST) {
-		int groupsize=0;
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-			groupsize+=BST.getModule(lay,sec).getClusters().size();
-			}
-		}
-		
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BSTRec::Clusters").createGroup(groupsize);
-		int index=0;
-						
-		for (int lay=1; lay<7; lay++) {
-			for (int sec=1; sec<19; sec++) {
-				for (int j = 0; j < BST.getModule(lay,sec).getClusters().size(); j++) {
-					bank.getNode("ID").setShort(index, (short) index);
-					bank.getNode("trkID").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).gettrkID());
-					bank.getNode("sector").setByte(index, (byte) sec);
-					bank.getNode("layer").setByte(index, (byte) lay);
-					bank.getNode("centroid").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getCentroid());
-					bank.getNode("size").setShort(index, (short) BST.getModule(lay,sec).getClusters().get(j+1).getListOfHits().size());
-					bank.getNode("Etot").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getEtot());
-					bank.getNode("seedStrip").setInt(index, (int) BST.getModule(lay,sec).getClusters().get(j+1).getSeed());
-					bank.getNode("seedE").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getSeedE());
-					bank.getNode("centroidResidual").setFloat(index, (float) BST.getModule(lay,sec).getClusters().get(j+1).getCentroidResidual());
-					index++;
-				}
-			}
-		}
-        return bank;
-	}
-	
-	public HipoGroup fillBMTClusterBank(Barrel BMT) {
-		int groupsize=0;
-		for (int lay=0; lay<6; lay++) {
-			for (int sec=0; sec<3; sec++) {
-			groupsize+=BMT.getTile(lay,sec).getClusters().size();
-			}
-		}
-		
-		HipoGroup bank = writer.getSchemaFactory().getSchema("BMTRec::Clusters").createGroup(groupsize);
-		int index=0;
-						
-		for (int lay=0; lay<6; lay++) {
-			for (int sec=0; sec<3; sec++) {
-				for (int j = 0; j < BMT.getTile(lay,sec).getClusters().size(); j++) {
-					bank.getNode("ID").setShort(index, (short) index);
-					bank.getNode("trkID").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).gettrkID());
-					bank.getNode("sector").setByte(index, (byte) (sec+1));
-					bank.getNode("layer").setByte(index, (byte) (lay+1));
-					bank.getNode("centroid").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getCentroid());
-					bank.getNode("size").setShort(index, (short) BMT.getTile(lay,sec).getClusters().get(j+1).getSize());
-					bank.getNode("Etot").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getEdep());
-					bank.getNode("seedStrip").setInt(index, (int) BMT.getTile(lay,sec).getClusters().get(j+1).getSeed());
-					bank.getNode("seedE").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getSeedE());
-					bank.getNode("Tmin").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getT_min());
-					bank.getNode("Tmax").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getT_max());
-					bank.getNode("centroidResidual").setFloat(index, (float) BMT.getTile(lay,sec).getClusters().get(j+1).getCentroidResidual());
-					index++;
-				}
-			}
-		}
-        return bank;
 	}
 	
 	public HipoGroup fillMCBank(ParticleEvent MCParticles) {
@@ -277,34 +92,6 @@ public class ForwardWriter {
 		return bank;
 	}
 	
-	public HipoGroup fillCosmicRecBank(ArrayList<TrackCandidate> candidates) {
-		int groupsize=candidates.size();
-				
-		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Cosmics").createGroup(groupsize);
-		
-		int index=0;
-		for (int i=0; i<groupsize; i++) {
-			Vector3D inter=candidates.get(i).getLine().IntersectWithPlaneY();
-			bank.getNode("ID").setShort(index, (short) index);
-			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yx_interc").setFloat(index, (float) (inter.x()/10.));
-			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
-			bank.getNode("trkline_yz_interc").setFloat(index, (float) (inter.z()/10.));
-			bank.getNode("theta").setFloat(index, (float) Math.toDegrees((candidates.get(i).getTheta())));
-			bank.getNode("phi").setFloat(index, (float) Math.toDegrees((candidates.get(i).getPhi())));
-			bank.getNode("chi2").setFloat(index, (float) (candidates.get(i).get_chi2()));
-			bank.getNode("NbBSTHits").setShort(index, (short) (candidates.get(i).get_Nsvt()));
-			bank.getNode("NbBMTHits").setShort(index, (short) (candidates.get(i).get_Nc()+candidates.get(i).get_Nz()));
-			int ndf=0;
-			if (main.constant.TrackerType.equals("SVT")) ndf=candidates.get(i).get_Nsvt()-4;
-			if (main.constant.TrackerType.equals("MVT")) ndf=candidates.get(i).get_Nc()+candidates.get(i).get_Nz()-4;
-			if (main.constant.TrackerType.equals("CVT")) ndf=candidates.get(i).get_Nc()+candidates.get(i).get_Nz()+candidates.get(i).get_Nsvt()-4;
-			bank.getNode("ndf").setShort(index, (short) ndf);
-			index++;
-		}
-		
-		return bank;
-	}
 	
 	public HipoGroup fillRunConfig(int eventnb) {
 		int groupsize=1;
@@ -314,131 +101,6 @@ public class ForwardWriter {
 		if (main.constant.isCosmic) bank.getNode("type").setByte(0, (byte) 1);
 		if (!main.constant.isCosmic) bank.getNode("type").setByte(0, (byte) 0);
 		
-		return bank;
-	}
-	
-	
-	//This method is filling cosmic traj bank... And Update crosses if they are linked to a trajectory!!!!
-	public HipoGroup fillCosmicTrajBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
-		int groupsize=12*candidates.size();
-		if (main.constant.isCosmic) groupsize=groupsize*2+10;
-		
-		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Trajectory").createGroup(groupsize);
-		
-		int index=0;
-		for (int track=0; track<candidates.size();track++) {
-			//Intercept with SVT modules
-			for (int lay=0; lay<6;lay++) {
-				for (int sector=1; sector<BST.getGeometry().getNbModule(lay+1)+1;sector++) {
-					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay+1, sector, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-					if (!Double.isNaN(inter.x())&&sector==BST.getGeometry().findSectorFromAngle(lay+1, inter)
-							&&(main.constant.isCosmic||(BST.getGeometry().findSectorFromAngle(lay+1, candidates.get(track).get_PointTrack())==sector))) {
-						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
-						
-						Vector3D normSVT=BST.getGeometry().findBSTPlaneNormal(sector, lay+1);
-						Vector3D PhiSVT=new Vector3D();
-						PhiSVT.setX(candidates.get(track).get_VectorTrack().x());PhiSVT.setY(candidates.get(track).get_VectorTrack().y());PhiSVT.setZ(0);
-						Vector3D eTheta=new Vector3D();
-						eTheta.setX(-Math.sin(BST.getGeometry().findBSTPlaneAngle(sector, lay+1)));	eTheta.setY(Math.cos(BST.getGeometry().findBSTPlaneAngle(sector, lay+1))); eTheta.setZ(0);		
-												
-						Vector3D ThetaSVT=new Vector3D();
-						ThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
-						Vector3D ProjThetaSVT=new Vector3D();
-						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
-						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
-						
-						bank.getNode("ID").setShort(index, (short) track);
-						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
-						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
-						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
-						bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
-						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
-						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiSVT.angle(normSVT)));
-						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaSVT.angle(normSVT)));
-						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(normSVT)));
-						bank.getNode("CalcCentroidStrip").setFloat(index, (float) BST.getGeometry().calcNearestStrip(inter.x(), inter.y(), inter.z(), lay+1, sector));
-						index++;
-					
-						int clus_id=-1;
-						for (int clus_track=0;clus_track<candidates.get(track).BSTsize();clus_track++) {
-							if (candidates.get(track).GetBSTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBSTCluster(clus_track).getSector()==sector) 
-								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
-						}
-					
-						if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
-							//Update the cluster X,Y,Z info with track info
-							for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
-								if (BST.getModule(lay+1, sector).getClusters().get(clus+1).getLastEntry()==clus_id) {
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).settrkID(track);
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).setCentroidResidual(BST.getGeometry().getResidual_line(lay+1,sector,BST.getModule(lay+1, sector).getClusters().get(clus+1).getCentroid(),inter));
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			//Intercept with BMT tiles and add info on missing coordinates of the clusters.
-			int sector=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
-			for (int lay=0; lay<6;lay++) {
-				for (int sec=1; sec<4;sec++) {
-					
-					Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
-					
-					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||sec==sector)) {
-						bank.getNode("ID").setShort(index, (short) track);
-						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
-						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
-						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
-						bank.getNode("YtrackIntersPlane").setFloat(index, (float) (inter.y()/10.));
-						bank.getNode("ZtrackIntersPlane").setFloat(index, (float) (inter.z()/10.));
-						
-						if (BMT.getGeometry().getZorC(lay+1)==0) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getCStrip(lay+1, inter.z()));
-						if (BMT.getGeometry().getZorC(lay+1)==1) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getZStrip(lay+1, Math.atan2(inter.y(), inter.x())));
-						
-						int clus_id=-1;
-						for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
-							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
-								clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
-						}
-					
-						if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
-							//Update the cluster X,Y,Z info with track info
-							for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
-								if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
-									if (BMT.getGeometry().getZorC(lay+1)==0) {
-										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
-										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
-									}
-									if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track);
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
-								}
-							}
-						}
-					
-						inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
-						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
-						Vector3D PhiBMT=new Vector3D();
-						PhiBMT.setXYZ(candidates.get(track).get_VectorTrack().x(),candidates.get(track).get_VectorTrack().y() , 0);
-						Vector3D eTheta=new Vector3D();
-						eTheta.setXYZ(-inter.y(),inter.x(),0);
-						Vector3D ThetaBMT=new Vector3D();
-						ThetaBMT.setXYZ(candidates.get(track).get_VectorTrack().x(),candidates.get(track).get_VectorTrack().y() , candidates.get(track).get_VectorTrack().z());
-						Vector3D ProjThetaBMT=new Vector3D();
-						ProjThetaBMT=ThetaBMT.projection(eTheta);
-						ThetaBMT.sub(ProjThetaBMT);
-						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiBMT.angle(inter)));
-						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaBMT.angle(inter)));
-						index++;
-					}
-				}
-			}
-		}
-				
 		return bank;
 	}
 	

@@ -9,10 +9,12 @@ import org.jlab.detector.geant4.v2.DCGeant4Factory;
 public class DriftChambers {
 	public Sector[] DCSector= new Sector[6];
 	public org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
+	private int NbTotalHits;
 	public DriftChambers(org.jlab.detector.geant4.v2.DCGeant4Factory DCFactory) {
 		for (int sec=0; sec<6;sec++) {
 			DCSector[sec]=new Sector(sec+1);
 		}
+		NbTotalHits=0;
 		DCgeo=DCFactory;
 	}
 	
@@ -32,7 +34,7 @@ public class DriftChambers {
 			
 			pt.rotateY(Math.toRadians(25));pt.rotateZ((sector-1)*Math.toRadians(60));
 			dir.rotateY(Math.toRadians(25));dir.rotateZ((sector-1)*Math.toRadians(60));
-			
+			NbTotalHits++;
 			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, TDC, dir, pt);
 		}
 		
@@ -49,8 +51,13 @@ public class DriftChambers {
 	}
 	
 	public void clear() {
+		NbTotalHits=0;
 		for (int sec=0; sec<6;sec++) {
 			DCSector[sec].clear();
 		}
+	}
+	
+	public int getNbHits() {
+		return NbTotalHits;
 	}
 }
