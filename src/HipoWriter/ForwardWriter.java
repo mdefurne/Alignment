@@ -104,6 +104,31 @@ public class ForwardWriter {
 		return bank;
 	}
 	
+	public HipoGroup fillHBTrajbank(DriftChambers DC) {
+		int groupsize=0;
+		for (int sec=1;sec<7;sec++) {
+			groupsize+=DC.getSector(sec).getSectorSegments().size();
+		}
+		double p_straight=100;
+		HipoGroup bank = writer.getSchemaFactory().getSchema("HitBasedTrkg::HBTracks").createGroup(groupsize);
+		int index=0;
+		for (int sec=1; sec<7; sec++) {
+			for (int ray=0; ray<DC.getSector(sec).getSectorSegments().size(); ray++) {
+				bank.getNode("px_0").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().x())); 
+				bank.getNode("py_0").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().y())); 
+				bank.getNode("pz_0").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().z())); 
+				
+				bank.getNode("Vtx0_x").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().x()); 
+				bank.getNode("Vtx0_y").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().y()); 
+				bank.getNode("Vtx0_z").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().z()); 
+				
+				bank.getNode("chi2").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getChi2()); 
+				index++;
+			}
+		}
+		return bank;
+	}
+	
 	public void close() {
 		writer.close();
 	}
