@@ -52,16 +52,16 @@ public class DCStraightTracker {
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
-		int count=3;//150;
+		int count=1;//150;
 		DataEvent event_zero = reader.gotoEvent(1);
 		
 		DCStraightTracker Straight=new DCStraightTracker();
 		
-		
+		Asimov.setOuputFileName("/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/new_clas_002467.evio.156.hipo");
 		
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<4) {
+		while(reader.hasEvent()&&count<250) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -91,7 +91,7 @@ public class DCStraightTracker {
 		   		   		         
 		}
 		
-		
+		Asimov.close();
 		System.out.println("Done! "+count);
  }
 	

@@ -167,4 +167,13 @@ public class Segment {
 	public int getSector() {
 		return sector;
 	}
+
+	public boolean IsWorseThan(Segment segment) {
+		if (this.getClusters().size()<segment.getClusters().size()) return true;
+		else {
+			if (this.getChi2()>segment.getChi2()&&this.getClusters().size()==segment.getClusters().size()) return true;
+			else return false;
+		}
+				
+	}
 }

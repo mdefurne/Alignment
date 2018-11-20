@@ -309,7 +309,7 @@ public class CentralWriter {
 		int index=0;
 		for (int i=0; i<groupsize; i++) {
 			Vector3D inter=candidates.get(i).getLine().IntersectWithPlaneY();
-			bank.getNode("ID").setShort(index, (short) index);
+			bank.getNode("ID").setShort(index, (short) (index+1));
 			bank.getNode("trkline_yx_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().x()/candidates.get(i).get_VectorTrack().y()));
 			bank.getNode("trkline_yx_interc").setFloat(index, (float) (inter.x()/10.));
 			bank.getNode("trkline_yz_slope").setFloat(index, (float) (candidates.get(i).get_VectorTrack().z()/candidates.get(i).get_VectorTrack().y()));
@@ -371,7 +371,7 @@ public class CentralWriter {
 						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
 						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
 						
-						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("ID").setShort(index, (short) (track+1));
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) (sector));
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
@@ -396,7 +396,7 @@ public class CentralWriter {
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setX(inter.x());
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setY(inter.y());
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setZ(inter.z());
-									BST.getModule(lay+1, sector).getClusters().get(clus+1).settrkID(track);
+									BST.getModule(lay+1, sector).getClusters().get(clus+1).settrkID(track+1);
 									BST.getModule(lay+1, sector).getClusters().get(clus+1).setCentroidResidual(BST.getGeometry().getResidual_line(lay+1,sector,BST.getModule(lay+1, sector).getClusters().get(clus+1).getCentroid(),inter));
 								}
 							}
@@ -413,7 +413,7 @@ public class CentralWriter {
 					Vector3D inter=new Vector3D(BMT.getGeometry().getIntercept(lay+1, sec, candidates.get(track).get_VectorTrack(), candidates.get(track).get_PointTrack()));
 					
 					if (!Double.isNaN(inter.x())&&(main.constant.isCosmic||sec==sector)) {
-						bank.getNode("ID").setShort(index, (short) track);
+						bank.getNode("ID").setShort(index, (short) (track+1));
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+7));
 						bank.getNode("SectorTrackIntersPlane").setByte(index, (byte) sec);
 						bank.getNode("XtrackIntersPlane").setFloat(index, (float) (inter.x()/10.));
@@ -438,7 +438,7 @@ public class CentralWriter {
 										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
 									}
 									if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track);
+									BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track+1);
 									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
 								}
 							}

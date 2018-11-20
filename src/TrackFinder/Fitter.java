@@ -156,9 +156,16 @@ public class Fitter {
 		
 		for (int sec=1;sec<7;sec++) {
 			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+				// If we have already good track, we might want to check that there is no duplicate
 				if (goodSegment.size()!=0) {
 					for (int gtr=0;gtr<goodSegment.size();gtr++) {
-						if (DC.getSector(sec).getSectorSegments().get(tr).IsSimilar(goodSegment.get(gtr)));
+						if (DC.getSector(sec).getSectorSegments().get(tr).IsSimilar(goodSegment.get(gtr))) {
+							if (goodSegment.get(gtr).IsWorseThan(DC.getSector(sec).getSectorSegments().get(tr))) {
+								goodSegment.remove(gtr);
+								goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
+							}
+							continue;
+						}
 					}
 				}
 				else goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
