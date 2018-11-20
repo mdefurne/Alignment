@@ -23,7 +23,7 @@ import org.jlab.geom.base.ConstantProvider;
 public class DCStraightTracker {
 	static DriftChambers DC;
 	static ParticleEvent MCParticles;
-	static CentralWriter Asimov;
+	static ForwardWriter Asimov;
 	static Analyzer Sherlock;
 	static Fitter Tracky;
 	static ArrayList<Integer> DisabledLayer;
@@ -35,7 +35,7 @@ public class DCStraightTracker {
 		MCParticles=new ParticleEvent();
 		Tracky=new Fitter();
 		Sherlock=new Analyzer();
-		Asimov=new CentralWriter();
+		Asimov=new ForwardWriter();
 		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
 		DCgeo = new DCGeant4Factory(provider, true);//DCGeant4Factory.MINISTAGGERON);
 		DC=new DriftChambers(DCgeo);
@@ -74,17 +74,19 @@ public class DCStraightTracker {
 		    	System.out.println("///////////////// "+count);
 		    	DC.fillDCs(event.getBank("DC::tdc"));
 		    	DC.FindTrackCandidate();
-		    	
+		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	for (int sec=1;sec<7;sec++) {
 		    		
 		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
 		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
 		    				Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
-		    				System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
+		    				//System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
 		    				//DC.getSector(sec).getSectorSegments().get(tr).PrintSegment();
 		    			}
 		    		}
 		    	}
+		    	Tracky.ForwardDuplicateRemoval(DC);
+				Asimov.WriteEvent(count, DC, MCParticles);
 		    }
 		   		   		         
 		}

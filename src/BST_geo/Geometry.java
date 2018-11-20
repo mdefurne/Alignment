@@ -228,7 +228,7 @@ public Point3D transformToFrame(int sector, int layer, double x, double y, doubl
 
         double lTx = org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[(layer-1)/2][(layer-1)%2]  * Math.cos(Glob_rangl);
         double lTy = org.jlab.detector.geant4.v2.SVT.SVTConstants.LAYERRADIUS[(layer-1)/2][(layer-1)%2]  * Math.sin(Glob_rangl);
-        double lTz = org.jlab.detector.geant4.v2.SVT.SVTConstants.Z0ACTIVE[(layer-1)/2]-org.jlab.detector.geant4.v2.SVT.SVTConstants.DEADZNLEN;
+        double lTz = org.jlab.detector.geant4.v2.SVT.SVTConstants.Z0ACTIVE[(layer-1)/2];//-org.jlab.detector.geant4.v2.SVT.SVTConstants.DEADZNLEN;
 
         //rotate and translate
         double cosRotation = Math.cos(Loc_to_Glob_rangl);

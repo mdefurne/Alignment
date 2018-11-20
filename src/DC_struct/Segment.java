@@ -12,10 +12,11 @@ public class Segment {
 	private int nbLayer;
 	private int SuperLayer;
 	private int region;
+	private int sector;
 	private StraightLine HBtrack;
 	private double chi2;
 	
-	public Segment(int Super_Layer) {
+	public Segment(int Sector, int Super_Layer) {
 		clusterlist=new ArrayList<DC_struct.Cluster>();
 		nbSuperLayer=0;
 		nbLayer=0;
@@ -23,6 +24,7 @@ public class Segment {
 		region=(SuperLayer+1)/2;
 		HBtrack=new StraightLine();
 		chi2=Double.POSITIVE_INFINITY;
+		sector=Sector;
 	}
 	
 	public int getRegion() {
@@ -56,7 +58,7 @@ public class Segment {
 	}
 	
 	public Segment Duplicate() {
-		Segment Dupli=new Segment(SuperLayer);
+		Segment Dupli=new Segment(sector,SuperLayer);
 		for (int cl=0;cl<this.getClusters().size()-1; cl++) {
 			Dupli.addCluster(this.getClusters().get(cl));
 		}
@@ -64,7 +66,7 @@ public class Segment {
 	}
 	
 	public Segment Merge(Segment ToMerge) {
-		Segment Merged=new Segment(ToMerge.getSuperLayer());
+		Segment Merged=new Segment(ToMerge.getSector(),ToMerge.getSuperLayer());
 		Merged.setHBtrack(this.getHBtrack());
 		for (int cl=0;cl<this.getSize();cl++) {
 			Merged.addCluster(this.getClusters().get(cl));
@@ -142,5 +144,27 @@ public class Segment {
 	
 	public double getChi2() {
 		return chi2;
+	}
+
+	public boolean IsSimilar(Segment segment) {
+		boolean Similar=false;
+		if (this.getSector()!= segment.getSector()) return Similar;
+		else {
+			int SharedHit=0;
+			for (int cl=0; cl<this.getClusters().size(); cl++)  {
+				for (int ncl=0; ncl<segment.getClusters().size(); ncl++)  {
+					if (this.getClusters().get(cl).getCentroid()==segment.getClusters().get(ncl).getCentroid()&&this.getClusters().get(cl).getLayer()==segment.getClusters().get(ncl).getLayer()) SharedHit++;
+				}
+				if (SharedHit>=2) {
+					Similar=true;
+					return Similar;
+				}
+			}
+		}
+		return Similar;
+	}
+	
+	public int getSector() {
+		return sector;
 	}
 }

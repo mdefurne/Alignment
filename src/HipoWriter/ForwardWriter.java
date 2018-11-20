@@ -35,6 +35,8 @@ public class ForwardWriter {
 		 event.writeGroup(this.fillBSTHitsBank(BST));
 		 event.writeGroup(this.fillBSTClusterBank(BST));
 		 event.writeGroup(this.fillBMTClusterBank(BMT));*/
+		event.writeGroup(this.fillDCTDCbank(DC));
+		event.writeGroup(this.fillHBTrajbank(DC));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 

@@ -148,4 +148,22 @@ public class Fitter {
 	    }
 	}
 
+	public void ForwardDuplicateRemoval(DriftChambers DC) {
+		// Remove Duplicated segment with the following criteria
+		// -1) Keep the track with more hits -2) with best chi2 for same number of hits
+		ArrayList<Segment> goodSegment = new ArrayList<Segment>();
+		boolean Similar=false;
+		
+		for (int sec=1;sec<7;sec++) {
+			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+				if (goodSegment.size()!=0) {
+					for (int gtr=0;gtr<goodSegment.size();gtr++) {
+						if (DC.getSector(sec).getSectorSegments().get(tr).IsSimilar(goodSegment.get(gtr)));
+					}
+				}
+				else goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
+			}
+		}
+	}
+
 }

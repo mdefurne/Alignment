@@ -12,8 +12,9 @@ public class SuperLayer {
 	public double DeltaCluster; //Authorized to associate to layer from one to the next if DeltaCluster<1.5
 	
 	ArrayList<Segment> BufferLayer;
+	public int sector;
 	
-	public SuperLayer(int SL) {
+	public SuperLayer(int Sector, int SL) {
 		region=(SL-1)/2+1;
 		SuperLayer=SL;
 		segmap = new ArrayList<Segment>();
@@ -24,6 +25,7 @@ public class SuperLayer {
 			
 		}
 		DeltaCluster=1.5;
+		sector=Sector;
 	}
 	
 	public Layer getLayer(int lay) {
@@ -72,7 +74,7 @@ public class SuperLayer {
 						}
 				
 						if (!IsAttributed) {
-							Segment seg=new Segment(SuperLayer);
+							Segment seg=new Segment(sector, SuperLayer);
 							seg.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
 							segmap.add(seg);
 						}
@@ -88,7 +90,7 @@ public class SuperLayer {
 				if (noHit_yet_SL) {
 					//Create a new Track Candidate for each cluster of first layer
 					for (int clus=0;clus<this.getLayer(lay).getClusterList().size();clus++) {
-						Segment cand=new Segment(SuperLayer);
+						Segment cand=new Segment(sector, SuperLayer);
 						cand.addCluster(this.getLayer(lay).getClusterList().get(clus+1));
 						segmap.add(cand);
 						noHit_yet_SL=false;

@@ -10,7 +10,7 @@ public class Sector {
 	
 	public Sector(int num_sec) {
 		for (int lay=0; lay<6;lay++) {
-			StackSL[lay]=new SuperLayer(lay+1);
+			StackSL[lay]=new SuperLayer(sector_number,lay+1);
 		}
 		 DeltaInterSL=10;
 		 sector_number=num_sec;
