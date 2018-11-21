@@ -18,7 +18,10 @@ public class ForwardWriter {
 		factory.addSchema(new Schema("{20612,DC::tdc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,TDC,INT]"));
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
 		factory.addSchema(new Schema("{20626,HitBasedTrkg::HBTracks}[1,id,SHORT][2,status,SHORT][3,sector,BYTE][4,c1_x,FLOAT][5,c1_y,FLOAT][6,c1_z,FLOAT]"
-				+ "[7,c1_ux,FLOAT][8,c1_uy,FLOAT][9,c1_uz,FLOAT][10,Vtx0_x,FLOAT][11,Vtx0_y,FLOAT][12,Vtx0_z,FLOAT][13,p0_x,FLOAT][14,p0_y,FLOAT][15,p0_z,FLOAT][16,q,BYTE][17,chi2,FLOAT][18,ndf,SHORT]"));
+				+ "[7,c1_ux,FLOAT][8,c1_uy,FLOAT][9,c1_uz,FLOAT][10,c3_x,FLOAT][11,c3_y,FLOAT][12,c3_z,FLOAT][13,c3_ux,FLOAT][14,c3_uy,FLOAT][15,c3_uz,FLOAT]"
+				+ "[16,t1_x,FLOAT][17,t1_y,FLOAT][18,t1_z,FLOAT][19,t1_px,FLOAT][20,t1_py,FLOAT][21,t1_pz,FLOAT]"
+				+ "[22,Cross1_ID,SHORT][23,Cross2_ID,SHORT][24,Cross3_ID,SHORT]"
+				+ "[25,Vtx0_x,FLOAT][26,Vtx0_y,FLOAT][27,Vtx0_z,FLOAT][28,p0_x,FLOAT][29,p0_y,FLOAT][30,p0_z,FLOAT][31,q,BYTE][32,pathlength,FLOAT][33,chi2,FLOAT][34,ndf,SHORT]"));
 		factory.addSchema(new Schema("{11,RUN::config}[1,run,INT][2,event,INT][3,unixtime,INT][4,trigger,LONG][5,timestamp,LONG][6,type,BYTE][7,mode,BYTE][8,torus,FLOAT][9,solenoid,FLOAT]"));
 				
 		 writer.appendSchemaFactory(factory);
@@ -116,6 +119,12 @@ public class ForwardWriter {
 		int index=0;
 		for (int sec=1; sec<7; sec++) {
 			for (int ray=0; ray<DC.getSector(sec).getSectorSegments().size(); ray++) {
+				bank.getNode("id").setShort(index, (short) (index+1));
+				bank.getNode("status").setShort(index, (short) (1));
+				bank.getNode("Cross1_ID").setShort(index, (short) (-1));
+				bank.getNode("Cross2_ID").setShort(index, (short) (-1));
+				bank.getNode("Cross3_ID").setShort(index, (short) (-1));
+				bank.getNode("sector").setByte(index, (byte) (DC.getSector(sec).getSectorSegments().get(ray).getSector()));
 				bank.getNode("p0_x").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().x())); 
 				bank.getNode("p0_y").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().y())); 
 				bank.getNode("p0_z").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().z())); 
@@ -123,7 +132,7 @@ public class ForwardWriter {
 				bank.getNode("Vtx0_x").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().x()); 
 				bank.getNode("Vtx0_y").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().y()); 
 				bank.getNode("Vtx0_z").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getPoint().z()); 
-				
+				bank.getNode("q").setByte(index, (byte) 1); 
 				bank.getNode("chi2").setFloat(index, (float) DC.getSector(sec).getSectorSegments().get(ray).getChi2()); 
 				index++;
 			}

@@ -114,6 +114,7 @@ public class Fitter {
 	    	HBtrack.setPoint_XYZ(res[2], res[3] ,res[4]);
 	    	seg.setHBtrack(HBtrack);
 	    	seg.setChi2(min.fval());
+	    	seg.setFitStatus(true);
 	    }
 	}
 	
@@ -145,10 +146,19 @@ public class Fitter {
 	    	HBtrack.setPoint_XYZ(res[2], res[3] , res[4]);
 	    	seg.setHBtrack(HBtrack);
 	    	seg.setChi2(min.fval());
+	    	seg.setFitStatus(true);
 	    }
 	}
 
 	public void ForwardDuplicateRemoval(DriftChambers DC) {
+		//First we clean all tracks with no convergence
+		
+		
+		for (int sec=1;sec<7;sec++) {
+			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()<6) DC.getSector(sec).getSectorSegments().remove(tr);
+			}
+		}
 		// Remove Duplicated segment with the following criteria
 		// -1) Keep the track with more hits -2) with best chi2 for same number of hits
 		ArrayList<Segment> goodSegment = new ArrayList<Segment>();
@@ -169,8 +179,15 @@ public class Fitter {
 					}
 				}
 				else goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
+				
+				DC.getSector(sec).getSectorSegments().clear();
+				for (int gtr=0;gtr<goodSegment.size();gtr++) {
+					DC.getSector(sec).getSectorSegments().add(goodSegment.get(gtr));
+				}
+				goodSegment.clear();
 			}
 		}
+			
 	}
 
 }

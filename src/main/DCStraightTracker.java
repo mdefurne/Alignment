@@ -79,13 +79,15 @@ public class DCStraightTracker {
 		    		
 		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
 		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-		    				Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
+		    				if (DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()==6) Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
 		    				//System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
 		    				//DC.getSector(sec).getSectorSegments().get(tr).PrintSegment();
 		    			}
 		    		}
 		    	}
+		    	System.out.println(DC.getSector(1).getSectorSegments().size());
 		    	Tracky.ForwardDuplicateRemoval(DC);
+		    	System.out.println(DC.getSector(1).getSectorSegments().size());
 				Asimov.WriteEvent(count, DC, MCParticles);
 		    }
 		   		   		         

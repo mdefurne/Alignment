@@ -15,6 +15,7 @@ public class Segment {
 	private int sector;
 	private StraightLine HBtrack;
 	private double chi2;
+	private boolean fitstatus;
 	
 	public Segment(int Sector, int Super_Layer) {
 		clusterlist=new ArrayList<DC_struct.Cluster>();
@@ -25,6 +26,7 @@ public class Segment {
 		HBtrack=new StraightLine();
 		chi2=Double.POSITIVE_INFINITY;
 		sector=Sector;
+		fitstatus=false;
 	}
 	
 	public int getRegion() {
@@ -139,6 +141,7 @@ public class Segment {
 	}
 	
 	public void setChi2(double chisq) {
+		if (chisq==Double.POSITIVE_INFINITY||chisq==Double.NEGATIVE_INFINITY) System.out.println("OhOh");
 		chi2=chisq;
 	}
 	
@@ -166,6 +169,14 @@ public class Segment {
 	
 	public int getSector() {
 		return sector;
+	}
+	
+	public boolean getFitStatus() {
+		return fitstatus;
+	}
+	
+	public void setFitStatus(boolean status) {
+		fitstatus=status;
 	}
 
 	public boolean IsWorseThan(Segment segment) {
