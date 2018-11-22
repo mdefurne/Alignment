@@ -4,6 +4,7 @@ import TrackFinder.*;
 import Trajectory.*;
 import java.util.*;
 import Analyzer.*;
+import DC_struct.DriftChambers;
 import DC_struct.Segment;
 import PostProcessor.*;
 import Analyzer.*;
@@ -16,13 +17,13 @@ public class Tracker {
 	private BeamAna BPMer;
 		
 	private HashMap<Integer, ArrayList<TrackCandidate> > Events;
-	private HashMap<Integer, Segment > FDEvents;
+	private HashMap<Integer, ArrayList<Segment> > FDEvents;
 	
 	public Tracker() {
 		ntarget=0;
 		nBeamFinder=30;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
-		FDEvents=new HashMap<Integer, Segment >();
+		FDEvents=new HashMap<Integer, ArrayList<Segment> >();
 		Vexter=new VertexFinder();
 		BPMer=new BeamAna();	
 	}
@@ -98,6 +99,81 @@ public class Tracker {
 	
 	public void draw() {
 		BPMer.draw();
+	}
+	
+	public void addForwardEvent(int event, DriftChambers DC) {
+				
+		this.ForwardDuplicateRemoval(DC);
+		for (int sec=1;sec<7;sec++) {
+			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+				if (FDEvents.containsKey(sec)) FDEvents.get(sec).add(DC.getSector(sec).getSectorSegments().get(tr));
+				else {
+					ArrayList<Segment> temp=new ArrayList<Segment>();
+					temp.add(DC.getSector(sec).getSectorSegments().get(tr));
+					FDEvents.put(sec, temp);
+				}
+			}
+		}
+		boolean ReadyToFindBeam=true;
+		for (int sec=1;sec<7;sec++) {
+			if (FDEvents.get(sec).size()<nBeamFinder) ReadyToFindBeam=false;
+		}
+		
+		if (ReadyToFindBeam) {
+			BeamFinder Beamer=new BeamFinder();
+			ArrayList<StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
+			Vexter.FindFDVertices(Beam,FDEvents);
+			BPMer.FDAnalyze(Beam, FDEvents);
+			for (int sec=1;sec<7;sec++) {
+				FDEvents.get(sec).clear();
+			}
+		}
+		
+	}
+	
+	public void ForwardDuplicateRemoval(DriftChambers DC) {
+		//First we clean all tracks with no convergence
+				
+		for (int sec=1;sec<7;sec++) {
+			for (int tr=DC.getSector(sec).getSectorSegments().size()-1; tr>=0;tr--) {
+				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getSize()<30||DC.getSector(sec).getSectorSegments().get(tr).getChi2()==Double.POSITIVE_INFINITY) {
+					
+					DC.getSector(sec).getSectorSegments().remove(tr);
+					
+				}
+			}
+		}
+		
+		// Remove Duplicated segment with the following criteria
+		// -1) Keep the track with more hits -2) with best chi2 for same number of hits
+		ArrayList<Segment> goodSegment = new ArrayList<Segment>();
+		boolean Similar=false;
+		
+		for (int sec=1;sec<7;sec++) {
+			for (int tr=DC.getSector(sec).getSectorSegments().size()-1; tr>=0;tr--) {
+				
+				// If we have already good track, we might want to check that there is no duplicate
+				if (goodSegment.size()!=0) {
+					for (int gtr=goodSegment.size()-1;gtr>-1;gtr--) {
+						if (DC.getSector(sec).getSectorSegments().get(tr).IsSimilar(goodSegment.get(gtr))) {
+							if (goodSegment.get(gtr).IsWorseThan(DC.getSector(sec).getSectorSegments().get(tr))) {
+								goodSegment.remove(gtr);
+								goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
+							}
+							continue;
+						}
+					}
+				}
+				else goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
+							
+			}
+			DC.getSector(sec).getSectorSegments().clear();
+			for (int gtr=0;gtr<goodSegment.size();gtr++) {
+				DC.getSector(sec).getSectorSegments().add(goodSegment.get(gtr));
+			}
+			goodSegment.clear();
+		}
+			
 	}
 
 }

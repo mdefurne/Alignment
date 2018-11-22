@@ -26,7 +26,8 @@ public class DCStraightTracker {
 	static ParticleEvent MCParticles;
 	static ForwardWriter Asimov;
 	static Analyzer Sherlock;
-	static Fitter Tracky;
+	static Fitter Lycos;
+	static Tracker Tracky;
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
 	static org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
@@ -34,7 +35,8 @@ public class DCStraightTracker {
 	public DCStraightTracker() {
 		
 		MCParticles=new ParticleEvent();
-		Tracky=new Fitter();
+		Tracky=new Tracker();
+		Lycos=new Fitter();
 		Sherlock=new Analyzer();
 		Asimov=new ForwardWriter();
 		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
@@ -82,13 +84,13 @@ public class DCStraightTracker {
 		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
 		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
 		    				if (DC.getSector(sec).getSectorSegments().get(tr).getSize()>30) {
-		    					Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
+		    					Lycos.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
 		    				 }
 		    			}
 		    		}
 		    	}
 		    	
-		    	Tracky.ForwardDuplicateRemoval(DC);
+		    	Tracky.addForwardEvent(count,DC);
 		    	
 				Asimov.WriteEvent(count, DC, MCParticles);
 		    }

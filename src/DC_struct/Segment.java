@@ -2,6 +2,8 @@ package DC_struct;
 
 import java.util.ArrayList;
 
+import org.jlab.geom.prim.Vector3D;
+
 import TrackFinder.Fitter;
 import Trajectory.StraightLine;
 
@@ -16,6 +18,7 @@ public class Segment {
 	private StraightLine HBtrack;
 	private double chi2;
 	private boolean fitstatus;
+	private Vector3D vertex;
 	
 	public Segment(int Sector, int Super_Layer) {
 		clusterlist=new ArrayList<DC_struct.Cluster>();
@@ -27,6 +30,7 @@ public class Segment {
 		chi2=Double.POSITIVE_INFINITY;
 		sector=Sector;
 		fitstatus=false;
+		vertex=new Vector3D(Double.NaN,Double.NaN,Double.NaN);
 	}
 	
 	public int getRegion() {
@@ -187,5 +191,10 @@ public class Segment {
 			else return false;
 		}
 				
+	}
+
+	public void setVertex(Vector3D vx0) {
+		vertex.setXYZ(vx0.x(), vx0.y(), vx0.z());
+		
 	}
 }

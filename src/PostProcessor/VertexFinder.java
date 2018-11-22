@@ -4,6 +4,7 @@ import TrackFinder.*;
 import Trajectory.*;
 import java.util.*;
 import Analyzer.*;
+import DC_struct.Segment;
 import PostProcessor.*;
 
 public class VertexFinder {
@@ -25,6 +26,15 @@ public class VertexFinder {
 					if (track.getDistanceToLine(Beam)<5) Events.get(i+1).get(j).setVertex(track.getClosestPointToLine(Beam));
 				}
 			 }
+		}
+	}
+	
+	public void FindFDVertices(ArrayList<StraightLine> Beam,  HashMap<Integer, ArrayList<Segment>> Tracks) {
+		
+		for (int sec=1;sec<7;sec++) {
+			for (int i=0; i<Tracks.get(sec).size();i++) {
+				if (Tracks.get(sec).get(i).getHBtrack().getDistanceToLine(Beam.get(sec))<50) Tracks.get(sec).get(i).setVertex(Tracks.get(sec).get(i).getHBtrack().getClosestPointToLine(Beam.get(sec)));
+			}
 		}
 	}
 

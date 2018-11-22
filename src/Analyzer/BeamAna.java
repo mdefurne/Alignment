@@ -3,6 +3,9 @@ package Analyzer;
 import org.jlab.groot.data.*;
 import TrackFinder.*;
 import org.jlab.groot.ui.*;
+
+import DC_struct.Segment;
+
 import java.util.*;
 import Trajectory.StraightLine;
 import org.jlab.groot.fitter.DataFitter;
@@ -123,6 +126,10 @@ public class BeamAna {
 			funcres_z_sc.setLineColor(2);
 			funcres_z_sc.setLineWidth(2);
 			TargetViewer.draw(funcres_z_sc,"same");
+	}
+
+	public void FDAnalyze(ArrayList<StraightLine> beam, HashMap<Integer, ArrayList<Segment>> fDEvents) {
+		
 	}
 
 }
