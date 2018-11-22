@@ -35,7 +35,7 @@ public class DCStraightTracker {
 	public DCStraightTracker() {
 		
 		MCParticles=new ParticleEvent();
-		Tracky=new Tracker();
+		Tracky=new Tracker("DC");
 		Lycos=new Fitter();
 		Sherlock=new Analyzer();
 		Asimov=new ForwardWriter();
@@ -51,7 +51,7 @@ public class DCStraightTracker {
 	public static void main(String[] args) {
 		
 		//String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/out_00001.hipo";
-		String fileName="/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
+		String fileName=args[0];//"/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/out_clas_002467.evio.156.hipo";
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
@@ -60,12 +60,12 @@ public class DCStraightTracker {
 		
 		DCStraightTracker Straight=new DCStraightTracker();
 		
-		Asimov.setOuputFileName("/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/new_clas_002467.evio.156.hipo");
+		Asimov.setOuputFileName(args[1]);//"/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/new_clas_002467.evio.156.hipo");
 		//Asimov.setOuputFileName("/home/mdefurne/Bureau/CLAS12/DCAlignment/new_out_00001.hipo");
-		
+		//System.setProperty("java.awt.headless", "true");
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<250) {
+		while(reader.hasEvent()&&count<10000) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -98,6 +98,7 @@ public class DCStraightTracker {
 		}
 		
 		Asimov.close();
+		Tracky.draw();
 		System.out.println("Done! "+count);
  }
 	

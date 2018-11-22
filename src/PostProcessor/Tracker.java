@@ -19,13 +19,13 @@ public class Tracker {
 	private HashMap<Integer, ArrayList<TrackCandidate> > Events;
 	private HashMap<Integer, ArrayList<Segment> > FDEvents;
 	
-	public Tracker() {
+	public Tracker(String Type) {
 		ntarget=0;
 		nBeamFinder=30;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
 		FDEvents=new HashMap<Integer, ArrayList<Segment> >();
 		Vexter=new VertexFinder();
-		BPMer=new BeamAna();	
+		BPMer=new BeamAna(Type);	
 	}
 	
 	
@@ -115,17 +115,19 @@ public class Tracker {
 			}
 		}
 		boolean ReadyToFindBeam=true;
-		for (int sec=1;sec<7;sec++) {
-			if (FDEvents.get(sec).size()<nBeamFinder) ReadyToFindBeam=false;
-		}
-		
-		if (ReadyToFindBeam) {
-			BeamFinder Beamer=new BeamFinder();
-			ArrayList<StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
-			Vexter.FindFDVertices(Beam,FDEvents);
-			BPMer.FDAnalyze(Beam, FDEvents);
+		if (FDEvents.size()==6) {
 			for (int sec=1;sec<7;sec++) {
-				FDEvents.get(sec).clear();
+				if (FDEvents.get(sec).size()<nBeamFinder) ReadyToFindBeam=false;
+			}
+		
+			if (ReadyToFindBeam) {
+				BeamFinder Beamer=new BeamFinder();
+				ArrayList<StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
+				Vexter.FindFDVertices(Beam,FDEvents);
+				BPMer.FDAnalyze(Beam, FDEvents);
+				for (int sec=1;sec<7;sec++) {
+					FDEvents.get(sec).clear();
+				}
 			}
 		}
 		

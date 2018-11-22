@@ -29,7 +29,7 @@ public class StraightTracker {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
-		Tracky=new Tracker();
+		Tracky=new Tracker("CVT");
 		Sherlock=new Analyzer();
 		Asimov=new CentralWriter();
 		

@@ -52,8 +52,8 @@ public class BeamFinder {
 			
 			//Create parameters
 			MnUserParameters upar = new MnUserParameters();
-			upar.add("tx", 0, 10,-5,5); //angle beween x,z
-			upar.add("ty",0, 10,-5,5); //angle beween y,z
+			upar.add("tx", 0, 0.5,-0.25,0.25); //angle beween x,z
+			upar.add("ty",0, 0.5,-0.25,0.25); //angle beween y,z
 			upar.add("x", 0, 50,-25,25);
 			upar.add("y", 0, 50,-25,25);
 	    

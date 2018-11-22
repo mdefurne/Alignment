@@ -28,11 +28,21 @@ public class BeamAna {
 	F1D funcres_zu;
 	F1D funcres_z_sc;
 	
-	public BeamAna() {
-		for (int sec=0;sec<6;sec++) {
-			vz[sec]=new H1F("Z-vertex","Z-vertex",120,-40,80);
-			vy[sec]=new H1F("Y-vertex","Y-vertex",150,-25,25);
-			vx[sec]=new H1F("X-vertex","X-vertex",150,-25,25);
+	public BeamAna(String type) {
+		if (type.equals("CVT")) {
+			for (int sec=0;sec<6;sec++) {
+				vz[sec]=new H1F("Z-vertex","Z-vertex",120,-40,80);
+				vy[sec]=new H1F("Y-vertex","Y-vertex",150,-25,25);
+				vx[sec]=new H1F("X-vertex","X-vertex",150,-25,25);
+			}
+		}
+		
+		if (type.equals("DC")) {
+			for (int sec=0;sec<6;sec++) {
+				vz[sec]=new H1F("Z-vertex","Z-vertex",120,-100,200);
+				vy[sec]=new H1F("Y-vertex","Y-vertex",150,-25,25);
+				vx[sec]=new H1F("X-vertex","X-vertex",150,-25,25);
+			}
 		}
 		
 		funcres_x=new F1D("vx", "[amp]*gaus(x,[mean],[sigma])",-25,25);
@@ -112,7 +122,7 @@ public class BeamAna {
 			TargetViewer.draw(funcres_y,"same");
 		 TargetViewer.cd(2);
 		 TargetViewer.draw(vz[0]);
-		 DataFitter.fit(funcres_zu, vz[0], "Q");
+		 /*DataFitter.fit(funcres_zu, vz[0], "Q");
 			funcres_zu.setOptStat(1100);
 			funcres_zu.setLineColor(2);
 			funcres_zu.setLineWidth(2);
@@ -126,15 +136,15 @@ public class BeamAna {
 			funcres_z_sc.setOptStat(1100);
 			funcres_z_sc.setLineColor(2);
 			funcres_z_sc.setLineWidth(2);
-			TargetViewer.draw(funcres_z_sc,"same");
+			TargetViewer.draw(funcres_z_sc,"same");*/
 	}
 
 	public void FDAnalyze(ArrayList<StraightLine> beam, HashMap<Integer, ArrayList<Segment>> FDEvents) {
 		for (int sec=1;sec<7;sec++) {
 			for (int j=0; j<FDEvents.get(sec).size();j++) {
-				vz[0].fill(FDEvents.get(sec).get(j).getVertex().z());
-				vy[0].fill(FDEvents.get(sec).get(j).getVertex().y());
-				vx[0].fill(FDEvents.get(sec).get(j).getVertex().x());
+				vz[sec-1].fill(FDEvents.get(sec).get(j).getVertex().z());
+				vy[sec-1].fill(FDEvents.get(sec).get(j).getVertex().y());
+				vx[sec-1].fill(FDEvents.get(sec).get(j).getVertex().x());
 						
 			 }
 		}
