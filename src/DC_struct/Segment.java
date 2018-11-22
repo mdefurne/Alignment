@@ -197,4 +197,10 @@ public class Segment {
 		vertex.setXYZ(vx0.x(), vx0.y(), vx0.z());
 		
 	}
+	
+	public Vector3D getVertex() {
+		return vertex;
+		
+	}
+	
 }

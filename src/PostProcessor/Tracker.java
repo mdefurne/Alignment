@@ -46,7 +46,7 @@ public class Tracker {
 			BeamFinder Beamer=new BeamFinder();
 			StraightLine Beam=Beamer.FindBeam(Events);
 			Vexter.FindCVTVertices(Beam,Events);
-			BPMer.Analyze(Beam, Events);
+			BPMer.CVTAnalyze(Beam, Events);
 			Events.clear();
 			ntarget=0;
 		}
