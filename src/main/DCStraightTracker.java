@@ -9,6 +9,7 @@ import org.jlab.io.hipo.HipoDataSource;
 
 import Analyzer.Analyzer;
 import DC_struct.DriftChambers;
+import DC_struct.Segment;
 import TrackFinder.*;
 import Particles.*;
 import PostProcessor.*;
@@ -58,6 +59,7 @@ public class DCStraightTracker {
 		DCStraightTracker Straight=new DCStraightTracker();
 		
 		Asimov.setOuputFileName("/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/new_clas_002467.evio.156.hipo");
+		//Asimov.setOuputFileName("/home/mdefurne/Bureau/CLAS12/DCAlignment/new_out_00001.hipo");
 		
 		System.out.println("Starting Reconstruction.....");
 		
@@ -79,15 +81,15 @@ public class DCStraightTracker {
 		    		
 		    		if (DC.getSector(sec).getSectorSegments().size()<10) {
 		    			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-		    				if (DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()==6) Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
-		    				//System.out.println(sec+" "+DC.getSector(sec).getSectorSegments().get(tr).getHBtrack().getSlope());
-		    				//DC.getSector(sec).getSectorSegments().get(tr).PrintSegment();
+		    				if (DC.getSector(sec).getSectorSegments().get(tr).getSize()>30) {
+		    					Tracky.DCStraightTrack(DC.getSector(sec).getSectorSegments().get(tr));
+		    				 }
 		    			}
 		    		}
 		    	}
-		    	System.out.println(DC.getSector(1).getSectorSegments().size());
+		    	
 		    	Tracky.ForwardDuplicateRemoval(DC);
-		    	System.out.println(DC.getSector(1).getSectorSegments().size());
+		    	
 				Asimov.WriteEvent(count, DC, MCParticles);
 		    }
 		   		   		         

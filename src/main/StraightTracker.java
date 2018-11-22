@@ -175,11 +175,11 @@ public class StraightTracker {
 		    		Lycos.BuildCandidates();
 		    		Lycos.FetchTrack();
 		    		if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
-		    		Tracky.addEvent(count, Lycos.get_Candidates());
+		    		Tracky.addCVTEvent(count, Lycos.get_Candidates());
 		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
 		    	
 		    		///////////////////////////////////////
-		    		Asimov.WriteEvent(count,BMT, BST, Tracky.DuplicateRemoval(Lycos.get_Candidates()), MCParticles);
+		    		Asimov.WriteEvent(count,BMT, BST, Tracky.CentralDuplicateRemoval(Lycos.get_Candidates()), MCParticles);
 		    	}
 		    }
 		   		   		         

@@ -4,6 +4,7 @@ import TrackFinder.*;
 import Trajectory.*;
 import java.util.*;
 import Analyzer.*;
+import DC_struct.Segment;
 import PostProcessor.*;
 import Analyzer.*;
 
@@ -15,19 +16,23 @@ public class Tracker {
 	private BeamAna BPMer;
 		
 	private HashMap<Integer, ArrayList<TrackCandidate> > Events;
+	private HashMap<Integer, Segment > FDEvents;
 	
 	public Tracker() {
 		ntarget=0;
 		nBeamFinder=30;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
+		FDEvents=new HashMap<Integer, Segment >();
 		Vexter=new VertexFinder();
 		BPMer=new BeamAna();	
 	}
 	
-	public void addEvent(int event, HashMap<Integer,TrackCandidate> candidates) {
+	
+	
+	public void addCVTEvent(int event, HashMap<Integer,TrackCandidate> candidates) {
 		ArrayList<TrackCandidate> TrackList=new ArrayList<TrackCandidate>();
 		
-		TrackList=DuplicateRemoval(candidates);
+		TrackList=CentralDuplicateRemoval(candidates);
 		
 		//Load the events and store them until enough statistics to find beam
 		for (int i=0;i<TrackList.size();i++) {
@@ -39,7 +44,7 @@ public class Tracker {
 		if (ntarget>nBeamFinder) {
 			BeamFinder Beamer=new BeamFinder();
 			StraightLine Beam=Beamer.FindBeam(Events);
-			Vexter.FindVertices(Beam,Events);
+			Vexter.FindCVTVertices(Beam,Events);
 			BPMer.Analyze(Beam, Events);
 			Events.clear();
 			ntarget=0;
@@ -47,7 +52,7 @@ public class Tracker {
 		
 	}
 	
-	public ArrayList<TrackCandidate> DuplicateRemoval(HashMap<Integer,TrackCandidate> cand){
+	public ArrayList<TrackCandidate> CentralDuplicateRemoval(HashMap<Integer,TrackCandidate> cand){
 		ArrayList<TrackCandidate> Temp_good=new ArrayList<TrackCandidate>();
 		ArrayList<TrackCandidate> good=new ArrayList<TrackCandidate>();
 		

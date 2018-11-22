@@ -12,7 +12,7 @@ public class VertexFinder {
 		
 	}
 	
-	public void FindVertices(StraightLine Beam, HashMap<Integer, ArrayList<TrackCandidate> > Events) {
+	public void FindCVTVertices(StraightLine Beam, HashMap<Integer, ArrayList<TrackCandidate> > Events) {
 		
 		StraightLine track=new StraightLine();
 		

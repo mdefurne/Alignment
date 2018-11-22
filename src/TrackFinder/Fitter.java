@@ -116,6 +116,7 @@ public class Fitter {
 	    	seg.setChi2(min.fval());
 	    	seg.setFitStatus(true);
 	    }
+	    return; 
 	}
 	
 	public void DCStraightTrack_init(Segment seg) {
@@ -151,28 +152,29 @@ public class Fitter {
 
 	public void ForwardDuplicateRemoval(DriftChambers DC) {
 		//First we clean all tracks with no convergence
-
+		System.out.println(DC.getSector(1).getSectorSegments().size());
 		
 		for (int sec=1;sec<7;sec++) {
-			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()<6||DC.getSector(sec).getSectorSegments().get(tr).getChi2()==Double.POSITIVE_INFINITY) {
+			for (int tr=DC.getSector(sec).getSectorSegments().size()-1; tr>=0;tr--) {
+				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getSize()<30||DC.getSector(sec).getSectorSegments().get(tr).getChi2()==Double.POSITIVE_INFINITY) {
+					
 					DC.getSector(sec).getSectorSegments().remove(tr);
-					tr--;
+					
 				}
 			}
 		}
-		
+		System.out.println(DC.getSector(1).getSectorSegments().size());
 		// Remove Duplicated segment with the following criteria
 		// -1) Keep the track with more hits -2) with best chi2 for same number of hits
 		ArrayList<Segment> goodSegment = new ArrayList<Segment>();
 		boolean Similar=false;
 		
 		for (int sec=1;sec<7;sec++) {
-			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-				System.out.println(DC.getSector(sec).getSectorSegments().get(tr).getChi2());
+			for (int tr=DC.getSector(sec).getSectorSegments().size()-1; tr>=0;tr--) {
+				
 				// If we have already good track, we might want to check that there is no duplicate
 				if (goodSegment.size()!=0) {
-					for (int gtr=0;gtr<goodSegment.size();gtr++) {
+					for (int gtr=goodSegment.size()-1;gtr>-1;gtr--) {
 						if (DC.getSector(sec).getSectorSegments().get(tr).IsSimilar(goodSegment.get(gtr))) {
 							if (goodSegment.get(gtr).IsWorseThan(DC.getSector(sec).getSectorSegments().get(tr))) {
 								goodSegment.remove(gtr);
@@ -183,13 +185,13 @@ public class Fitter {
 					}
 				}
 				else goodSegment.add(DC.getSector(sec).getSectorSegments().get(tr));
-				
-				DC.getSector(sec).getSectorSegments().clear();
-				for (int gtr=0;gtr<goodSegment.size();gtr++) {
-					DC.getSector(sec).getSectorSegments().add(goodSegment.get(gtr));
-				}
-				goodSegment.clear();
+							
 			}
+			DC.getSector(sec).getSectorSegments().clear();
+			for (int gtr=0;gtr<goodSegment.size();gtr++) {
+				DC.getSector(sec).getSectorSegments().add(goodSegment.get(gtr));
+			}
+			goodSegment.clear();
 		}
 			
 	}
