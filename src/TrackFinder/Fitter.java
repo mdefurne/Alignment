@@ -145,20 +145,23 @@ public class Fitter {
 	    	HBtrack.setSlope_XYZ(Math.cos(res[0])*Math.sin(res[1]),Math.sin(res[0])*Math.sin(res[1]),Math.cos(res[1]));
 	    	HBtrack.setPoint_XYZ(res[2], res[3] , res[4]);
 	    	seg.setHBtrack(HBtrack);
-	    	seg.setChi2(min.fval());
-	    	seg.setFitStatus(true);
+	    	
 	    }
 	}
 
 	public void ForwardDuplicateRemoval(DriftChambers DC) {
 		//First we clean all tracks with no convergence
-		
+
 		
 		for (int sec=1;sec<7;sec++) {
 			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()<6) DC.getSector(sec).getSectorSegments().remove(tr);
+				if (!DC.getSector(sec).getSectorSegments().get(tr).getFitStatus()||DC.getSector(sec).getSectorSegments().get(tr).getNbSuperLayer()<6||DC.getSector(sec).getSectorSegments().get(tr).getChi2()==Double.POSITIVE_INFINITY) {
+					DC.getSector(sec).getSectorSegments().remove(tr);
+					tr--;
+				}
 			}
 		}
+		
 		// Remove Duplicated segment with the following criteria
 		// -1) Keep the track with more hits -2) with best chi2 for same number of hits
 		ArrayList<Segment> goodSegment = new ArrayList<Segment>();
@@ -166,6 +169,7 @@ public class Fitter {
 		
 		for (int sec=1;sec<7;sec++) {
 			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
+				System.out.println(DC.getSector(sec).getSectorSegments().get(tr).getChi2());
 				// If we have already good track, we might want to check that there is no duplicate
 				if (goodSegment.size()!=0) {
 					for (int gtr=0;gtr<goodSegment.size();gtr++) {

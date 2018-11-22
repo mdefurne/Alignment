@@ -12,7 +12,7 @@ public class DriftChambers {
 	private int NbTotalHits;
 	public DriftChambers(org.jlab.detector.geant4.v2.DCGeant4Factory DCFactory) {
 		for (int sec=0; sec<6;sec++) {
-			DCSector[sec]=new Sector(sec+1);
+			DCSector[sec]=new Sector((sec+1));
 		}
 		NbTotalHits=0;
 		DCgeo=DCFactory;

@@ -60,7 +60,8 @@ public class Segment {
 	}
 	
 	public Segment Duplicate() {
-		Segment Dupli=new Segment(sector,SuperLayer);
+		 Segment Dupli=new Segment(this.getSector(),this.getSuperLayer());
+		
 		for (int cl=0;cl<this.getClusters().size()-1; cl++) {
 			Dupli.addCluster(this.getClusters().get(cl));
 		}

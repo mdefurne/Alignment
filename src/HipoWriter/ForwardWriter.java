@@ -124,7 +124,7 @@ public class ForwardWriter {
 				bank.getNode("Cross1_ID").setShort(index, (short) (-1));
 				bank.getNode("Cross2_ID").setShort(index, (short) (-1));
 				bank.getNode("Cross3_ID").setShort(index, (short) (-1));
-				bank.getNode("sector").setByte(index, (byte) (DC.getSector(sec).getSectorSegments().get(ray).getSector()));
+				bank.getNode("sector").setByte(index, (byte) sec);
 				bank.getNode("p0_x").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().x())); 
 				bank.getNode("p0_y").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().y())); 
 				bank.getNode("p0_z").setFloat(index, (float) (p_straight*DC.getSector(sec).getSectorSegments().get(ray).getHBtrack().getSlope().z())); 
