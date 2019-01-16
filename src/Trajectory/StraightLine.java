@@ -157,6 +157,19 @@ public class StraightLine {
 		return intersect;
 	}
 	
+public Vector3D IntersectWithPlaneZ(double z0) {
+		
+		if (slope.z()==0||Double.isNaN(slope.z())) {
+			Vector3D intersect=new Vector3D();
+			intersect.setXYZ(Double.NaN, Double.NaN, Double.NaN);
+			return intersect;
+		}
+		
+		double lambda_z=(z0-point.z())/slope.z();
+		Vector3D intersect=this.getPointOnTrack(lambda_z);
+		return intersect;
+	}
+	
 	public void Print() {
 		System.out.println("/////////////////");
 		System.out.println(slope);

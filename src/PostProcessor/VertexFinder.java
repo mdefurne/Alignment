@@ -3,6 +3,9 @@ package PostProcessor;
 import TrackFinder.*;
 import Trajectory.*;
 import java.util.*;
+
+import org.jlab.geom.prim.Vector3D;
+
 import Analyzer.*;
 import DC_struct.Segment;
 import PostProcessor.*;
@@ -29,14 +32,10 @@ public class VertexFinder {
 		}
 	}
 	
-	public void FindFDVertices(HashMap<Integer,StraightLine> Beam,  HashMap<Integer, ArrayList<Segment>> Tracks) {
+	public void FindFDVertices(StraightLine Beam, ArrayList<Segment> Tracks) {
 		
-		for (int sec=1;sec<7;sec++) {
-			if (Tracks.containsKey(sec)) {
-				for (int i=0; i<Tracks.get(sec).size();i++) {
-					if (Tracks.get(sec).get(i).getHBtrack().getDistanceToLine(Beam.get(sec))<50) Tracks.get(sec).get(i).setVertex(Tracks.get(sec).get(i).getHBtrack().getClosestPointToLine(Beam.get(sec)));
-				}
-			}
+		for (int i=0; i<Tracks.size();i++) {
+					if (Tracks.get(i).ThroughFMT()) Tracks.get(i).setVertex(Tracks.get(i).getHBtrack().getClosestPointToLine(Beam));
 		}
 	}
 

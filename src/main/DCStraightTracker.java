@@ -65,7 +65,7 @@ public class DCStraightTracker {
 		//System.setProperty("java.awt.headless", "true");
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<10000) {
+		while(reader.hasEvent()&&count<1000) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;

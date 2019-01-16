@@ -11,7 +11,7 @@ import Analyzer.*;
 
 public class Tracker {
 	
-	private int ntarget;
+	private int[] ntarget;
 	private int nBeamFinder;
 	private VertexFinder Vexter;
 	private BeamAna BPMer;
@@ -20,7 +20,8 @@ public class Tracker {
 	private HashMap<Integer, ArrayList<Segment> > FDEvents;
 	
 	public Tracker(String Type) {
-		ntarget=0;
+		ntarget=new int[6];
+		for (int sec=0;sec<6;sec++) ntarget[sec]=0;
 		nBeamFinder=30;
 		Events=new HashMap<Integer, ArrayList<TrackCandidate> >();
 		FDEvents=new HashMap<Integer, ArrayList<Segment> >();
@@ -37,18 +38,18 @@ public class Tracker {
 		
 		//Load the events and store them until enough statistics to find beam
 		for (int i=0;i<TrackList.size();i++) {
-				if (TrackList.get(i).IsFromTarget()) ntarget++;
+				if (TrackList.get(i).IsFromTarget()) ntarget[0]++;
 			}
 			
 		Events.put(Events.size()+1,TrackList);
 		
-		if (ntarget>nBeamFinder) {
+		if (ntarget[0]>nBeamFinder) {
 			BeamFinder Beamer=new BeamFinder();
 			StraightLine Beam=Beamer.FindBeam(Events);
 			Vexter.FindCVTVertices(Beam,Events);
 			BPMer.CVTAnalyze(Beam, Events);
 			Events.clear();
-			ntarget=0;
+			ntarget[0]=0;
 		}
 		
 	}
@@ -106,28 +107,27 @@ public class Tracker {
 		this.ForwardDuplicateRemoval(DC);
 		for (int sec=1;sec<7;sec++) {
 			for (int tr=0; tr<DC.getSector(sec).getSectorSegments().size();tr++) {
-				if (FDEvents.containsKey(sec)) FDEvents.get(sec).add(DC.getSector(sec).getSectorSegments().get(tr));
+				if (FDEvents.containsKey(sec)) {
+					FDEvents.get(sec).add(DC.getSector(sec).getSectorSegments().get(tr));
+					if (DC.getSector(sec).getSectorSegments().get(tr).ThroughFMT()) ntarget[sec-1]++; 
+				}
 				else {
 					ArrayList<Segment> temp=new ArrayList<Segment>();
 					temp.add(DC.getSector(sec).getSectorSegments().get(tr));
+					if (DC.getSector(sec).getSectorSegments().get(tr).ThroughFMT()) ntarget[sec-1]++; 
 					FDEvents.put(sec, temp);
 				}
 			}
 		}
-		boolean ReadyToFindBeam=false;
+		
 		for (int sec=1;sec<7;sec++) {
-			if (FDEvents.containsKey(sec)) {
-				if (FDEvents.get(sec).size()>nBeamFinder) ReadyToFindBeam=true;
-			}
-		}	
-			
-		if (ReadyToFindBeam) {
-			BeamFinder Beamer=new BeamFinder();
-			HashMap<Integer, StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
-			Vexter.FindFDVertices(Beam,FDEvents);
-			BPMer.FDAnalyze(Beam, FDEvents);
-			for (int sec=1;sec<7;sec++) {
-				if (FDEvents.containsKey(sec)) FDEvents.get(sec).clear();
+			if (ntarget[sec-1]>nBeamFinder) {
+				BeamFinder Beamer=new BeamFinder();
+				StraightLine Beam=Beamer.FindFDBeam(FDEvents.get(sec));
+				Vexter.FindFDVertices(Beam,FDEvents.get(sec));
+				BPMer.FDAnalyze(Beam, FDEvents.get(sec), sec);
+				FDEvents.get(sec).clear();
+				ntarget[sec-1]=0;
 			}
 		}
 		
