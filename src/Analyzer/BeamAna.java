@@ -139,14 +139,16 @@ public class BeamAna {
 			TargetViewer.draw(funcres_z_sc,"same");*/
 	}
 
-	public void FDAnalyze(ArrayList<StraightLine> beam, HashMap<Integer, ArrayList<Segment>> FDEvents) {
+	public void FDAnalyze(HashMap<Integer, StraightLine> beam, HashMap<Integer, ArrayList<Segment>> FDEvents) {
 		for (int sec=1;sec<7;sec++) {
-			for (int j=0; j<FDEvents.get(sec).size();j++) {
-				vz[sec-1].fill(FDEvents.get(sec).get(j).getVertex().z());
-				vy[sec-1].fill(FDEvents.get(sec).get(j).getVertex().y());
-				vx[sec-1].fill(FDEvents.get(sec).get(j).getVertex().x());
+			if (FDEvents.containsKey(sec)) {
+				for (int j=0; j<FDEvents.get(sec).size();j++) {
+					vz[sec-1].fill(FDEvents.get(sec).get(j).getVertex().z());
+					vy[sec-1].fill(FDEvents.get(sec).get(j).getVertex().y());
+					vx[sec-1].fill(FDEvents.get(sec).get(j).getVertex().x());
 						
-			 }
+				}
+			}
 		}
 	}
 

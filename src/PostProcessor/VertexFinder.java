@@ -29,11 +29,13 @@ public class VertexFinder {
 		}
 	}
 	
-	public void FindFDVertices(ArrayList<StraightLine> Beam,  HashMap<Integer, ArrayList<Segment>> Tracks) {
+	public void FindFDVertices(HashMap<Integer,StraightLine> Beam,  HashMap<Integer, ArrayList<Segment>> Tracks) {
 		
 		for (int sec=1;sec<7;sec++) {
-			for (int i=0; i<Tracks.get(sec).size();i++) {
-				if (Tracks.get(sec).get(i).getHBtrack().getDistanceToLine(Beam.get(sec-1))<50) Tracks.get(sec).get(i).setVertex(Tracks.get(sec).get(i).getHBtrack().getClosestPointToLine(Beam.get(sec-1)));
+			if (Tracks.containsKey(sec)) {
+				for (int i=0; i<Tracks.get(sec).size();i++) {
+					if (Tracks.get(sec).get(i).getHBtrack().getDistanceToLine(Beam.get(sec))<50) Tracks.get(sec).get(i).setVertex(Tracks.get(sec).get(i).getHBtrack().getClosestPointToLine(Beam.get(sec)));
+				}
 			}
 		}
 	}

@@ -114,22 +114,23 @@ public class Tracker {
 				}
 			}
 		}
-		boolean ReadyToFindBeam=true;
-		if (FDEvents.size()==6) {
-			for (int sec=1;sec<7;sec++) {
-				if (FDEvents.get(sec).size()<nBeamFinder) ReadyToFindBeam=false;
+		boolean ReadyToFindBeam=false;
+		for (int sec=1;sec<7;sec++) {
+			if (FDEvents.containsKey(sec)) {
+				if (FDEvents.get(sec).size()>nBeamFinder) ReadyToFindBeam=true;
 			}
-		
-			if (ReadyToFindBeam) {
-				BeamFinder Beamer=new BeamFinder();
-				ArrayList<StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
-				Vexter.FindFDVertices(Beam,FDEvents);
-				BPMer.FDAnalyze(Beam, FDEvents);
-				for (int sec=1;sec<7;sec++) {
-					FDEvents.get(sec).clear();
-				}
+		}	
+			
+		if (ReadyToFindBeam) {
+			BeamFinder Beamer=new BeamFinder();
+			HashMap<Integer, StraightLine> Beam=Beamer.FindFDBeam(FDEvents);
+			Vexter.FindFDVertices(Beam,FDEvents);
+			BPMer.FDAnalyze(Beam, FDEvents);
+			for (int sec=1;sec<7;sec++) {
+				if (FDEvents.containsKey(sec)) FDEvents.get(sec).clear();
 			}
 		}
+		
 		
 	}
 	

@@ -6,6 +6,8 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 
 import org.jlab.detector.geant4.v2.DCGeant4Factory;
 
+
+
 public class DriftChambers {
 	public Sector[] DCSector= new Sector[6];
 	public org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
@@ -16,6 +18,7 @@ public class DriftChambers {
 		}
 		NbTotalHits=0;
 		DCgeo=DCFactory;
+		
 	}
 	
 	@SuppressWarnings("static-access")
