@@ -130,7 +130,7 @@ public class Segment {
 		for (int clus=0;clus<this.getSize();clus++) {
 			if (this.getClusters().get(clus).getSize()<3) {
 				for (int wire=0;wire<this.getClusters().get(clus).getSize();wire++) {
-					chi2+=Math.pow(this.getClusters().get(clus).getWires().get(wire).getWire().getDistanceToLine(line)/1.2,2);
+					chi2+=Math.pow((this.getClusters().get(clus).getWires().get(wire).getWire().getDistanceToLine(line)-this.getClusters().get(clus).getWires().get(wire).getDOCA())/this.getClusters().get(clus).getWires().get(wire).getResolution(),2);
 				}
 			}
 		}

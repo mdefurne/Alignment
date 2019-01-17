@@ -31,8 +31,9 @@ public class DCStraightTracker {
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
 	static org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
-	
+		
 	public DCStraightTracker() {
+		//How to get the cell size from geometry class... a complete mystery
 		
 		MCParticles=new ParticleEvent();
 		Tracky=new Tracker("DC");

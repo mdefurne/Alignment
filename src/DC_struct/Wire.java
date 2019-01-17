@@ -12,12 +12,12 @@ public class Wire {
 	Vector3d Direction;
 	StraightLine wire;
 	
-	public Wire(Vector3d dir, Vector3d mid, int tdc_m) {
+	public Wire(Vector3d dir, Vector3d mid, int tdc_m, double resolution) {
 		tdc=tdc_m;
-		res=Double.NaN;
+		res=resolution;
 		Direction=dir;
 		Midpoint=mid;
-		doca=tdc;
+		doca=0.0041*tdc;
 		spacing=1; //cm
 		wire=new StraightLine();
 		wire.setSlope_XYZ(Direction.x, Direction.y, Direction.z);
@@ -50,6 +50,14 @@ public class Wire {
 	
 	public StraightLine getWire() {
 		return wire;
+	}
+	
+	public double getResolution() {
+		return res;
+	}
+	
+	public double getDOCA() {
+		return doca;
 	}
 	
 }

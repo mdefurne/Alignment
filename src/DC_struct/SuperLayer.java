@@ -10,7 +10,7 @@ public class SuperLayer {
 	public Layer[] StackLayer= new Layer[6];
 	ArrayList<Segment> segmap;
 	public double DeltaCluster; //Authorized to associate to layer from one to the next if DeltaCluster<1.5
-	
+	public double CellSize;
 	ArrayList<Segment> BufferLayer;
 	public int sector;
 	
@@ -26,6 +26,9 @@ public class SuperLayer {
 		}
 		DeltaCluster=1.5;
 		sector=Sector;
+		if (SL==1||SL==2) CellSize=1.3;//cm
+		if (SL==3||SL==4) CellSize=2.;//cm
+		if (SL==5||SL==6) CellSize=3.;//cm
 	}
 	
 	public Layer getLayer(int lay) {
@@ -38,6 +41,10 @@ public class SuperLayer {
 			nHit+=StackLayer[i].getNbLayerHit();
 		}
 		return nHit;
+	}
+	
+	public double getCellSize() {
+		return CellSize;
 	}
 	
 	public void MakeSegment() {

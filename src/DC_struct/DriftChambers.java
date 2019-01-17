@@ -39,7 +39,7 @@ public class DriftChambers {
 			dir.rotateY(Math.toRadians(25));dir.rotateZ((sector-1)*Math.toRadians(60));
 			NbTotalHits++;
 			
-			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, TDC, dir, pt);
+			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, TDC, dir, pt, DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()/Math.sqrt(12));
 		}
 		
 	}
