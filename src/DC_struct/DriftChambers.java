@@ -11,18 +11,22 @@ import org.jlab.detector.geant4.v2.DCGeant4Factory;
 public class DriftChambers {
 	public Sector[] DCSector= new Sector[6];
 	public org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
+	public Constant DCCons;
 	private int NbTotalHits;
-	public DriftChambers(org.jlab.detector.geant4.v2.DCGeant4Factory DCFactory) {
+	
+	@SuppressWarnings("static-access")
+	public DriftChambers(int run, String variation, org.jlab.detector.geant4.v2.DCGeant4Factory DCFactory) {
 		for (int sec=0; sec<6;sec++) {
 			DCSector[sec]=new Sector((sec+1));
 		}
 		NbTotalHits=0;
 		DCgeo=DCFactory;
-		
+		DCCons=new Constant();
+		DCCons.Load(run, variation);
 	}
 	
 	@SuppressWarnings("static-access")
-	public void fillDCs(DataBank pbank) {
+	public void fillDCs(DataBank pbank, long timestamp) {
 		this.clear();
 		
 		for (int row=0;row<pbank.rows();row++){
@@ -38,8 +42,9 @@ public class DriftChambers {
 			pt.rotateY(Math.toRadians(25));pt.rotateZ((sector-1)*Math.toRadians(60));
 			dir.rotateY(Math.toRadians(25));dir.rotateZ((sector-1)*Math.toRadians(60));
 			NbTotalHits++;
-			
-			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, TDC, dir, pt, DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()/Math.sqrt(12));
+			double DOCA=DCCons.getDistance(sector, (layer-1)/6+1, layer%6+1, strip, TDC, timestamp);
+			System.out.println(DOCA);
+			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, DOCA, dir, pt, DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()/Math.sqrt(12));
 		}
 		
 	}

@@ -21,8 +21,8 @@ public class Layer {
 		InTheTracking=true;
 	}
 	
-	public void addWire(int strip, int tdc, Vector3d dir, Vector3d point, double res) {
-		Wire aWire=new Wire(dir, point, tdc, res);
+	public void addWire(int strip, double DOCA, Vector3d dir, Vector3d point, double res) {
+		Wire aWire=new Wire(dir, point, DOCA, res);
 		hitmap.put(strip, aWire);
 	}
 	

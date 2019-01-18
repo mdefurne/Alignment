@@ -4,7 +4,6 @@ import Trajectory.StraightLine;
 import eu.mihosoft.vrl.v3d.Vector3d;
 
 public class Wire {
-	int tdc;
 	double res;
 	double doca;
 	double spacing;
@@ -12,20 +11,15 @@ public class Wire {
 	Vector3d Direction;
 	StraightLine wire;
 	
-	public Wire(Vector3d dir, Vector3d mid, int tdc_m, double resolution) {
-		tdc=tdc_m;
+	public Wire(Vector3d dir, Vector3d mid, double DOCA, double resolution) {
+		doca=DOCA;
 		res=resolution;
 		Direction=dir;
 		Midpoint=mid;
-		doca=0.0041*tdc;
 		spacing=1; //cm
 		wire=new StraightLine();
 		wire.setSlope_XYZ(Direction.x, Direction.y, Direction.z);
 		wire.setPoint_XYZ(Midpoint.x, Midpoint.y, Midpoint.z);
-	}
-	
-	public int getTDC() {
-		return tdc;
 	}
 	
 	public void setResidual(double residu) {

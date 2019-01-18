@@ -22,7 +22,6 @@ import org.jlab.geom.base.ConstantProvider;
 
 
 public class DCStraightTracker {
-	static DriftChambers DC;
 	static ParticleEvent MCParticles;
 	static ForwardWriter Asimov;
 	static Analyzer Sherlock;
@@ -40,9 +39,6 @@ public class DCStraightTracker {
 		Lycos=new Fitter();
 		Sherlock=new Analyzer();
 		Asimov=new ForwardWriter();
-		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
-		DCgeo = new DCGeant4Factory(provider, true);//DCGeant4Factory.MINISTAGGERON);
-		DC=new DriftChambers(DCgeo);
 		DisabledLayer=new ArrayList<Integer>();
 		DisabledSector=new ArrayList<Integer>();
 		
@@ -56,9 +52,17 @@ public class DCStraightTracker {
 		
 		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
-		int count=1;//150;
 		DataEvent event_zero = reader.gotoEvent(1);
+		int count=1;
 		
+		int run=-1;
+		if(event_zero.hasBank("RUN::config")) {
+			run=event_zero.getBank("RUN::config").getInt("run",0); 
+		 }
+		//Loading the good calibration constant
+		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, run, Optional.ofNullable("default").orElse("default"));
+		DCgeo = new DCGeant4Factory(provider, true);//DCGeant4Factory.MINISTAGGERON);
+		DriftChambers DC=new DriftChambers(run,"calib",DCgeo);
 		DCStraightTracker Straight=new DCStraightTracker();
 		
 		Asimov.setOuputFileName(args[1]);//"/home/mdefurne/Bureau/CLAS12/DCAlignment/r2_cy_0p2deg/new_clas_002467.evio.156.hipo");
@@ -77,7 +81,7 @@ public class DCStraightTracker {
 		    
 		    if(event.hasBank("DC::tdc")) {
 		    	System.out.println("///////////////// "+count);
-		    	DC.fillDCs(event.getBank("DC::tdc"));
+		    	DC.fillDCs(event.getBank("DC::tdc"), event.getBank("RUN::config").getLong("timestamp", 0));
 		    	DC.FindTrackCandidate();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	for (int sec=1;sec<7;sec++) {
