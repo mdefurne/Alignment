@@ -41,11 +41,12 @@ public class DriftChambers {
 			
 			pt.rotateY(Math.toRadians(25));pt.rotateZ((sector-1)*Math.toRadians(60));
 			dir.rotateY(Math.toRadians(25));dir.rotateZ((sector-1)*Math.toRadians(60));
-			NbTotalHits++;
 			double DOCA=DCCons.getDistance(sector, (layer-1)/6+1, layer%6+1, strip, TDC, timestamp);
-			System.out.println(DOCA);
-			DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, DOCA, dir, pt, DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()/Math.sqrt(12));
-		}
+			if (DOCA>=0&&DOCA<DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()) {
+				NbTotalHits++;
+				DCSector[sector-1].getSuperLayer((layer-1)/6+1).getLayer((layer-1)%6+1).addWire(strip, DOCA, TDC, dir, pt, DCSector[sector-1].getSuperLayer((layer-1)/6+1).getCellSize()/Math.sqrt(12));
+				}
+			}
 		
 	}
 	

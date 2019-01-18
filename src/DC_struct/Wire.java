@@ -7,12 +7,14 @@ public class Wire {
 	double res;
 	double doca;
 	double spacing;
+	int tdc;
 	Vector3d Midpoint;
 	Vector3d Direction;
 	StraightLine wire;
 	
-	public Wire(Vector3d dir, Vector3d mid, double DOCA, double resolution) {
+	public Wire(Vector3d dir, Vector3d mid, double DOCA, int tdc_m, double resolution) {
 		doca=DOCA;
+		tdc=tdc_m;
 		res=resolution;
 		Direction=dir;
 		Midpoint=mid;
@@ -52,6 +54,10 @@ public class Wire {
 	
 	public double getDOCA() {
 		return doca;
+	}
+	
+	public int getTDC() {
+		return tdc;
 	}
 	
 }

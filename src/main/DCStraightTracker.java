@@ -56,11 +56,11 @@ public class DCStraightTracker {
 		int count=1;
 		
 		int run=-1;
-		if(event_zero.hasBank("RUN::config")) {
+		if(event_zero.hasBank("RUN::config")&&!event_zero.hasBank("MC::Header")) {
 			run=event_zero.getBank("RUN::config").getInt("run",0); 
 		 }
 		//Loading the good calibration constant
-		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, run, Optional.ofNullable("default").orElse("default"));
+		ConstantProvider provider = GeometryFactory.getConstants(DetectorType.DC, 2467, Optional.ofNullable("default").orElse("default"));
 		DCgeo = new DCGeant4Factory(provider, true);//DCGeant4Factory.MINISTAGGERON);
 		DriftChambers DC=new DriftChambers(run,"calib",DCgeo);
 		DCStraightTracker Straight=new DCStraightTracker();
