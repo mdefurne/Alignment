@@ -8,6 +8,7 @@ import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataSource;
 
 import Analyzer.Analyzer;
+import Analyzer.DCAna;
 import DC_struct.DriftChambers;
 import DC_struct.Segment;
 import TrackFinder.*;
@@ -30,6 +31,7 @@ public class DCStraightTracker {
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
 	static org.jlab.detector.geant4.v2.DCGeant4Factory DCgeo;
+	static DCAna Sherpak;
 		
 	public DCStraightTracker() {
 		//How to get the cell size from geometry class... a complete mystery
@@ -41,7 +43,7 @@ public class DCStraightTracker {
 		Asimov=new ForwardWriter();
 		DisabledLayer=new ArrayList<Integer>();
 		DisabledSector=new ArrayList<Integer>();
-		
+		Sherpak=new DCAna();
 	}
 	
 	
@@ -70,7 +72,7 @@ public class DCStraightTracker {
 		//System.setProperty("java.awt.headless", "true");
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()&&count<1000) {
+		while(reader.hasEvent()) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -82,7 +84,8 @@ public class DCStraightTracker {
 		    if(event.hasBank("DC::tdc")) {
 		    	System.out.println("///////////////// "+count);
 		    	DC.fillDCs(event.getBank("DC::tdc"), event.getBank("RUN::config").getLong("timestamp", 0));
-		    	DC.FindTrackCandidate();
+		    	Sherpak.FillT0(DC);
+		    	/*DC.FindTrackCandidate();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	for (int sec=1;sec<7;sec++) {
 		    		
@@ -97,11 +100,11 @@ public class DCStraightTracker {
 		    	
 		    	Tracky.addForwardEvent(count,DC);
 		    	
-				Asimov.WriteEvent(count, DC, MCParticles);
+				Asimov.WriteEvent(count, DC, MCParticles);*/
 		    }
 		   		   		         
 		}
-		
+		Sherpak.draw();
 		Asimov.close();
 		Tracky.draw();
 		System.out.println("Done! "+count);
