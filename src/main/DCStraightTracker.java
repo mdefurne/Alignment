@@ -72,7 +72,7 @@ public class DCStraightTracker {
 		//System.setProperty("java.awt.headless", "true");
 		System.out.println("Starting Reconstruction.....");
 		
-		while(reader.hasEvent()) {
+		while(reader.hasEvent()&&count<10000) {
 		  DataEvent event = reader.gotoEvent(count);
 		
 			count++;
@@ -84,8 +84,8 @@ public class DCStraightTracker {
 		    if(event.hasBank("DC::tdc")) {
 		    	System.out.println("///////////////// "+count);
 		    	DC.fillDCs(event.getBank("DC::tdc"), event.getBank("RUN::config").getLong("timestamp", 0));
-		    	Sherpak.FillT0(DC);
-		    	/*DC.FindTrackCandidate();
+		    	//Sherpak.FillT0(DC);
+		    	DC.FindTrackCandidate();
 		    	if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    	for (int sec=1;sec<7;sec++) {
 		    		
@@ -100,11 +100,11 @@ public class DCStraightTracker {
 		    	
 		    	Tracky.addForwardEvent(count,DC);
 		    	
-				Asimov.WriteEvent(count, DC, MCParticles);*/
+				Asimov.WriteEvent(count, DC, MCParticles);
 		    }
 		   		   		         
 		}
-		Sherpak.draw();
+		//Sherpak.draw();
 		Asimov.close();
 		Tracky.draw();
 		System.out.println("Done! "+count);

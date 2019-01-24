@@ -206,7 +206,7 @@ public class Segment {
 	public boolean ThroughFMT() {
 		boolean check=false;
 		Vector3D inter=this.getHBtrack().IntersectWithPlaneZ(30);
-		if (Math.sqrt(inter.x()*inter.x()+inter.y()*inter.y())<20) check=true;
+		if (Math.sqrt(inter.x()*inter.x()+inter.y()*inter.y())<40) check=true;
 		return check;
 	}
 	

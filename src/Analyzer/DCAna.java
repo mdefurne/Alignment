@@ -30,7 +30,7 @@ public class DCAna {
 			for (int slay=1;slay<7;slay++) {
 				for (int lay=1;lay<7;lay++) {
 					for (HashMap.Entry<Integer,Wire> m : DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getHitList().entrySet()) {
-						T0_vs_wire[sec-1][lay-1].fill(m.getKey(),DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getHitList().get(m.getKey()).getTDC());
+						T0_vs_wire[sec-1][lay-1].fill(DC.getSector(sec).getSuperLayer(slay).getLayer(lay).getHitList().get(m.getKey()).getTDC(),m.getKey());
 					}
 				}
 			}
@@ -40,6 +40,7 @@ public class DCAna {
 	public void draw() {
 		TCanvas[] DCT0 = new TCanvas[6];
 		for (int sec=0;sec<6;sec++) {
+			DCT0[sec]=new TCanvas("Sector "+(sec+1),1100, 700);
 			DCT0[sec].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			DCT0[sec].divide(1, 6);
 			for (int lay=0;lay<6;lay++) {
