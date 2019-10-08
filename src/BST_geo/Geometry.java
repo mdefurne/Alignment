@@ -35,6 +35,7 @@ public class Geometry {
     	org.jlab.detector.geant4.v2.SVT.SVTConstants.VERBOSE = true;
     	cp = new DatabaseConstantProvider(10, "default");
     	org.jlab.detector.geant4.v2.SVT.SVTConstants.connect(cp);
+    	
     	interTol=20; //mm // Tolerance for strip intersection
     	ToModuleEdge=1.0; //mm // Tolerance for track trajectory point at layer to module fiducial edge (mm
     	for (int lay=0; lay<6;lay++) {
@@ -908,6 +909,11 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		double ialpha1 = (strip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
 		dist=(Loc.x()-x_strip)*Math.cos(ialpha1);
 		return dist;
+	}
+	
+	public double getStripAngle(int strip) {
+		double ialpha=(strip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
+		return ialpha;
 	}
 	
     public static void main(String arg[]) throws FileNotFoundException {

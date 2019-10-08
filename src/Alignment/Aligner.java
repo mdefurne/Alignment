@@ -6,7 +6,7 @@ import java.util.*;
 import Alignment.*;
 import org.freehep.math.minuit.*;
 import org.jlab.geom.prim.Vector3D;
-import org.jlab.io.hipo.HipoDataSource;
+import org.jlab.io.hipo3.Hipo3DataSource;
 import Trajectory.*;
 
 public class Aligner {
@@ -15,7 +15,7 @@ public class Aligner {
 		
 	}
 			
-	public void DoAlignment(Barrel BMT, Barrel_SVT BST, HipoDataSource[] reader, int layer, int sector) {
+	public void DoAlignment(Barrel BMT, Barrel_SVT BST, Hipo3DataSource[] reader, int layer, int sector) {
 			//Use minimizer
 									
 				//Create parameters
@@ -40,7 +40,7 @@ public class Aligner {
 				}
 				
 				double DeltaRot=Math.toRadians(3);
-				double DeltaTrans=1.5;
+				double DeltaTrans=4.0;
 			
 				double RotErr=2*DeltaRot;
 				double TransErr=2*DeltaTrans;
@@ -54,7 +54,7 @@ public class Aligner {
 				upar.add("Cx", Cx, TransErr, Cxmin, Cxmax);
 				upar.add("Cy", Cy, TransErr, Cymin, Cymax);
 				upar.add("Cz", Cz, TransErr, Czmin, Czmax);
-				//if (layer<=6) upar.fix("Cz");
+				if (layer<=6) upar.fix("Cz");
 				if (layer>6) {
 					if (BMT.getGeometry().getZorC(layer-6)==1) upar.fix("Cz");
 					if (BMT.getGeometry().getZorC(layer-6)==0) upar.fix("Rz");
@@ -108,7 +108,7 @@ public class Aligner {
 	}
 	
 	//For aligning MVT versus SVT all at once
-	public void DoMVTSVTAlignment(Barrel BMT, HipoDataSource[] reader) {
+	public void DoMVTSVTAlignment(Barrel BMT, Hipo3DataSource[] reader) {
 		//Use minimizer
 								
 			//Create parameters
@@ -168,7 +168,7 @@ public class Aligner {
 		    }
 	}
 	
-	public void DoSVTLocAlignment(Barrel_SVT BST, HipoDataSource[] reader, int layer, int sector) {
+	public void DoSVTLocAlignment(Barrel_SVT BST, Hipo3DataSource[] reader, int layer, int sector) {
 		//Use minimizer
 								
 			//Create parameters

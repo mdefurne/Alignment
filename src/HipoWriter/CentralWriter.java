@@ -425,24 +425,27 @@ public class CentralWriter {
 						
 						int clus_id=-1;
 						for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
-							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) 
+							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) {
 								clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
-						}
-					
-						if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
-							//Update the cluster X,Y,Z info with track info
-							for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
-								if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
-									if (BMT.getGeometry().getZorC(lay+1)==0) {
-										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
-										BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
+								if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
+									//Update the cluster X,Y,Z info with track info
+									for (int clus=0;clus<BMT.getTile(lay, sec-1).getClusters().size();clus++) {
+										if (BMT.getTile(lay, sec-1).getClusters().get(clus+1).getLastEntry()==clus_id) {
+											if (BMT.getGeometry().getZorC(lay+1)==0) {
+												BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
+												BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
+											}
+											if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
+											BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track+1);
+											//BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
+											BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(candidates.get(track).getResidual(clus_track));
+										}
 									}
-									if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track+1);
-									BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
 								}
 							}
 						}
+					
+						
 					
 						inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
 						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));

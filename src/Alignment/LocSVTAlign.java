@@ -2,7 +2,7 @@ package Alignment;
 
 import org.freehep.math.minuit.FCNBase;
 import org.jlab.io.base.DataEvent;
-import org.jlab.io.hipo.HipoDataSource;
+import org.jlab.io.hipo3.Hipo3DataSource;
 import Trajectory.StraightLine;
 import BMT_struct.*;
 import BST_struct.*;
@@ -11,7 +11,7 @@ import org.jlab.geom.prim.Vector3D;
 
 public class LocSVTAlign implements FCNBase {
 
-	HipoDataSource[] reader;
+	Hipo3DataSource[] reader;
 	Barrel_SVT BST;
 	int layer=-1;
 	int sector=-1;
@@ -78,7 +78,7 @@ public class LocSVTAlign implements FCNBase {
 	      return val;
 	   }
 	
-	public void SetLocToAlign(Barrel_SVT BST_det, HipoDataSource ReadFile[], int lay, int sec) {
+	public void SetLocToAlign(Barrel_SVT BST_det, Hipo3DataSource ReadFile[], int lay, int sec) {
 		reader= ReadFile;
 		BST=BST_det;
 		layer=lay;

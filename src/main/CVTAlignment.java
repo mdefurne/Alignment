@@ -1,7 +1,7 @@
 package main;
 
 import org.jlab.io.base.DataEvent;
-import org.jlab.io.hipo.HipoDataSource;
+import org.jlab.io.hipo3.Hipo3DataSource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -47,9 +47,9 @@ public class CVTAlignment {
 			if (args[i].equals("-loc")) LocalAlign=Boolean.parseBoolean(args[i+1]);
 		}
 		
-		HipoDataSource[] reader=new HipoDataSource[Inputsfile.size()];
+		Hipo3DataSource[] reader=new Hipo3DataSource[Inputsfile.size()];
 		for (int infile=0; infile<Inputsfile.size(); infile++) {
-			reader[infile]=new HipoDataSource();
+			reader[infile]=new Hipo3DataSource();
 			reader[infile].open(Inputsfile.get(infile));
 		}
 				

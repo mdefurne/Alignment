@@ -2,7 +2,7 @@ package Alignment;
 
 import org.freehep.math.minuit.FCNBase;
 import org.jlab.io.base.DataEvent;
-import org.jlab.io.hipo.HipoDataSource;
+import org.jlab.io.hipo3.Hipo3DataSource;
 import Trajectory.StraightLine;
 import BMT_struct.*;
 import BST_struct.*;
@@ -12,7 +12,7 @@ import java.util.*;
 
 public class MVTvsSVT implements FCNBase {
 
-	HipoDataSource[] reader;
+	Hipo3DataSource[] reader;
 	Barrel BMT;
 		
 	public double valueOf(double[] par)
@@ -92,7 +92,7 @@ public class MVTvsSVT implements FCNBase {
 	      return val;
 	   }
 	
-	public void SetDetectorToAlign(Barrel BMT_det, HipoDataSource[] ReadFile) {
+	public void SetDetectorToAlign(Barrel BMT_det, Hipo3DataSource[] ReadFile) {
 		reader= ReadFile;
 		BMT=BMT_det;
 		

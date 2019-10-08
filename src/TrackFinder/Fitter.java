@@ -50,12 +50,22 @@ public class Fitter {
 			 
 			    //Create Minuit (parameters and function to minimize)
 			    MnMigrad migrad = new MnMigrad(Straight, upar);
+			    
+			    boolean FitStatus=false;
+			    double chi2=Double.POSITIVE_INFINITY;
 			 			    
 			    //Haven t checked if it is necessarry... might duplicate Straight to parameters for minimum
-			    FunctionMinimum min = migrad.minimize();
+			    try {
+			    	FunctionMinimum min = migrad.minimize();
+			    	FitStatus=min.isValid();
+			    	chi2=min.fval();
+			    	} catch(Exception e) {
+			    		FitStatus=false;
+			    	}
 			   
-			    if (min.isValid()) {
-			    	Candidates.get(num_cand+1).set_FitStatus(min.isValid());
+			   
+			    if (FitStatus) {
+			    	Candidates.get(num_cand+1).set_FitStatus(FitStatus);
 			    	double[] res=migrad.params(); //res[0] and res[1] are phi and theta for vec, res[2] is phi for intersection point on cylinder and  res[3] is z_inter
 			    	double[] err_res=new double[4];
 			    	for (int i=0;i<migrad.covariance().nrow();i++) {
@@ -77,7 +87,7 @@ public class Fitter {
 						Candidates.get(num_cand+1).AddResidual(BMT.getGeometry().getResidual_line(Candidates.get(num_cand+1).GetBMTCluster(clus),line.getSlope(),line.getPoint()));
 				    }
 					
-					Candidates.get(num_cand+1).set_chi2(min.fval());
+					Candidates.get(num_cand+1).set_chi2(chi2);
 					Candidates.get(num_cand+1).ComputeLocalDerivative(res,err_res);
 			   	}
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jlab.io.base.DataEvent;
-import org.jlab.io.hipo.HipoDataSource;
+import org.jlab.io.hipo3.Hipo3DataSource;
 
 import Analyzer.Analyzer;
 import BMT_struct.Barrel;
@@ -83,7 +83,7 @@ public class StraightTracker {
 		String TrackerType=args[2];
 		String RunType=args[3];
 		
-		HipoDataSource reader = new HipoDataSource();
+		Hipo3DataSource reader = new Hipo3DataSource();
 		reader.open(fileName);
 		int count=0;
 		DataEvent event_zero = reader.gotoEvent(1);
