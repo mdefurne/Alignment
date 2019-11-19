@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jlab.io.base.DataEvent;
-import org.jlab.io.hipo3.Hipo3DataSource;
+import org.jlab.io.hipo.HipoDataSource;
 
 import Analyzer.Analyzer;
 import BMT_struct.Barrel;
@@ -83,10 +83,11 @@ public class StraightTracker {
 		String TrackerType=args[2];
 		String RunType=args[3];
 		
-		Hipo3DataSource reader = new Hipo3DataSource();
+		HipoDataSource reader = new HipoDataSource();
 		reader.open(fileName);
 		int count=0;
-		DataEvent event_zero = reader.gotoEvent(1);
+		DataEvent event_zero = reader.getNextEvent();
+		
 		if (!main.constant.isLoaded) {
 		   	if (event_zero.hasBank("MC::Particle")) main.constant.setMC(true);
 		   		
@@ -159,7 +160,7 @@ public class StraightTracker {
 		System.out.println("Starting Reconstruction.....");
 		
 		while(reader.hasEvent()&&count<main.constant.max_event) {
-		  DataEvent event = reader.gotoEvent(count);
+		  DataEvent event = reader.getNextEvent();
 		
 			count++;
 			//System.out.println(count);

@@ -31,7 +31,7 @@ public class BeamAna {
 	public BeamAna(String type) {
 		if (type.equals("CVT")) {
 			for (int sec=0;sec<6;sec++) {
-				vz[sec]=new H1F("Z-vertex","Z-vertex",120,-40,80);
+				vz[sec]=new H1F("Z-vertex","Z-vertex",120,-55,65);
 				vy[sec]=new H1F("Y-vertex","Y-vertex",150,-25,25);
 				vx[sec]=new H1F("X-vertex","X-vertex",150,-25,25);
 			}
@@ -122,6 +122,9 @@ public class BeamAna {
 			TargetViewer.draw(funcres_y,"same");
 		 TargetViewer.cd(2);
 		 TargetViewer.draw(vz[0]);
+		 for (int i=0;i<120;i++) {
+			 System.out.println((-54.5+i)+" "+vz[0].getBinContent(i));
+		 }
 		 /*DataFitter.fit(funcres_zu, vz[0], "Q");
 			funcres_zu.setOptStat(1100);
 			funcres_zu.setLineColor(2);
