@@ -33,6 +33,8 @@ public class Cluster {
 	private int trkID;
 	private int seed;
 	private int seedE;
+	private double[] LocDerivative;
+	private double[] GlobDerivative;
 		
 	public Cluster() {
 		t_min=0;
@@ -55,7 +57,26 @@ public class Cluster {
 		centroidResidual=Double.NaN;
 		seed=-1;
 		seedE=-1;
+		LocDerivative=new double[4];
+		GlobDerivative=new double[7];
 		}
+	
+	public void setLocDerivative(int loc, double value) {
+		LocDerivative[loc]=value;
+	}
+	
+	public void setGlobDerivative(int loc, double value) {
+		GlobDerivative[loc]=value;
+	}
+	
+	public double[] getLocDerivative() {
+		return LocDerivative;
+	}
+	
+	public double[] getGlobDerivative() {
+		return GlobDerivative;
+	}
+	
 	
 	public ArrayList<Integer> getListOfHits(){
 		return hit_id;

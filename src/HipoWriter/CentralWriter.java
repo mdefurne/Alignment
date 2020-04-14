@@ -34,6 +34,9 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{20122,BMTRec::Clusters}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,size,SHORT][5,Etot,FLOAT][6,seedE,FLOAT][7,seedStrip,INT][8,centroid,FLOAT]"
 				+ "[9,centroidResidual,FLOAT][10,seedResidual,FLOAT][11,Hit1_ID,SHORT][12,Hit2_ID,SHORT][13,Hit3_ID,SHORT][14,Hit4_ID,SHORT][15,Hit5_ID,SHORT][16,trkID,SHORT][17,Tmin,FLOAT][18,Tmax,FLOAT]"));
 		
+		factory.addSchema(new Schema("{666,CVTRec::Millepede}[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,Local1,FLOAT][5,Local2,FLOAT][6,Local3,FLOAT][7,Local4,FLOAT][8,dRx,FLOAT][9,dRy,FLOAT][10,dRz,FLOAT]"+
+		"[11,dTx,FLOAT][12,dTy,FLOAT][13,dTz,FLOAT][14,dLocTx,][15,Residual,FLOAT][16,sigma,FLOAT]"));
+		
 		factory.addSchema(new Schema("{3,MC::Particle}[1,pid,SHORT][2,px,FLOAT][3,py,FLOAT][4,pz,FLOAT][5,vx,FLOAT][6,vy,FLOAT][7,vz,FLOAT][8,vt,FLOAT]"));
 		
 		factory.addSchema(new Schema("{20528,CVTRec::Cosmics}[1,ID,SHORT][2,trkline_yx_slope,FLOAT][3,trkline_yx_interc,FLOAT][4,trkline_yz_slope,FLOAT][5,trkline_yz_interc,FLOAT][6,theta,FLOAT][7,phi,FLOAT]"
@@ -63,6 +66,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTClusterBank(BST));
 		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
+		 if (main.constant.millepede) event.writeGroup(this.fillDerivativesBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 event.writeGroup(this.fillBSTADCbank(BST));
 		 event.writeGroup(this.fillBMTADCbank(BMT));
@@ -71,6 +75,13 @@ public class CentralWriter {
 	
 	public void setOuputFileName(String output){
 		writer.open(output);
+	}
+	
+	public HipoGroup fillDerivativesBank(Barrel BMT, Barrel_SVT BST, ArrayList<TrackCandidate> candidates) {
+		int groupsize=BST.getNbHits();
+		HipoGroup bank = writer.getSchemaFactory().getSchema("BST::adc").createGroup(groupsize);
+		
+		return bank;
 	}
 	
 	public HipoGroup fillBSTADCbank(Barrel_SVT BST) {

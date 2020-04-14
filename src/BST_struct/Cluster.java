@@ -26,6 +26,8 @@ public class Cluster {
 	private ArrayList<Integer> hit_id;
 	private int trkID;
 	boolean InTheFit;
+	private double[] LocDerivative;
+	private double[] GlobDerivative;
 	
 	public Cluster(int lay, int sec) {
 		size=0;
@@ -45,6 +47,24 @@ public class Cluster {
 		Eseed=-1;
 		stripseed=-1;
 		InTheFit=true;
+		LocDerivative=new double[4];
+		GlobDerivative=new double[7];
+	}
+	
+	public void setLocDerivative(int loc, double value) {
+		LocDerivative[loc]=value;
+	}
+	
+	public void setGlobDerivative(int loc, double value) {
+		GlobDerivative[loc]=value;
+	}
+	
+	public double[] getLocDerivative() {
+		return LocDerivative;
+	}
+	
+	public double[] getGlobDerivative() {
+		return GlobDerivative;
 	}
 	
 	public void add(int id_hit, Hit aHit) {

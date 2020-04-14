@@ -11,7 +11,6 @@ public class TrackCandidate{
 	private ArrayList<BMT_struct.Cluster> BMTClus;
 	private ArrayList<BST_struct.Cluster> BSTClus;
 	private ArrayList<Double> TrackResidual;
-	private ArrayList<Double> LocalDerivative; //Store local derivative for alignment purposes
 	private float mean_time;
 	private double mean_Phi;
 	private double chi2;
@@ -43,6 +42,8 @@ public class TrackCandidate{
 	private double theta_tolerance;
 	private double theta_min;
 	private double theta_max;
+	private double dT;
+	private double dR;
 	private final double radius_SVT_2=93;
 	private final double start_SVT_2=-181.;
 	private final double end_SVT_2=153.;
@@ -62,7 +63,6 @@ public class TrackCandidate{
 		BMTClus=new ArrayList<BMT_struct.Cluster>();
 		BSTClus=new ArrayList<BST_struct.Cluster>();
 		TrackResidual=new ArrayList<Double>();
-		LocalDerivative=new ArrayList<Double>();
 		mean_time=0;
 		cand_prim=-1;
 		is_secondary_track=false;
@@ -103,6 +103,9 @@ public class TrackCandidate{
 		
 		theta_min=Math.toRadians(0);
 		theta_max=Math.toRadians(180);
+		
+		dT=0.001;
+		dR=0.001;
 		
 		BMT=BMT_det;
 		BST=BST_det;
@@ -552,10 +555,9 @@ public class TrackCandidate{
 		return IsSame;
 	}
 	
-	public void ComputeLocalDerivative(double[] par, double[] errpar) {
+	public void ComputeMillepedeDerivative(double[] par, double[] errpar) {
 		StraightLine line_plus=new StraightLine();
-		StraightLine line_minus=new StraightLine();
-		
+				
 		double[] h_deriv=new double[4];
 		for (int i=0;i<4;i++) {
 			h_deriv[i]=0.1*errpar[i]; //0.1 has been tuned so that derivative values are stable within 1% when decreasing h_deriv by a factor 10.
@@ -564,30 +566,148 @@ public class TrackCandidate{
 		//First derivative wrt to phi for track direction
 		line_plus.setSlope_XYZ(Math.cos(par[0]+h_deriv[0]/2.)*Math.sin(par[1]),Math.sin(par[0]+h_deriv[0]/2.)*Math.sin(par[1]),Math.cos(par[1]));
 		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
-		line_minus.setSlope_XYZ(Math.cos(par[0]-h_deriv[0]/2.)*Math.sin(par[1]),Math.sin(par[0]-h_deriv[0]/2.)*Math.sin(par[1]),Math.cos(par[1]));
-		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
-		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[0]);
+		for (int clus=0; clus<this.size();clus++) {
+			this.GetBMTCluster(clus).setLocDerivative(0,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/h_deriv[0]);
+		}
+		for (int clus=0; clus<this.BSTsize();clus++) {
+		Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+		if (!Double.isNaN(inter.x())&&this.GetBSTCluster(clus).IsInFit()) this.GetBSTCluster(clus).setLocDerivative(0,
+  				  (BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)-this.GetBSTCluster(clus).getCentroidResidual())/h_deriv[0]);
+		else  this.GetBSTCluster(clus).setLocDerivative(0,Double.NaN);
+		}
+		
 		
 		//Second derivative wrt to theta for track direction
 		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]+h_deriv[1]/2.),Math.sin(par[0])*Math.sin(par[1]+h_deriv[1]/2.),Math.cos(par[1]+h_deriv[1]/2.));
 		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
-		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]-h_deriv[1]/2.),Math.sin(par[0])*Math.sin(par[1]-h_deriv[1]/2.),Math.cos(par[1]-h_deriv[1]/2.));
-		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
-		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[1]);
+		for (int clus=0; clus<this.size();clus++) {
+			this.GetBMTCluster(clus).setLocDerivative(1,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/h_deriv[1]);
+		}
+		for (int clus=0; clus<this.BSTsize();clus++) {
+		Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+		if (!Double.isNaN(inter.x())&&this.GetBSTCluster(clus).IsInFit()) this.GetBSTCluster(clus).setLocDerivative(1,
+  				  (BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)-this.GetBSTCluster(clus).getCentroidResidual())
+  				  /h_deriv[1]);
+		else  this.GetBSTCluster(clus).setLocDerivative(1,Double.NaN);
+		}
 		
 		//Third derivative wrt to phi point
 		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
 		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]+h_deriv[2]/2.), Constant.getPointRadius()*Math.sin(par[2]+h_deriv[2]/2.), par[3]);
-		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
-		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]-h_deriv[2]/2.), Constant.getPointRadius()*Math.sin(par[2]-h_deriv[2]/2.), par[3]);
-		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[2]);
+		for (int clus=0; clus<this.size();clus++) {
+			this.GetBMTCluster(clus).setLocDerivative(2,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/h_deriv[2]);
+		}
+		for (int clus=0; clus<this.BSTsize();clus++) {
+		Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+		if (!Double.isNaN(inter.x())&&this.GetBSTCluster(clus).IsInFit()) this.GetBSTCluster(clus).setLocDerivative(2,
+  				  (BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)-this.GetBSTCluster(clus).getCentroidResidual())
+  				  /h_deriv[2]);
+		else  this.GetBSTCluster(clus).setLocDerivative(2,Double.NaN); 
+		}
+		
 		
 		//Fourth derivative wrt to z point
 		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
 		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]+h_deriv[3]/2.);
-		line_minus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
-		line_minus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]-h_deriv[3]/2.);
-		LocalDerivative.add((this.ComputeChi2(line_plus)-this.ComputeChi2(line_minus))/h_deriv[3]);
+		for (int clus=0; clus<this.size();clus++) {
+			this.GetBMTCluster(clus).setLocDerivative(3,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/h_deriv[3]);
+		}
+		for (int clus=0; clus<this.BSTsize();clus++) {
+		Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+		if (!Double.isNaN(inter.x())&&this.GetBSTCluster(clus).IsInFit()) this.GetBSTCluster(clus).setLocDerivative(3,
+  				  (BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)-this.GetBSTCluster(clus).getCentroidResidual())
+  				  /h_deriv[3]);
+		else  this.GetBSTCluster(clus).setLocDerivative(3,Double.NaN);
+		}
+		
+		//Computation of global derivatives
+		line_plus.setSlope_XYZ(Math.cos(par[0])*Math.sin(par[1]),Math.sin(par[0])*Math.sin(par[1]),Math.cos(par[1]));
+		line_plus.setPoint_XYZ(Constant.getPointRadius()*Math.cos(par[2]), Constant.getPointRadius()*Math.sin(par[2]), par[3]);
+		for (int clus=0; clus<this.size();clus++) {
+			//Rx
+			BMT_geo.Constants.setRx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dR+BMT_geo.Constants.getRx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(0,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dR);
+			BMT_geo.Constants.setRx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getRx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dR);
+			
+			//Ry
+			BMT_geo.Constants.setRy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dR+BMT_geo.Constants.getRy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(1,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dR);
+			BMT_geo.Constants.setRy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getRy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dR);
+		
+			//Rz
+			BMT_geo.Constants.setRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dR+BMT_geo.Constants.getRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(2,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dR);
+			BMT_geo.Constants.setRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dR);
+			//Tx
+			BMT_geo.Constants.setCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dT+BMT_geo.Constants.getCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(3,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dT);
+			BMT_geo.Constants.setCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dT);
+			
+			//Ty
+			BMT_geo.Constants.setCy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dT+BMT_geo.Constants.getCy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(4,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dT);
+			BMT_geo.Constants.setCy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getCy(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dT);
+		
+			//Tz
+			BMT_geo.Constants.setCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dT+BMT_geo.Constants.getCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
+			this.GetBMTCluster(clus).setGlobDerivative(5,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
+					-this.GetBMTCluster(clus).getCentroidResidual())/dT);
+			BMT_geo.Constants.setCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dT);
+		}
+		
+		for (int clus=0; clus<this.BSTsize();clus++) {
+			//Rx
+			BST.getGeometry().setRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dR+BST.getGeometry().getRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(0,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dR);
+			BST.getGeometry().setRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dR);
+			
+			
+			//Ry
+			BST.getGeometry().setRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dR+BST.getGeometry().getRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(1,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dR);
+			BST.getGeometry().setRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dR);
+		
+			//Rz
+			BST.getGeometry().setRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dR+BST.getGeometry().getRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(2,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dR);
+			BST.getGeometry().setRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dR);
+						
+			//Tx
+			BST.getGeometry().setCx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dT+BST.getGeometry().getCx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(3,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dT);
+			BST.getGeometry().setCx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getCx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dT);
+			
+			//Ty
+			BST.getGeometry().setCy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dT+BST.getGeometry().getCy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(4,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dT);
+			BST.getGeometry().setCy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getCy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dT);
+		
+			//Tz
+			BST.getGeometry().setCz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dT+BST.getGeometry().getCz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
+			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
+			this.GetBSTCluster(clus).setGlobDerivative(5,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
+					-this.GetBSTCluster(clus).getCentroidResidual())/dT);
+			BST.getGeometry().setCz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getCz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dT);
+		}
 	}
 	
 	public StraightLine getLine() {
