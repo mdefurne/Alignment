@@ -88,7 +88,9 @@ public class Fitter {
 				    }
 					
 					Candidates.get(num_cand+1).set_chi2(chi2);
-					Candidates.get(num_cand+1).ComputeMillepedeDerivative(res,err_res);
+					Candidates.get(num_cand+1).set_par(res);
+					Candidates.get(num_cand+1).set_errpar(err_res);
+					Candidates.get(num_cand+1).ComputeMillepedeDerivative();
 			   	}
 
 			}

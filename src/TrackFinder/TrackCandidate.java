@@ -47,6 +47,8 @@ public class TrackCandidate{
 	private final double radius_SVT_2=93;
 	private final double start_SVT_2=-181.;
 	private final double end_SVT_2=153.;
+	private double[] par;
+	private double[] errpar;
 	
 	private Vector3D vertex;
 	
@@ -107,12 +109,27 @@ public class TrackCandidate{
 		dT=0.001;
 		dR=0.001;
 		
+		par=new double[4];
+		errpar=new double[4];
+		
 		BMT=BMT_det;
 		BST=BST_det;
 		
 		vertex=new Vector3D();
 		vertex.setXYZ(Double.NaN, Double.NaN, Double.NaN);
 		}
+	
+	public void set_errpar(double[] err) {
+		for (int i=0;i<4;i++) {
+			errpar[i]=err[i];
+		}
+	}
+	
+	public void set_par(double[] para) {
+		for (int i=0;i<4;i++) {
+			par[i]=para[i];
+		}
+	}
 	
 	public void set_FitStatus(boolean status) {
 		fit_status=status;
@@ -555,7 +572,7 @@ public class TrackCandidate{
 		return IsSame;
 	}
 	
-	public void ComputeMillepedeDerivative(double[] par, double[] errpar) {
+	public void ComputeMillepedeDerivative() {
 		StraightLine line_plus=new StraightLine();
 				
 		double[] h_deriv=new double[4];
