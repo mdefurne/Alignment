@@ -678,6 +678,7 @@ public class TrackCandidate{
 			BMT_geo.Constants.setCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dT+BMT_geo.Constants.getCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
 			this.GetBMTCluster(clus).setGlobDerivative(5,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
 					-this.GetBMTCluster(clus).getCentroidResidual())/dT);
+			//System.out.println(this.GetBMTCluster(clus).getCentroidResidual()+" "+BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint()));
 			BMT_geo.Constants.setCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getCz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dT);
 		}
 		
@@ -687,6 +688,7 @@ public class TrackCandidate{
 			Vector3D inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
 			this.GetBSTCluster(clus).setGlobDerivative(0,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
 					-this.GetBSTCluster(clus).getCentroidResidual())/dR);
+			//System.out.println("Rx : "+inter.x()+" "+inter.y()+" "+inter.z()+BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter));
 			BST.getGeometry().setRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getRx(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dR);
 			
 			
@@ -695,8 +697,10 @@ public class TrackCandidate{
 			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());
 			this.GetBSTCluster(clus).setGlobDerivative(1,(BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter)
 					-this.GetBSTCluster(clus).getCentroidResidual())/dR);
+			//System.out.println("Ry : "+inter.x()+" "+inter.y()+" "+inter.z()+BST.getGeometry().getResidual_line(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),this.GetBSTCluster(clus).getCentroid(),inter));
 			BST.getGeometry().setRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),BST.getGeometry().getRy(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector())-dR);
-		
+			
+
 			//Rz
 			BST.getGeometry().setRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector(),dR+BST.getGeometry().getRz(this.GetBSTCluster(clus).getLayer(),this.GetBSTCluster(clus).getSector()));
 			inter=BST.getGeometry().getIntersectWithRay(this.GetBSTCluster(clus).getLayer(), this.GetBSTCluster(clus).getSector(), line_plus.getSlope(), line_plus.getPoint());

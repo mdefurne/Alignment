@@ -669,7 +669,7 @@ public class Geometry {
 		Vector3D point_cvt=this.Point_LabToCVTFrame(point_lab);
 		Vector3D slope=this.Slope_CVTToDetFrame(clus.getLayer(), clus.getSector(), slope_cvt);
 		Vector3D point=this.Point_CVTToDetFrame(clus.getLayer(), clus.getSector(), point_cvt);
-				
+		
 		//For C-detector, it a bit more complicated... You need to find the intersection between the cylinder and the line, which involves x and y component
 		double sx=slope.x(); double sy=slope.y(); 
 		double ix=point.x(); double iy=point.y();
@@ -683,8 +683,8 @@ public class Geometry {
 		if (delta==0) {
 		    double lambda=-b/2./a;
 		    point_inter.setXYZ(slope.x()*lambda+point.x(),slope.y()*lambda+point.y(),slope.z()*lambda+point.z());
-			if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
-			if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+			if (BMT_geo.Geometry.getZorC(clus.getLayer())==0) distance=clus.getZ()-point_inter.z();
+			if (BMT_geo.Geometry.getZorC(clus.getLayer())==1) {
 	    		double phi_clus=clus.getPhi();
 				if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
 				double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
@@ -705,8 +705,8 @@ public class Geometry {
 		    point_inter_a.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
 		    point_inter_b.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
 		    point_inter=this.ClosestToSector(clus.getSector(), point_inter_a, point_inter_b);
-		    	if (Double.isNaN(clus.getX())&&Double.isNaN(clus.getY())&&!Double.isNaN(clus.getZ())) distance=clus.getZ()-point_inter.z();
-		    	if (!Double.isNaN(clus.getX())&&!Double.isNaN(clus.getY())&&Double.isNaN(clus.getZ())) {
+		    	if (BMT_geo.Geometry.getZorC(clus.getLayer())==0) distance=clus.getZ()-point_inter.z();
+		    	if (BMT_geo.Geometry.getZorC(clus.getLayer())==1) {
 		    		double phi_clus=clus.getPhi();
 					if (phi_clus>2*Math.PI) phi_clus=phi_clus-2*Math.PI;
 					double phi_proj=Math.atan2(point_inter.y(), point_inter.x());
