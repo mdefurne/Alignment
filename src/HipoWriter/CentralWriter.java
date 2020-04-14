@@ -66,7 +66,7 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTClusterBank(BST));
 		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
-		 if (main.constant.millepede) event.writeGroup(this.fillDerivativesBank(candidates));
+		 if (main.constant.millepede) event.writeGroup(this.fillDerivativesBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 event.writeGroup(this.fillBSTADCbank(BST));
 		 event.writeGroup(this.fillBMTADCbank(BMT));
@@ -77,7 +77,7 @@ public class CentralWriter {
 		writer.open(output);
 	}
 	
-	public HipoGroup fillDerivativesBank(ArrayList<TrackCandidate> candidates) {
+	public HipoGroup fillDerivativesBank(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates) {
 		int groupsize=0;
 		for (int tr=0;tr<candidates.size();tr++) {
 			groupsize+=(candidates.get(tr).size()+candidates.get(tr).BSTsize());
@@ -106,7 +106,7 @@ public class CentralWriter {
 				bank.getNode("dTz").setFloat(index, (float) glob[5]);
 				bank.getNode("dLocTx").setFloat(index, 0);
 				bank.getNode("residual").setFloat(index, (float) (candidates.get(tr).GetBMTCluster(clus).getCentroidResidual()));
-				bank.getNode("sigma").setFloat(index, (float) (candidates.get(tr).GetBMTCluster(clus).getCentroidResidual()));
+				bank.getNode("sigma").setFloat(index, (float) (candidates.get(tr).GetBMTCluster(clus).getErr()));
 				index++;
 			}
 			for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
@@ -128,7 +128,8 @@ public class CentralWriter {
 				bank.getNode("dTy").setFloat(index, (float) glob[4]);
 				bank.getNode("dTz").setFloat(index, (float) glob[5]);
 				bank.getNode("residual").setFloat(index, (float) (candidates.get(tr).GetBSTCluster(clus).getCentroidResidual()));
-				bank.getNode("sigma").setFloat(index, (float) (candidates.get(tr).GetBSTCluster(clus).getCentroidResidual()));
+				Vector3D inter=BST.getGeometry().getIntersectWithRay(candidates.get(tr).GetBSTCluster(clus).getLayer(), candidates.get(tr).GetBSTCluster(clus).getSector(), candidates.get(tr).getLine().getSlope(), candidates.get(tr).getLine().getPoint());
+				bank.getNode("sigma").setFloat(index, (float) (BST.getGeometry().getSingleStripResolution(candidates.get(tr).GetBSTCluster(clus).getLayer(), (int) candidates.get(tr).GetBSTCluster(clus).getCentroid(), inter.z())));
 				index++;
 			}
 		}
