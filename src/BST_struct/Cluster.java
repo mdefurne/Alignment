@@ -67,6 +67,20 @@ public class Cluster {
 		return GlobDerivative;
 	}
 	
+	public int getMillepedeLabel() {
+		int lay=this.layer;
+		int sec=this.sector;
+		int ll=0;
+		int nsector=10;
+		while (lay>2) {
+			ll+=2*6*nsector;
+			lay-=2;
+			nsector+=4;
+		}
+		ll+=(lay-1)*nsector*6+(sec-1)*6;
+		return ll;
+	}
+	
 	public void add(int id_hit, Hit aHit) {
 		hit_id.add(id_hit);
 		if (Eseed<aHit.getADC()) {

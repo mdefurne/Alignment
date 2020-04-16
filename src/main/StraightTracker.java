@@ -59,7 +59,7 @@ public class StraightTracker {
 		return Interesting;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
@@ -73,6 +73,7 @@ public class StraightTracker {
 			System.out.println("ALIGNFILE: If path to a file with misalignement parameters is entered, reconstruction will use it");
 			System.out.println("MODE can be chosen among:");
 			System.out.println("       -EFFICENCY: Prevent from merging tracks from different sectors in cosmic mode\n");
+			System.out.println("       -MILLEPEDE: Produce a binary file Mille.dat for Millepede alignment\n");
 			System.out.println("For more info, please contact Maxime DEFURNE");
 			System.out.println("maxime.defurne@cea.fr");
 			System.exit(0);
@@ -111,6 +112,7 @@ public class StraightTracker {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
+			if (args[i].equals("-m")&&args[i+1].equals("MILLEPEDE")) main.constant.millepede=true;
 			if (args[i].equals("-svt")) AlignFileSVT=args[i+1];
 			if (args[i].equals("-mvt")) AlignFileMVT=args[i+1];
 			if (args[i].equals("-cvt")) AlignFileCVT=args[i+1];

@@ -8,12 +8,15 @@ import BST_struct.*;
 import Particles.*;
 import BMT_struct.*;
 import TrackFinder.*;
+
+import java.io.IOException;
 import java.util.*;
 import org.jlab.geom.prim.Vector3D;
 
 public class CentralWriter {
 	HipoWriter writer;
 	SchemaFactory factory;
+	Mille Millepede;
 	
 	
 	public CentralWriter() {
@@ -55,7 +58,7 @@ public class CentralWriter {
 		 		 
 	}
 	
-	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) {
+	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) throws IOException {
 		HipoEvent event=writer.createEvent();
 		 
 		 event.writeGroup(this.fillCosmicRecBank(candidates));
@@ -66,75 +69,44 @@ public class CentralWriter {
 		 event.writeGroup(this.fillBSTClusterBank(BST));
 		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
-		 if (main.constant.millepede) event.writeGroup(this.fillDerivativesBank(BMT,BST,candidates));
+		 if (main.constant.millepede) this.fillDerivativesBank(BMT,BST,candidates);
 		 event.writeGroup(this.fillRunConfig(eventnb));
 		 event.writeGroup(this.fillBSTADCbank(BST));
 		 event.writeGroup(this.fillBMTADCbank(BMT));
 		 writer.writeEvent( event );
 	}
 	
-	public void setOuputFileName(String output){
+	public void setOuputFileName(String output) throws IOException{
 		writer.open(output);
+		if (main.constant.millepede) Millepede=new Mille("Mille.dat");
 	}
 	
-	public HipoGroup fillDerivativesBank(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates) {
-		int groupsize=0;
-		for (int tr=0;tr<candidates.size();tr++) {
-			groupsize+=(candidates.get(tr).size()+candidates.get(tr).BSTsize());
-		}
-		HipoGroup bank = writer.getSchemaFactory().getSchema("CVTRec::Millepede").createGroup(groupsize);
-		int index=0;
+	public void fillDerivativesBank(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates) throws IOException {
 		for (int tr=0;tr<candidates.size();tr++) {
 			candidates.get(tr).ComputeMillepedeDerivative();
 			for (int clus=0;clus<candidates.get(tr).size();clus++) {
+				Millepede.newSet();
 				double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
 				double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
-				//[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,Local1,FLOAT][5,Local2,FLOAT][6,Local3,FLOAT][7,Local4,FLOAT][8,dRx,FLOAT][9,dRy,FLOAT][10,dRz,FLOAT]"+
-				//"[11,dTx,FLOAT][12,dTy,FLOAT][13,dTz,FLOAT][14,dLocTx,][15,Residual,FLOAT][16,sigma,FLOAT]
-				bank.getNode("trkID").setShort(index, (short) (candidates.get(tr).GetBMTCluster(clus).gettrkID()));
-				bank.getNode("layer").setByte(index, (byte) (candidates.get(tr).GetBMTCluster(clus).getLayer()+6));
-				bank.getNode("sector").setByte(index, (byte) (candidates.get(tr).GetBMTCluster(clus).getSector()));
-				bank.getNode("local1").setFloat(index, (float) loc[0]);
-				bank.getNode("local2").setFloat(index, (float) loc[1]);
-				bank.getNode("local3").setFloat(index, (float) loc[2]);
-				bank.getNode("local4").setFloat(index, (float) loc[3]);
-				bank.getNode("dRx").setFloat(index, (float) glob[0]);
-				bank.getNode("dRy").setFloat(index, (float) glob[1]);
-				bank.getNode("dRz").setFloat(index, (float) glob[2]);
-				bank.getNode("dTx").setFloat(index, (float) glob[3]);
-				bank.getNode("dTy").setFloat(index, (float) glob[4]);
-				bank.getNode("dTz").setFloat(index, (float) glob[5]);
-				bank.getNode("dLocTx").setFloat(index, 0);
-				bank.getNode("residual").setFloat(index, (float) (candidates.get(tr).GetBMTCluster(clus).getCentroidResidual()));
-				bank.getNode("sigma").setFloat(index, (float) (candidates.get(tr).GetBMTCluster(clus).getErr()));
-				index++;
+				int[] label=new int[glob.length];
+				for (int ll=0;ll<glob.length;ll++) label[ll]=candidates.get(tr).GetBMTCluster(clus).getMillepedeLabel()+ll;
+				Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
+				Millepede.end();
 			}
 			for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
+				Millepede.newSet();
 				double[] loc=candidates.get(tr).GetBSTCluster(clus).getLocDerivative();
 				double[] glob=candidates.get(tr).GetBSTCluster(clus).getGlobDerivative();
-				//[1,ID,SHORT][2,sector,BYTE][3,layer,BYTE][4,Local1,FLOAT][5,Local2,FLOAT][6,Local3,FLOAT][7,Local4,FLOAT][8,dRx,FLOAT][9,dRy,FLOAT][10,dRz,FLOAT]"+
-				//"[11,dTx,FLOAT][12,dTy,FLOAT][13,dTz,FLOAT][14,dLocTx,][15,Residual,FLOAT][16,sigma,FLOAT]
-				bank.getNode("trkID").setShort(index, (short) (candidates.get(tr).GetBSTCluster(clus).gettrkID()));
-				bank.getNode("layer").setByte(index, (byte) (candidates.get(tr).GetBSTCluster(clus).getLayer()));
-				bank.getNode("sector").setByte(index, (byte) (candidates.get(tr).GetBSTCluster(clus).getSector()));
-				bank.getNode("local1").setFloat(index, (float) loc[0]);
-				bank.getNode("local2").setFloat(index, (float) loc[1]);
-				bank.getNode("local3").setFloat(index, (float) loc[2]);
-				bank.getNode("local4").setFloat(index, (float) loc[3]);
-				bank.getNode("dRx").setFloat(index, (float) glob[0]);
-				bank.getNode("dRy").setFloat(index, (float) glob[1]);
-				bank.getNode("dRz").setFloat(index, (float) glob[2]);
-				bank.getNode("dTx").setFloat(index, (float) glob[3]);
-				bank.getNode("dTy").setFloat(index, (float) glob[4]);
-				bank.getNode("dTz").setFloat(index, (float) glob[5]);
-				bank.getNode("residual").setFloat(index, (float) (candidates.get(tr).GetBSTCluster(clus).getCentroidResidual()));
+				int[] label=new int[glob.length];
+				for (int ll=0;ll<glob.length;ll++)  label[ll]=candidates.get(tr).GetBSTCluster(clus).getMillepedeLabel()+ll;
+				
 				Vector3D inter=BST.getGeometry().getIntersectWithRay(candidates.get(tr).GetBSTCluster(clus).getLayer(), candidates.get(tr).GetBSTCluster(clus).getSector(), candidates.get(tr).getLine().getSlope(), candidates.get(tr).getLine().getPoint());
-				bank.getNode("sigma").setFloat(index, (float) (BST.getGeometry().getSingleStripResolution(candidates.get(tr).GetBSTCluster(clus).getLayer(), (int) candidates.get(tr).GetBSTCluster(clus).getCentroid(), inter.z())));
-				index++;
+				Millepede.mille(loc, glob, label, candidates.get(tr).GetBSTCluster(clus).getCentroidResidual(), BST.getGeometry().getSingleStripResolution(candidates.get(tr).GetBSTCluster(clus).getLayer(), (int) candidates.get(tr).GetBSTCluster(clus).getCentroid(), inter.z()));
+				Millepede.end();
+				
 			}
 		}
 		
-		return bank;
 	}
 	
 	public HipoGroup fillBSTADCbank(Barrel_SVT BST) {
@@ -533,7 +505,8 @@ public class CentralWriter {
 		return bank;
 	}
 	
-	public void close() {
+	public void close() throws IOException {
 		writer.close();
+		Mille.close();
 	}
 }
