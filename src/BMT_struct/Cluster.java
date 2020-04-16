@@ -83,7 +83,7 @@ public class Cluster {
 	}
 	
 	public int getMillepedeLabel() {
-		return (2*6*(10+14+18)+(this.layer_clus-1)*3*6+(this.sector_clus-1)*6);
+		return (2*6*(10+14+18)+(this.layer_clus-1)*3*6+(this.sector_clus-1)*6)+5;
 	}
 	
 	public void add(int id_hit, Hit aHit) {

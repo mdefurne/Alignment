@@ -77,7 +77,7 @@ public class Cluster {
 			lay-=2;
 			nsector+=4;
 		}
-		ll+=(lay-1)*nsector*6+(sec-1)*6;
+		ll+=(lay-1)*nsector*6+(sec-1)*6+5;
 		return ll;
 	}
 	
