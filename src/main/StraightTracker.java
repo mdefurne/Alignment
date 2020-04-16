@@ -25,7 +25,7 @@ public class StraightTracker {
 	static ArrayList<Integer> DisabledLayer;
 	static ArrayList<Integer> DisabledSector;
 	
-	public StraightTracker() {
+	public StraightTracker() throws IOException {
 		BST=new Barrel_SVT();
 		BMT=new Barrel();
 		MCParticles=new ParticleEvent();
@@ -103,16 +103,19 @@ public class StraightTracker {
 		
 		main.constant.setTrackerType(TrackerType);
 		
-		StraightTracker Straight=new StraightTracker();
-		Asimov.setOuputFileName(Output);
-		String AlignFileSVT="";
-		String AlignFileMVT="";
-		String AlignFileCVT="";
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
 			if (args[i].equals("-m")&&args[i+1].equals("MILLEPEDE")) main.constant.millepede=true;
+		}
+		
+		//All modes and parameters are defined. Now we can create StraightTracker
+		StraightTracker Straight=new StraightTracker();
+		String AlignFileSVT="";
+		String AlignFileMVT="";
+		String AlignFileCVT="";
+		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-svt")) AlignFileSVT=args[i+1];
 			if (args[i].equals("-mvt")) AlignFileMVT=args[i+1];
 			if (args[i].equals("-cvt")) AlignFileCVT=args[i+1];
@@ -151,6 +154,8 @@ public class StraightTracker {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		Asimov.setOuputFileName(Output);
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/cosmic_mc.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/cos_march.hipo";
 		//fileName = "/home/mdefurne/Bureau/CLAS12/MVT/engineering/alignement_run/out_clas_002467.evio.208.hipo";

@@ -19,7 +19,7 @@ public class CentralWriter {
 	Mille Millepede;
 	
 	
-	public CentralWriter() {
+	public CentralWriter() throws IOException {
 		writer=new HipoWriter();
 		factory = new SchemaFactory();
 		factory.addSchema(new Schema("{20125,BMTRec::Crosses}[1,ID,SHORT][2,sector,BYTE][3,region,BYTE][4,x,FLOAT][5,y,FLOAT][6,z,FLOAT]"
@@ -55,7 +55,7 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{20211,BST::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,timestamp,LONG]"));
 		factory.addSchema(new Schema("{20111,BMT::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,integral,INT][9,timestamp,LONG]"));
 		 writer.appendSchemaFactory(factory);
-		 		 
+		 if (main.constant.millepede) Millepede=new Mille("Mille.dat");	 
 	}
 	
 	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) throws IOException {
@@ -78,20 +78,23 @@ public class CentralWriter {
 	
 	public void setOuputFileName(String output) throws IOException{
 		writer.open(output);
-		if (main.constant.millepede) Millepede=new Mille("Mille.dat");
+		
 	}
 	
 	public void fillDerivativesBank(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates) throws IOException {
 		for (int tr=0;tr<candidates.size();tr++) {
 			candidates.get(tr).ComputeMillepedeDerivative();
 			for (int clus=0;clus<candidates.get(tr).size();clus++) {
-				Millepede.newSet();
-				double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
-				double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
-				int[] label=new int[glob.length];
-				for (int ll=0;ll<glob.length;ll++) label[ll]=candidates.get(tr).GetBMTCluster(clus).getMillepedeLabel()+ll;
-				Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
-				Millepede.end();
+				if (!(candidates.get(tr).GetBMTCluster(clus).getSector()==2&&(candidates.get(tr).GetBMTCluster(clus).getLayer()==6||candidates.get(tr).GetBMTCluster(clus).getLayer()==5||
+						candidates.get(tr).GetBMTCluster(clus).getLayer()==4||candidates.get(tr).GetBMTCluster(clus).getLayer()==3))) {
+					Millepede.newSet();
+					double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
+					double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
+					int[] label=new int[glob.length];
+					for (int ll=0;ll<glob.length;ll++) label[ll]=candidates.get(tr).GetBMTCluster(clus).getMillepedeLabel()+ll;
+					Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
+					Millepede.end();
+					}
 			}
 			for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
 				Millepede.newSet();
@@ -507,6 +510,6 @@ public class CentralWriter {
 	
 	public void close() throws IOException {
 		writer.close();
-		Mille.close();
+		if (main.constant.millepede) Mille.close();
 	}
 }
