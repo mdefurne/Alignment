@@ -85,16 +85,14 @@ public class CentralWriter {
 		for (int tr=0;tr<candidates.size();tr++) {
 			candidates.get(tr).ComputeMillepedeDerivative();
 			for (int clus=0;clus<candidates.get(tr).size();clus++) {
-				if (!(candidates.get(tr).GetBMTCluster(clus).getSector()==2&&(candidates.get(tr).GetBMTCluster(clus).getLayer()==6||candidates.get(tr).GetBMTCluster(clus).getLayer()==5||
-						candidates.get(tr).GetBMTCluster(clus).getLayer()==4||candidates.get(tr).GetBMTCluster(clus).getLayer()==3))) {
-					Millepede.newSet();
-					double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
-					double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
-					int[] label=new int[glob.length];
-					for (int ll=0;ll<glob.length;ll++) label[ll]=candidates.get(tr).GetBMTCluster(clus).getMillepedeLabel()+ll;
-					Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
-					Millepede.end();
-					}
+				Millepede.newSet();
+				double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
+				double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
+				int[] label=new int[glob.length];
+				for (int ll=0;ll<glob.length;ll++) label[ll]=candidates.get(tr).GetBMTCluster(clus).getMillepedeLabel()+ll;
+				Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
+				Millepede.end();
+				
 			}
 			for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
 				Millepede.newSet();

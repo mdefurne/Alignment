@@ -57,6 +57,9 @@ public class TrackAna {
 	}
 	
 	public void draw() {
+		TCanvas NDF = new TCanvas("Chi2", 1100, 700);
+		 NDF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		 NDF.draw(Chi2_track);
 		 TCanvas theta = new TCanvas("theta", 1100, 700);
 		 theta.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 theta.draw(Theta_track);
