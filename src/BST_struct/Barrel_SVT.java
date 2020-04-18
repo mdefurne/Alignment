@@ -111,5 +111,44 @@ public class Barrel_SVT {
 	public Geometry getGeometry() {
 		return geo;
 	}
+	
+	public int getMillepedeLabel(int layer, int sector) {
+		int lay=layer;
+		int sec=sector;
+		int ll=0;
+		int nsector=10;
+		while (lay>2) {
+			ll+=2*6*nsector;
+			lay-=2;
+			nsector+=4;
+		}
+		ll+=(lay-1)*nsector*6+(sec-1)*6+5;
+		return ll;
+	}
+	
+	public int[] ReverseMillepedeLabel(int label) {
+		int[] reverse=new int[3];
+		int temp=label-5;
+		reverse[0]=-1;reverse[1]=-1;reverse[2]=-1;
+		if (temp>=2*6*(10+14+18)) return reverse;
+		else {
+			reverse[0]=0;
+			int deltalayer=2;
+			int nsector=10;
+			int count=0;
+			while (temp>deltalayer*nsector*6){
+				temp-=deltalayer*nsector*6;
+				nsector+=4;
+				reverse[0]+=deltalayer;
+				count++;
+			}
+			reverse[0]+=temp/(nsector*6)+1;
+			temp-=(reverse[0]-deltalayer*count-1)*6*nsector;
+			reverse[1]=temp/6+1;
+			temp-=(reverse[1]-1)*6;
+			reverse[2]=temp;
+		}
+	  return reverse;
+	} 
 
 }

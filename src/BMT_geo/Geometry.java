@@ -854,4 +854,28 @@ public class Geometry {
 		
 	}
 	
+	public void setRx(int layer, int sector, double Rx) {
+		Constants.setRx(layer, sector, Rx);
+	}
+	
+	public void setRy(int layer, int sector, double Ry) {
+		Constants.setRy(layer, sector, Ry);
+	}
+	
+	public void setRz(int layer, int sector, double Rz) {
+		Constants.setRz(layer, sector, Rz);
+	}
+	
+	public void setCx(int layer, int sector, double Cx) {
+		Constants.setCx(layer, sector, Cx);
+	}
+	
+	public void setCy(int layer, int sector, double Cy) {
+		Constants.setCy(layer, sector, Cy);
+	}
+	
+	public void setCz(int layer, int sector, double Cz) {
+		Constants.setCz(layer, sector, Cz);
+	}
+	
 }

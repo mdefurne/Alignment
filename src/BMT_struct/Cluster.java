@@ -82,10 +82,6 @@ public class Cluster {
 		return hit_id;
 	}
 	
-	public int getMillepedeLabel() {
-		return (2*6*(10+14+18)+(this.layer_clus-1)*3*6+(this.sector_clus-1)*6)+5;
-	}
-	
 	public void add(int id_hit, Hit aHit) {
 		//By default, everything is computed in mode 0. If mode 1, everything is computed again in close method
 		if (hit_id.size()==0) {

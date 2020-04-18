@@ -149,4 +149,25 @@ public class Barrel {
 		return geo;
 	}
 	
+	public int getMillepedeLabel(int layer, int sector) {
+		return (2*6*(10+14+18)+(layer-1)*3*6+(sector-1)*6)+5;
+	}
+	
+	public int[] ReverseMillepedeLabel(int label) {
+		int[] reverse=new int[3];
+		int temp=label-5;
+		 reverse[0]=-1;reverse[1]=-1;reverse[2]=-1;
+		  if (temp<2*6*(10+14+18)) return reverse;
+		  else {
+		    temp=temp-2*6*(10+14+18);
+		    reverse[0]=temp/18+1;
+		    temp-=(reverse[0]-1)*18;
+		    reverse[1]=temp/6+1;
+		    temp-=(reverse[1]-1)*6;
+		    reverse[2]=temp;
+		  }
+		  
+		return reverse;
+	}
+	
 }

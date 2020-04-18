@@ -60,7 +60,7 @@ public class Mille {
 	}
 	
 	public void end() throws IOException {
-		if (GoodToGo&&BufferPos>6) {
+		if (GoodToGo) {
 			numWordsToWrite=(BufferPos+1)*2;
 			writeIntLE(numWordsToWrite);
 			for (int i=0; i<BufferFloat.size();i++)	{
