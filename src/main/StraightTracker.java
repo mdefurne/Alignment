@@ -188,7 +188,7 @@ public class StraightTracker {
 		    		if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
 		    		Tracky.addCVTEvent(count, Lycos.get_Candidates());
 		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
-		    	
+		    		//System.out.println(BMT.getGeometry().getCz(6,3)+" "+BST.getGeometry().getRx(2, 6));
 		    		///////////////////////////////////////
 		    		Asimov.WriteEvent(count,BMT, BST, Tracky.CentralDuplicateRemoval(Lycos.get_Candidates()), MCParticles);
 		    	}
@@ -227,6 +227,7 @@ public class StraightTracker {
 					if (reverseLabeling[2]==3) bST2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
 					if (reverseLabeling[2]==4) bST2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
 					if (reverseLabeling[2]==5) bST2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
+					
 				}
 				else {
 					reverseLabeling=bMT2.ReverseMillepedeLabel(Integer.parseInt(line[0]));

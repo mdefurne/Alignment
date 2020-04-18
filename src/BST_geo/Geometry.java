@@ -907,7 +907,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 		Point3D Loc=new Point3D(this.transformToFrame(sector, layer, point.x(), point.y(), point.z(), "local", ""));
 		double x_strip=this.getXAtZ(layer, strip, Loc.z());
 		double ialpha1 = (strip - 1) * org.jlab.detector.geant4.v2.SVT.SVTConstants.STEREOANGLE / (double) (org.jlab.detector.geant4.v2.SVT.SVTConstants.NSTRIPS - 1);
-		dist=(Loc.x()-x_strip)*Math.cos(ialpha1);
+		dist=(x_strip-Loc.x())*Math.cos(ialpha1);
 		return dist;
 	}
 	

@@ -877,5 +877,9 @@ public class Geometry {
 	public void setCz(int layer, int sector, double Cz) {
 		Constants.setCz(layer, sector, Cz);
 	}
+
+	public double getCz(int i, int j) {
+		return Constants.getCz(i, j);
+	}
 	
 }
