@@ -221,22 +221,22 @@ public class StraightTracker {
 				line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
 				reverseLabeling=bST2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
 				if (reverseLabeling[2]!=-1) {
-					if (reverseLabeling[2]==0) bST2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==1) bST2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==2) bST2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==3) bST2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==4) bST2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==5) bST2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==0) bST2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==1) bST2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==2) bST2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==3) bST2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==4) bST2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==5) bST2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
 					
 				}
 				else {
 					reverseLabeling=bMT2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
-					if (reverseLabeling[2]==0) bMT2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==1) bMT2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==2) bMT2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==3) bMT2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==4) bMT2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==5) bMT2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==0) bMT2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==1) bMT2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==2) bMT2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==3) bMT2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==4) bMT2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					if (reverseLabeling[2]==5) bMT2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
 				}
 			}
 		}
