@@ -107,7 +107,7 @@ public class TrackCandidate{
 		theta_max=Math.toRadians(180);
 		
 		dT=0.001;
-		dR=0.001;
+		dR=0.00005;
 		
 		par=new double[4];
 		errpar=new double[4];

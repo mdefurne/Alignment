@@ -882,4 +882,24 @@ public class Geometry {
 		return Constants.getCz(i, j);
 	}
 	
+	public double getCy(int i, int j) {
+		return Constants.getCy(i, j);
+	}
+	
+	public double getCx(int i, int j) {
+		return Constants.getCx(i, j);
+	}
+	
+	public double getRz(int i, int j) {
+		return Constants.getRz(i, j);
+	}
+	
+	public double getRy(int i, int j) {
+		return Constants.getRy(i, j);
+	}
+	
+	public double getRx(int i, int j) {
+		return Constants.getRx(i, j);
+	}
+	
 }

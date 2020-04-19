@@ -115,12 +115,12 @@ public class StraightTracker {
 		String AlignFileSVT="";
 		String AlignFileMVT="";
 		String AlignFileCVT="";
-		String AlignFilePEDE="";
+		ArrayList<String> AlignFilePEDE=new ArrayList<String>();
 		for (int i=4; i<args.length; i++) {
 			if (args[i].equals("-svt")) AlignFileSVT=args[i+1];
 			if (args[i].equals("-mvt")) AlignFileMVT=args[i+1];
 			if (args[i].equals("-cvt")) AlignFileCVT=args[i+1];
-			if (args[i].equals("-pede")) AlignFilePEDE=args[i+1];
+			if (args[i].equals("-pede")) AlignFilePEDE.add(args[i+1]);
 			if (args[i].equals("-l")) {
 				int LayToDisable=Integer.parseInt(args[i+1].substring(0, args[i+1].indexOf('/')));
 				if (args[i+1].charAt(args[i+1].length()-1)=='*') {
@@ -204,39 +204,41 @@ public class StraightTracker {
 		System.out.println("Done! "+count);
  }
 
-	private void LoadMillepedeMisalignment(Barrel bMT2, Barrel_SVT bST2, String alignFilePEDE) throws FileNotFoundException {
+	private void LoadMillepedeMisalignment(Barrel bMT2, Barrel_SVT bST2, ArrayList<String> alignFilePEDE) throws FileNotFoundException {
 		// TODO Auto-generated method stub
-		File GeoTrans=new File(alignFilePEDE);
+		for (int i=0;i<alignFilePEDE.size();i++) {
+			File GeoTrans=new File(alignFilePEDE.get(i));
 		
-		String separator = "\\s+";
+			String separator = "\\s+";
 		
-		int[] reverseLabeling=new int[3];
+			int[] reverseLabeling=new int[3];
 		
-		if (GeoTrans.exists()) {
-			System.out.println("Opening misalignment file from Millepede: "+alignFilePEDE);
-			String[] line=new String[2];
-			Scanner input = new Scanner(GeoTrans);
-			//System.out.println(Integer.parseInt(line[0])+" "+Double.parseDouble(line[1]));
-			while (input.hasNextLine()) {
-				line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
-				reverseLabeling=bST2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
-				if (reverseLabeling[2]!=-1) {
-					if (reverseLabeling[2]==0) bST2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==1) bST2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==2) bST2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==3) bST2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==4) bST2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==5) bST2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+			if (GeoTrans.exists()) {
+				System.out.println("Opening misalignment file from Millepede: "+alignFilePEDE.get(i));
+				String[] line=new String[2];
+				Scanner input = new Scanner(GeoTrans);
+				//System.out.println(Integer.parseInt(line[0])+" "+Double.parseDouble(line[1]));
+				while (input.hasNextLine()) {
+					line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
+					reverseLabeling=bST2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
+					if (reverseLabeling[2]!=-1) {
+						if (reverseLabeling[2]==0) bST2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getRx(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==1) bST2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getRy(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==2) bST2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getRz(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==3) bST2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getCx(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==4) bST2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getCy(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==5) bST2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getCz(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
 					
-				}
-				else {
-					reverseLabeling=bMT2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
-					if (reverseLabeling[2]==0) bMT2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==1) bMT2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==2) bMT2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==3) bMT2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==4) bMT2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
-					if (reverseLabeling[2]==5) bMT2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], -Double.parseDouble(line[1]));
+					}
+					else {
+						reverseLabeling=bMT2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
+						if (reverseLabeling[2]==0) bMT2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getRx(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==1) bMT2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getRy(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==2) bMT2.getGeometry().setRz(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getRz(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==3) bMT2.getGeometry().setCx(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getCx(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==4) bMT2.getGeometry().setCy(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getCy(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+						if (reverseLabeling[2]==5) bMT2.getGeometry().setCz(reverseLabeling[0],reverseLabeling[1], bMT2.getGeometry().getCz(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
+					}
 				}
 			}
 		}
