@@ -39,7 +39,7 @@ public class Tracker {
 		//Load the events and store them until enough statistics to find beam
 		for (int i=0;i<TrackList.size();i++) {
 				if (TrackList.get(i).IsFromTarget()) ntarget[0]++;
-			}
+		}
 			
 		Events.put(Events.size()+1,TrackList);
 		

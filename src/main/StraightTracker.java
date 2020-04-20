@@ -63,7 +63,7 @@ public class StraightTracker {
 		
 		if (args.length<4) {
 			System.out.println("Execution line is as follows:\n");
-			System.out.println("java -jar Tracker.jar INPUT_FILE OUTPUT_FILE TRACKER_TYPE RUN_TYPE (-d DRAW -n NUM_EVENTS -m MODE -l X/Y -a ALIGNFILE)");
+			System.out.println("java -jar Tracker.jar TRACKER_TYPE RUN_TYPE -i INPUT_FILE -o OUTPUT_FILE(-d DRAW -n NUM_EVENTS -m MODE -l X/Y -a ALIGNFILE)");
 			System.out.println("TRACKER_TYPE: MVT, SVT or CVT");
 			System.out.println("RUN_TYPE: cosmic or target\n");
 			System.out.println("with a few options which might be useful");
@@ -79,31 +79,18 @@ public class StraightTracker {
 			System.exit(0);
 		}
 		
-		String fileName=args[0];
-		String Output=args[1];
-		String TrackerType=args[2];
-		String RunType=args[3];
-		
-		HipoDataSource reader = new HipoDataSource();
-		reader.open(fileName);
-		int count=0;
-		DataEvent event_zero = reader.getNextEvent();
-		
-		if (!main.constant.isLoaded) {
-		   	if (event_zero.hasBank("MC::Particle")) main.constant.setMC(true);
-		   		
-		   	if (event_zero.hasBank("RUN::config")) {
-		   		main.constant.setSolenoidscale(event_zero.getBank("RUN::config").getFloat("solenoid", 0));
-		   	}
-		   	
-		   	main.constant.setLoaded(true);
-	   }
-		
+		ArrayList<String> fileName=new ArrayList<String>();
+		String Output="";
+		String TrackerType=args[0];
+		String RunType=args[1];
+												
 		if (RunType.equals("cosmic")) main.constant.setCosmic(true);
 		
 		main.constant.setTrackerType(TrackerType);
 		
-		for (int i=4; i<args.length; i++) {
+		for (int i=0; i<args.length; i++) {
+			if (args[i].equals("-i")) fileName.add(args[i+1]);
+			if (args[i].equals("-o")) Output=args[i+1];
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
@@ -168,32 +155,42 @@ public class StraightTracker {
 		//fileName = "/home/mdefurne/Bureau/CLAS12/GEMC_File/output/bug.hipo";
 		
 		System.out.println("Starting Reconstruction.....");
-		
-		while(reader.hasEvent()&&count<main.constant.max_event) {
-		  DataEvent event = reader.getNextEvent();
-		
-			count++;
+		HipoDataSource[] reader = new HipoDataSource[fileName.size()];
+		int count=0;
+		for (int ff=0;ff<fileName.size();ff++) {
+			reader[ff]=new HipoDataSource();
+			reader[ff].open(fileName.get(ff));
+							
+			while(reader[ff].hasEvent()&&count<main.constant.max_event) {
+				DataEvent event = reader[ff].getNextEvent();
+				if (!main.constant.isLoaded) {
+					if (event.hasBank("MC::Particle")) main.constant.setMC(true);
+					main.constant.setLoaded(true);
+					main.constant.setSolenoidscale(0);
+				}
+				count++;
 			//System.out.println(count);
 			
 		    //Load all the constant needed but only for the first event
 		   
 		    
-		    if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
-		    	BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
-		    	BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
-		    	if (Straight.IsGoodEvent()) { 
-		    		TrackFinder Lycos=new TrackFinder(BMT,BST);
-		    		Lycos.BuildCandidates();
-		    		Lycos.FetchTrack();
-		    		if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
-		    		Tracky.addCVTEvent(count, Lycos.get_Candidates());
-		    		Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
-		    		//System.out.println(BMT.getGeometry().getCz(6,3)+" "+BST.getGeometry().getRx(2, 6));
-		    		///////////////////////////////////////
-		    		Asimov.WriteEvent(count,BMT, BST, Tracky.CentralDuplicateRemoval(Lycos.get_Candidates()), MCParticles);
-		    	}
-		    }
+				if(event.hasBank("BMT::adc")&&event.hasBank("BST::adc")) {
+					BMT.fillBarrel(event.getBank("BMT::adc"),main.constant.isMC);
+					BST.fillBarrel(event.getBank("BST::adc"),main.constant.isMC);
+					if (Straight.IsGoodEvent()) { 
+						TrackFinder Lycos=new TrackFinder(BMT,BST);
+						Lycos.BuildCandidates();
+						Lycos.FetchTrack();
+						if (event.hasBank("MC::Particle")) MCParticles.readMCBanks(event);
+						Tracky.addCVTEvent(count, Lycos.get_Candidates());
+						Sherlock.analyze(BST, Lycos.get_Candidates(), MCParticles);
+						//System.out.println(BMT.getGeometry().getCz(6,3)+" "+BST.getGeometry().getRx(2, 6));
+						///////////////////////////////////////
+						Asimov.WriteEvent(count,BMT, BST, Tracky.CentralDuplicateRemoval(Lycos.get_Candidates()), MCParticles);
+					}
+				}
 		   		   		         
+			}
 		}
 		Asimov.close();
 		if (main.constant.drawing) {
