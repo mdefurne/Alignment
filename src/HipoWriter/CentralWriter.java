@@ -55,7 +55,8 @@ public class CentralWriter {
 		factory.addSchema(new Schema("{20211,BST::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,timestamp,LONG]"));
 		factory.addSchema(new Schema("{20111,BMT::adc}[1,sector,BYTE][2,layer,BYTE][3,component,SHORT][4,order,BYTE][5,ADC,INT][6,time,FLOAT][7,ped,SHORT][8,integral,INT][9,timestamp,LONG]"));
 		 writer.appendSchemaFactory(factory);
-		 if (main.constant.millepede) Millepede=new Mille("CVT.bin");	 
+		 if (main.constant.millepede&&main.constant.isCosmic) Millepede=new Mille("CVT_cosmic.bin");
+		 if (main.constant.millepede&&!main.constant.isCosmic) Millepede=new Mille("CVT_beam.bin");
 	}
 	
 	public void WriteEvent(int eventnb, Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates, ParticleEvent MCParticles) throws IOException {
@@ -83,7 +84,7 @@ public class CentralWriter {
 	
 	public void fillDerivativesBank(Barrel BMT ,Barrel_SVT BST ,ArrayList<TrackCandidate> candidates) throws IOException {
 		for (int tr=0;tr<candidates.size();tr++) {
-			if (main.constant.isCosmic&&(candidates.get(tr).BSTsize()+candidates.get(tr).size())>=8) {
+			if ((main.constant.isCosmic&&(candidates.get(tr).BSTsize()+candidates.get(tr).size())>=8)||(!main.constant.isCosmic&&(candidates.get(tr).BSTsize()+candidates.get(tr).size())>=6)) {
 				candidates.get(tr).ComputeMillepedeDerivative();
 				Millepede.newSet();
 				for (int clus=0;clus<candidates.get(tr).size();clus++) {
