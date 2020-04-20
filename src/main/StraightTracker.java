@@ -160,9 +160,11 @@ public class StraightTracker {
 		for (int ff=0;ff<fileName.size();ff++) {
 			reader[ff]=new HipoDataSource();
 			reader[ff].open(fileName.get(ff));
-							
-			while(reader[ff].hasEvent()&&count<main.constant.max_event) {
-				DataEvent event = reader[ff].getNextEvent();
+				
+			for (int i=0; i<reader[ff].getSize();i++) {
+			/*while(reader[ff].hasEvent()&&count<main.constant.max_event) {
+				DataEvent event = reader[ff].getNextEvent();*/
+				DataEvent event = reader[ff].gotoEvent(i);
 				if (!main.constant.isLoaded) {
 					if (event.hasBank("MC::Particle")) main.constant.setMC(true);
 					main.constant.setLoaded(true);
