@@ -107,7 +107,7 @@ public class TrackCandidate{
 		theta_max=Math.toRadians(180);
 		
 		dT=0.001;
-		dR=0.00005;
+		dR=0.00002;
 		
 		par=new double[4];
 		errpar=new double[4];
@@ -577,7 +577,7 @@ public class TrackCandidate{
 				
 		double[] h_deriv=new double[4];
 		for (int i=0;i<4;i++) {
-			h_deriv[i]=0.1*errpar[i]; //0.1 has been tuned so that derivative values are stable within 1% when decreasing h_deriv by a factor 10.
+			h_deriv[i]=0.02*errpar[i]; //0.1 has been tuned so that derivative values are stable within 1% when decreasing h_deriv by a factor 10.
 		}
 		
 		//First derivative wrt to phi for track direction

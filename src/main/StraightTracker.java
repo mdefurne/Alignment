@@ -241,6 +241,53 @@ public class StraightTracker {
 				}
 			}
 		}
+		
+		//Need to write down the file
+		File CCDBMVTCst=new File("mvt.txt");
+		File CCDBSVTCst=new File("svt.txt");
+		//Writing MVT constant
+		try {
+			if (CCDBMVTCst.exists()) CCDBMVTCst.delete();
+			CCDBMVTCst.createNewFile();
+			FileWriter Writer=new FileWriter(CCDBMVTCst, true);
+			try {
+				for (int lay=1; lay<=6;lay++) {
+					for (int sec=1; sec<=3;sec++) {
+						Writer.write((lay+6)+" "+sec+" "+BMT_geo.Constants.getRx(lay, sec)+" "+BMT_geo.Constants.getRy(lay, sec)+" "+BMT_geo.Constants.getRz(lay, sec)+" "+
+								BMT_geo.Constants.getCx(lay, sec)+" "+BMT_geo.Constants.getCy(lay, sec)+" "+BMT_geo.Constants.getCz(lay, sec)+"\n");
+						}
+					}
+				}
+			finally {
+				
+				Writer.close();
+			}
+		} catch (Exception e) {
+			System.out.println("Impossible to write results in MVT file");
+		}
+		//Writing SVT constant
+		try {
+			if (CCDBSVTCst.exists()) CCDBSVTCst.delete();
+			CCDBSVTCst.createNewFile();
+			FileWriter Writer=new FileWriter(CCDBSVTCst, true);
+			try {
+				int num_sector=10;
+				for (int lay=1; lay<=6;lay++) {
+					for (int sec=1; sec<=num_sector;sec++) {
+						Writer.write(lay+" "+sec+" "+bST2.getGeometry().getRx(lay, sec)+" "+bST2.getGeometry().getRy(lay, sec)+" "+bST2.getGeometry().getRz(lay, sec)+" "+
+								bST2.getGeometry().getCx(lay, sec)+" "+bST2.getGeometry().getCy(lay, sec)+" "+bST2.getGeometry().getCz(lay, sec)+" "+0.0+"\n");
+						}
+					if (lay==2||lay==4) num_sector+=4;
+					}
+				
+				}
+			finally {
+				
+				Writer.close();
+			}
+		} catch (Exception e) {
+			System.out.println("Impossible to write results in SVT file");
+		}
 	}
 	
 }
