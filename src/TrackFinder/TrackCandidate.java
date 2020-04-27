@@ -751,4 +751,15 @@ public class TrackCandidate{
 	public int get_Nsvt() {
 		return nsvt;
 	}
+
+	public boolean IsGoodForMillepede() {
+		boolean GoodToGo=true;
+		if (main.constant.isCosmic&&(this.BSTsize()+this.size())<8) GoodToGo=false;
+		if (!main.constant.isCosmic&&(this.BSTsize()+this.size())<6) GoodToGo=false;
+		for (int svt=0; svt<this.BSTsize();svt++) {
+			if (Math.abs(this.GetBSTCluster(svt).getTrackPhiAngle())>30) GoodToGo=false;
+		}
+		
+		return GoodToGo;
+	}
 }

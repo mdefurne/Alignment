@@ -33,6 +33,8 @@ public class Cluster {
 	private int trkID;
 	private int seed;
 	private int seedE;
+	private double TrackPhiAngle;
+	private double TrackThetaAngle;
 	private double[] LocDerivative;
 	private double[] GlobDerivative;
 		
@@ -59,6 +61,8 @@ public class Cluster {
 		seedE=-1;
 		LocDerivative=new double[4];
 		GlobDerivative=new double[7];
+		TrackPhiAngle=Double.NaN;
+		TrackThetaAngle=Double.NaN;
 		}
 	
 	public void setLocDerivative(int loc, double value) {
@@ -299,5 +303,21 @@ public class Cluster {
 	
 	public void setCentroid(double cent) {
 		centroid=cent;
+	}
+	
+	public void setTrackPhiAngle(double degrees) {
+		TrackPhiAngle=degrees;
+	}
+	
+	public void setTrackThetaAngle(double degrees) {
+		TrackThetaAngle=degrees;
+	}
+	
+	public double getTrackPhiAngle() {
+		return TrackPhiAngle;
+	}
+	
+	public double getTrackThetaAngle() {
+		return TrackThetaAngle;
 	}
 }

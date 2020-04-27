@@ -26,6 +26,8 @@ public class Cluster {
 	private ArrayList<Integer> hit_id;
 	private int trkID;
 	boolean InTheFit;
+	private double TrackPhiAngle;
+	private double TrackThetaAngle;
 	private double[] LocDerivative;
 	private double[] GlobDerivative;
 	
@@ -49,6 +51,8 @@ public class Cluster {
 		InTheFit=true;
 		LocDerivative=new double[4];
 		GlobDerivative=new double[7];
+		TrackPhiAngle=Double.NaN;
+		TrackThetaAngle=Double.NaN;
 	}
 	
 	public void setLocDerivative(int loc, double value) {
@@ -187,6 +191,22 @@ public class Cluster {
 	
 	public void setCentroid(double cent) {
 		centroid=cent;
+	}
+
+	public void setTrackPhiAngle(double degrees) {
+		TrackPhiAngle=degrees;
+	}
+	
+	public void setTrackThetaAngle(double degrees) {
+		TrackThetaAngle=degrees;
+	}
+	
+	public double getTrackPhiAngle() {
+		return TrackPhiAngle;
+	}
+	
+	public double getTrackThetaAngle() {
+		return TrackThetaAngle;
 	}
 	
 }
