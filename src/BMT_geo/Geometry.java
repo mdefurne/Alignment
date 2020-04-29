@@ -610,7 +610,7 @@ public class Geometry {
         //}
     }
 
-    public boolean isInFiducial(double x, double y, double z, int layer) {
+    /*public boolean isInFiducial(double x, double y, double z, int layer) {
 
         boolean isOK = false;
 
@@ -639,7 +639,18 @@ public class Geometry {
             isOK = true;
         }
         return isOK;
-    }
+    }*/
+    
+    public boolean isinfiducial(Vector3D point, int sector, double eps) {
+		boolean sec=true;
+		double ang=Math.toDegrees(Math.atan2(point.y(), point.x()));
+		if (ang<30) ang=ang+360;
+		if (sector==2&&(ang<30+eps||ang>150-eps)) sec=false;
+		if (sector==1&&(ang<150+eps||ang>270-eps)) sec=false;
+		if (sector==3&&(ang<270+eps||ang>390-eps)) sec=false;
+		
+		return sec;
+	}
 
     public final static int getZorC(int layer) {
         int axis = 0;
@@ -659,7 +670,7 @@ public class Geometry {
     }
     
     public double getResidual_line(Cluster clus, Vector3D slope_lab, Vector3D point_lab) {
-		double distance=0;
+		double distance=Double.NaN;
 		Vector3D point_inter=new Vector3D();
 		Vector3D point_inter_a=new Vector3D();
 		Vector3D point_inter_b=new Vector3D();
@@ -704,7 +715,12 @@ public class Geometry {
 		    double lambda_b=(-b-Math.sqrt(delta))/2./a;
 		    point_inter_a.setXYZ(slope.x()*lambda_a+point.x(),slope.y()*lambda_a+point.y(),slope.z()*lambda_a+point.z());
 		    point_inter_b.setXYZ(slope.x()*lambda_b+point.x(),slope.y()*lambda_b+point.y(),slope.z()*lambda_b+point.z());
-		    point_inter=this.ClosestToSector(clus.getSector(), point_inter_a, point_inter_b);
+		    if (this.isinsector(point_inter_a)==clus.getSector()) point_inter.setXYZ(point_inter_a.x(),point_inter_a.y(),point_inter_a.z());
+		    if (this.isinsector(point_inter_b)==clus.getSector()) point_inter.setXYZ(point_inter_b.x(),point_inter_b.y(),point_inter_b.z());
+		    if (point_inter.x()==Double.NaN) {
+		    	System.out.println("OUps dans residual "+clus.getZ()+" "+clus.getSector()+" "+Math.toDegrees(Math.atan2(point_inter_b.y(), point_inter_b.x()))+" "+Math.toDegrees(Math.atan2(point_inter_a.y(), point_inter_a.x())));
+		    	return Double.NaN;
+		    }
 		    	if (BMT_geo.Geometry.getZorC(clus.getLayer())==0) distance=clus.getZ()-point_inter.z();
 		    	if (BMT_geo.Geometry.getZorC(clus.getLayer())==1) {
 		    		double phi_clus=clus.getPhi();

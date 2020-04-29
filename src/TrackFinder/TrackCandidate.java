@@ -661,6 +661,7 @@ public class TrackCandidate{
 			BMT_geo.Constants.setRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dR+BMT_geo.Constants.getRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));
 			this.GetBMTCluster(clus).setGlobDerivative(2,(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())
 					-this.GetBMTCluster(clus).getCentroidResidual())/dR);
+			if (BMT.getGeometry().getZorC(this.GetBMTCluster(clus).getLayer())==0&&this.GetBMTCluster(clus).getGlobDerivative()[2]!=0) System.out.println(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line_plus.getSlope(),line_plus.getPoint())+" "+this.GetBMTCluster(clus).getCentroidResidual());
 			BMT_geo.Constants.setRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),BMT_geo.Constants.getRz(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector())-dR);
 			//Tx
 			BMT_geo.Constants.setCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector(),dT+BMT_geo.Constants.getCx(this.GetBMTCluster(clus).getLayer(),this.GetBMTCluster(clus).getSector()));

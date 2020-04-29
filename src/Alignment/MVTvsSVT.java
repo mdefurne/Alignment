@@ -56,7 +56,7 @@ public class MVTvsSVT implements FCNBase {
 						 BMTCentroid.clear();
 			    		
 						 if (raybank.getShort("ndf",nray)>=1) {//if (raybank.getShort("ndf",nray)>=3) {
-			    			
+							 boolean good_track=true;
 							 ray.setSlope_XYZ(raybank.getFloat("trkline_yx_slope", nray), 1, raybank.getFloat("trkline_yz_slope", nray));
 							 ray.setPoint_XYZ(raybank.getFloat("trkline_yx_interc", nray)*10, 0, raybank.getFloat("trkline_yz_interc", nray)*10);
 			    		
@@ -67,18 +67,22 @@ public class MVTvsSVT implements FCNBase {
 			    							BMTLayer.add((int) (Trajbank.getByte("LayerTrackIntersPlane",npt)-6));
 			    							BMTSector.add((int)Trajbank.getByte("SectorTrackIntersPlane",npt));
 			    							BMTCentroid.add(Trajbank.getFloat("CalcCentroidStrip",npt));
+			    							if (!BMT.getGeometry().isinfiducial(new Vector3D(Trajbank.getFloat("XtrackIntersPlane",npt),Trajbank.getFloat("YtrackIntersPlane",npt),0),(int)Trajbank.getByte("SectorTrackIntersPlane",npt) , 15)) good_track=false;
 								 }	
+								 if (raybank.getShort("ID",nray)==Trajbank.getShort("ID",npt)&&Trajbank.getByte("LayerTrackIntersPlane",npt)<=6&&Trajbank.getFloat("PhitrackIntersPlane",npt)>40) good_track=false;
 							 }
 			    		
 			    			//Since the track is supposed to have crossed the tile, let's find the corresponding cluster
-							 for (int cl=0;cl<BMTLayer.size();cl++) {
-								 for (int clus=0; clus<BMTClusbank.rows(); clus++) {
-									 if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&BMTLayer.get(cl)==BMTClusbank.getByte("layer",clus)&&BMTSector.get(cl)==BMTClusbank.getByte("sector",clus)){
-										 if (Math.abs(BMTCentroid.get(cl)-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
+							 if (good_track) {
+								 for (int cl=0;cl<BMTLayer.size();cl++) {
+									 for (int clus=0; clus<BMTClusbank.rows(); clus++) {
+										 if (raybank.getShort("ID",nray)==BMTClusbank.getShort("trkID",clus)&&BMTLayer.get(cl)==BMTClusbank.getByte("layer",clus)&&BMTSector.get(cl)==BMTClusbank.getByte("sector",clus)){
+											 if (Math.abs(BMTCentroid.get(cl)-BMTClusbank.getFloat("centroid",clus))<DeltaCentroid) {
 			    							
-											 BMT_struct.Cluster Clus=BMT.RecreateCluster(BMTLayer.get(cl),BMTSector.get(cl),BMTClusbank.getFloat("centroid",clus));
+												 BMT_struct.Cluster Clus=BMT.RecreateCluster(BMTLayer.get(cl),BMTSector.get(cl),BMTClusbank.getFloat("centroid",clus));
 			    							
-											 val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);
+												 val+=Math.pow(BMT.getGeometry().getResidual_line(Clus,ray.getSlope(),ray.getPoint())/Clus.getErr(),2);
+											 }
 										 }
 									 }
 								 }

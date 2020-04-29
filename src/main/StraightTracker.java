@@ -220,6 +220,7 @@ public class StraightTracker {
 				while (input.hasNextLine()) {
 					line = input.nextLine().trim().replaceAll(separator, " ").split(separator);
 					reverseLabeling=bST2.ReverseMillepedeLabel(Integer.parseInt(line[0]));
+					System.out.println(Integer.parseInt(line[0])+" "+Double.parseDouble(line[1]));
 					if (reverseLabeling[2]!=-1) {
 						if (reverseLabeling[2]==0) bST2.getGeometry().setRx(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getRx(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
 						if (reverseLabeling[2]==1) bST2.getGeometry().setRy(reverseLabeling[0],reverseLabeling[1], bST2.getGeometry().getRy(reverseLabeling[0],reverseLabeling[1])-Double.parseDouble(line[1]));
