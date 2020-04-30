@@ -13,6 +13,7 @@ public class constant {
 	public static StraightLine IdealBeam;
 	public static int max_event=Integer.MAX_VALUE;
 	public static boolean drawing=false;
+	public static boolean drawing_mille=false;
 	public static boolean millepede=false;
 	
 	public static double getSolenoidscale() {
