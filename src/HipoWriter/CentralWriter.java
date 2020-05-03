@@ -85,23 +85,26 @@ public class CentralWriter {
 			if (candidates.get(tr).IsGoodForMillepede()) {
 				candidates.get(tr).ComputeMillepedeDerivative();
 				Millepede.newSet();
-				for (int clus=0;clus<candidates.get(tr).size();clus++) {
-					double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
-					double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
-					int[] label=new int[glob.length];
-					for (int ll=0;ll<glob.length;ll++) label[ll]=BMT.getMillepedeLabel(candidates.get(tr).GetBMTCluster(clus).getLayer(),candidates.get(tr).GetBMTCluster(clus).getSector())+ll;
-					Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
+				if (main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT")) {
+					for (int clus=0;clus<candidates.get(tr).size();clus++) {
+						double[] loc=candidates.get(tr).GetBMTCluster(clus).getLocDerivative();
+						double[] glob=candidates.get(tr).GetBMTCluster(clus).getGlobDerivative();
+						int[] label=new int[glob.length];
+						for (int ll=0;ll<glob.length;ll++) label[ll]=BMT.getMillepedeLabel(candidates.get(tr).GetBMTCluster(clus).getLayer(),candidates.get(tr).GetBMTCluster(clus).getSector())+ll;
+						Millepede.mille(loc, glob, label, candidates.get(tr).GetBMTCluster(clus).getCentroidResidual(), candidates.get(tr).GetBMTCluster(clus).getErr());
 								
+					}
 				}
-				for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
-					double[] loc=candidates.get(tr).GetBSTCluster(clus).getLocDerivative();
-					double[] glob=candidates.get(tr).GetBSTCluster(clus).getGlobDerivative();
-					int[] label=new int[glob.length];
-					for (int ll=0;ll<glob.length;ll++)  label[ll]=BST.getMillepedeLabel(candidates.get(tr).GetBSTCluster(clus).getLayer(),candidates.get(tr).GetBSTCluster(clus).getSector())+ll;
+				if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
+					for (int clus=0;clus<candidates.get(tr).BSTsize();clus++) {
+						double[] loc=candidates.get(tr).GetBSTCluster(clus).getLocDerivative();
+						double[] glob=candidates.get(tr).GetBSTCluster(clus).getGlobDerivative();
+						int[] label=new int[glob.length];
+						for (int ll=0;ll<glob.length;ll++)  label[ll]=BST.getMillepedeLabel(candidates.get(tr).GetBSTCluster(clus).getLayer(),candidates.get(tr).GetBSTCluster(clus).getSector())+ll;
 				
-					Vector3D inter=BST.getGeometry().getIntersectWithRay(candidates.get(tr).GetBSTCluster(clus).getLayer(), candidates.get(tr).GetBSTCluster(clus).getSector(), candidates.get(tr).getLine().getSlope(), candidates.get(tr).getLine().getPoint());
-					Millepede.mille(loc, glob, label, candidates.get(tr).GetBSTCluster(clus).getCentroidResidual(), BST.getGeometry().getSingleStripResolution(candidates.get(tr).GetBSTCluster(clus).getLayer(), (int) candidates.get(tr).GetBSTCluster(clus).getCentroid(), inter.z()));
-					
+						Vector3D inter=BST.getGeometry().getIntersectWithRay(candidates.get(tr).GetBSTCluster(clus).getLayer(), candidates.get(tr).GetBSTCluster(clus).getSector(), candidates.get(tr).getLine().getSlope(), candidates.get(tr).getLine().getPoint());
+						Millepede.mille(loc, glob, label, candidates.get(tr).GetBSTCluster(clus).getCentroidResidual(), BST.getGeometry().getSingleStripResolution(candidates.get(tr).GetBSTCluster(clus).getLayer(), (int) candidates.get(tr).GetBSTCluster(clus).getCentroid(), inter.z()));
+					}	
 				}
 				Millepede.end();
 			}
