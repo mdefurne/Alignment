@@ -92,7 +92,7 @@ public class StraightTracker {
 			if (args[i].equals("-i")) fileName.add(args[i+1]);
 			if (args[i].equals("-o")) Output=args[i+1];
 			if (args[i].equals("-d")&&args[i+1].equals("DRAW")) main.constant.drawing=true;
-			if (args[i].equals("-d")&&args[i+1].equals("DRAW_MILLE")) main.constant.drawing_mille=true;
+			if (args[i].equals("-d")&&args[i+1].equals("DRAWMILLE")) main.constant.drawing_mille=true;
 			if (args[i].equals("-n")) main.constant.max_event=Integer.parseInt(args[i+1]);
 			if (args[i].equals("-m")&&args[i+1].equals("EFFICIENCY")) main.constant.efficiency=true;
 			if (args[i].equals("-m")&&args[i+1].equals("MILLEPEDE")) main.constant.millepede=true;
