@@ -36,7 +36,7 @@ public class BSTAna {
 	
 	public void analyze(Barrel_SVT BST, TrackCandidate cand) {
 		
-		if (cand.IsGoodCandidate()&&cand.get_FitStatus()) {
+		if (cand.get_FitStatus()) {
 //			for (int lay=1;lay<7;lay++) {
 //					Vector3D inter=new Vector3D(BST.getGeometry().getIntersectWithRay(lay, cand.get_VectorTrack(), cand.get_PointTrack()));
 //					if (!Double.isNaN(inter.x())) {
