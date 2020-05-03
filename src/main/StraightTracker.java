@@ -196,7 +196,7 @@ public class StraightTracker {
 			}
 		}
 		Asimov.close();
-		if (main.constant.drawing) {
+		if (main.constant.drawing||main.constant.drawing_mille) {
 			Tracky.draw();
 			Sherlock.draw();		
 		}
