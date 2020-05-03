@@ -765,7 +765,7 @@ public class TrackCandidate{
 		if (main.constant.isCosmic) {
 			for (int mvt=0; mvt<this.size();mvt++) {
 				if (Math.abs(this.GetBMTCluster(mvt).getTrackPhiAngle())>30&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==1) GoodToGo=false;
-				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>15&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
+				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>30&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
 			}			
 		}
 		

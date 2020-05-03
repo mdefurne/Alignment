@@ -16,6 +16,8 @@ public class TrackAna {
 	H1F Chi2_track;
 	H1F[][] Z_residual=new H1F[3][3];
 	H1F[][] C_residual=new H1F[3][3];
+	H2F[][] Z_res_angle=new H2F[3][3];
+	H2F[][] C_res_angle=new H2F[3][3];
 	
 	public TrackAna() {
 		Clusty=new ClusterAna();
@@ -26,6 +28,8 @@ public class TrackAna {
 			for (int sec=0;sec<3;sec++) {
 				Z_residual[lay][sec]=new H1F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.5,0.5);
 				C_residual[lay][sec]=new H1F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.5,0.5);
+				Z_res_angle[lay][sec]=new H2F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle",20,-0.5,0.5,20,0,50);
+				C_res_angle[lay][sec]=new H2F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs angle","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs angle",20,-0.5,0.5,20,0,50);
 			}
 		}
 	}
@@ -43,11 +47,13 @@ public class TrackAna {
 					
 				if (cand.get_Nz()>=2&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
+					Z_res_angle[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus),Math.abs(cand.GetBMTCluster(clus).getTrackPhiAngle()));
 				}
 					
 				if (cand.get_Nc()>=3&&(cand.GetBMTCluster(clus).getLayer()==1||cand.GetBMTCluster(clus).getLayer()==4||cand.GetBMTCluster(clus).getLayer()==6)) {
 					C_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
-				
+					C_res_angle[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus),Math.abs(cand.GetBMTCluster(clus).getTrackThetaAngle()));
+
 				}
 				
 			}
@@ -71,10 +77,17 @@ public class TrackAna {
 		 TCanvas c_res = new TCanvas("C_layers", 1100, 700);
 		 c_res.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 c_res.divide(3, 3);
+		 TCanvas z_res_angle = new TCanvas("Z layers", 1100, 700);
+		 z_res_angle.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		 z_res_angle.divide(3, 3);
+		 TCanvas c_res_angle = new TCanvas("C_layers", 1100, 700);
+		 c_res_angle.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		 c_res_angle.divide(3, 3);
 		 for (int lay=0;lay<3;lay++) {
 				for (int sec=0;sec<3;sec++) {
 					c_res.cd(3*lay+sec);
 					c_res.draw(C_residual[lay][sec]);
+					c_res_angle.draw(C_res_angle[lay][sec]);
 					if (C_residual[lay][sec].getEntries()>20) {
 						F1D funcres;
 						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.5,0.5);
@@ -91,6 +104,7 @@ public class TrackAna {
 					
 					z_res.cd(3*lay+sec);
 					z_res.draw(Z_residual[lay][sec]);
+					z_res_angle.draw(Z_res_angle[lay][sec]);
 					if (Z_residual[lay][sec].getEntries()>20) {
 						F1D funcres;
 						if (main.constant.isMC) funcres=new F1D("resolution", "[amp]*gaus(x,[mean],[sigma])",-0.25,0.25);
