@@ -39,19 +39,17 @@ public class TrackAna {
 			Chi2_track.fill(cand.get_chi2());
 			for (int clus=0; clus<cand.size();clus++) {
 				
-				if (cand.IsGoodCandidate()) {
-					
-					Clusty.analyze(cand);
+				Clusty.analyze(cand);
 					
 				if (cand.get_Nz()>=2&&(cand.GetBMTCluster(clus).getLayer()==2||cand.GetBMTCluster(clus).getLayer()==3||cand.GetBMTCluster(clus).getLayer()==5)) {
 					Z_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
-					}
+				}
 					
 				if (cand.get_Nc()>=3&&(cand.GetBMTCluster(clus).getLayer()==1||cand.GetBMTCluster(clus).getLayer()==4||cand.GetBMTCluster(clus).getLayer()==6)) {
 					C_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
 				
-					}
 				}
+				
 			}
 		}
 	}
