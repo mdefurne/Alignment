@@ -399,6 +399,7 @@ public class CentralWriter {
 						//int sector=BST.getGeometry().findSectorFromAngle(lay+1, inter);
 						
 						Vector3D normSVT=BST.getGeometry().findBSTPlaneNormal(sector, lay+1);
+						
 						Vector3D PhiSVT=new Vector3D();
 						PhiSVT.setX(candidates.get(track).get_VectorTrack().x());PhiSVT.setY(candidates.get(track).get_VectorTrack().y());PhiSVT.setZ(0);
 						Vector3D eTheta=new Vector3D();
@@ -409,6 +410,10 @@ public class CentralWriter {
 						Vector3D ProjThetaSVT=new Vector3D();
 						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
 						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
+						double phiTrack=Math.toDegrees(PhiSVT.angle(normSVT));
+						double thetaTrack=Math.toDegrees(PhiSVT.angle(normSVT));
+						if (phiTrack>90) phiTrack=Math.abs(phiTrack-180);
+						if (thetaTrack>90) thetaTrack=Math.abs(thetaTrack-180);
 						
 						bank.getNode("ID").setShort(index, (short) (track+1));
 						bank.getNode("LayerTrackIntersPlane").setByte(index, (byte) (lay+1));
@@ -475,16 +480,19 @@ public class CentralWriter {
 						Vector3D ProjThetaBMT=new Vector3D();
 						ProjThetaBMT=ThetaBMT.projection(eTheta);
 						ThetaBMT.sub(ProjThetaBMT);
-						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) Math.toDegrees(PhiBMT.angle(inter)));
-						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) Math.toDegrees(ThetaBMT.angle(inter)));
+						double phiTrack=Math.toDegrees(PhiBMT.angle(inter));
+						double thetaTrack=Math.toDegrees(PhiBMT.angle(inter));
+						if (phiTrack>90) phiTrack=Math.abs(phiTrack-180);
+						if (thetaTrack>90) thetaTrack=Math.abs(thetaTrack-180);
+						bank.getNode("PhitrackIntersPlane").setFloat(index, (float) phiTrack);
+						bank.getNode("ThetatrackIntersPlane").setFloat(index, (float) thetaTrack);
 						index++;
 						
 						int clus_id=-1;
 						for (int clus_track=0;clus_track<candidates.get(track).size();clus_track++) {
 							if (candidates.get(track).GetBMTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBMTCluster(clus_track).getSector()==sec) {
 								clus_id=candidates.get(track).GetBMTCluster(clus_track).getLastEntry();
-								candidates.get(track).GetBMTCluster(clus_track).setTrackPhiAngle(Math.toDegrees(PhiBMT.angle(inter)));
-								candidates.get(track).GetBMTCluster(clus_track).setTrackThetaAngle(Math.toDegrees(ThetaBMT.angle(inter)));
+								
 								if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("MVT")||main.constant.TrackerType.equals("CVT"))) {
 									//Update the cluster X,Y,Z info with track info
 									
@@ -494,6 +502,8 @@ public class CentralWriter {
 												BMT.getTile(lay, sec-1).getClusters().get(clus+1).setX(inter.x());
 												BMT.getTile(lay, sec-1).getClusters().get(clus+1).setY(inter.y());
 											}
+											candidates.get(track).GetBMTCluster(clus_track).setTrackPhiAngle(phiTrack);
+											candidates.get(track).GetBMTCluster(clus_track).setTrackThetaAngle(thetaTrack);
 											if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
 											BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track+1);
 											//BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
