@@ -36,7 +36,7 @@ public class Mille {
 		if (rMeas==Double.NaN||(float)rMeas==Float.NaN) GoodToGo=false;
 		
 		for (int i=0; i<Loc.length; i++) {
-			if (Loc[i]!=0&&Loc[i]!=Double.NaN&&(float)Loc[i]!=Float.NaN&&Math.abs(Loc[i])<10000) {
+			if (Loc[i]!=Double.NaN&&(float)Loc[i]!=Float.NaN&&Math.abs(Loc[i])<10000) {
 				BufferPos++;	
 				BufferFloat.add((float)Loc[i]);
 				BufferInt.add(i+1);
