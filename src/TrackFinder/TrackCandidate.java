@@ -766,6 +766,10 @@ public class TrackCandidate{
 			}
 		}
 		
+		if (main.constant.TrackerType.equals("MVT")&&!main.constant.isCosmic) {
+			if (this.get_Nc()!=3||this.get_Nz()!=3) GoodToGo=false;
+		}
+		
 		if (main.constant.isCosmic) {
 			for (int mvt=0; mvt<this.size();mvt++) {
 				if (Math.abs(this.GetBMTCluster(mvt).getTrackPhiAngle())>15&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==1) GoodToGo=false;
