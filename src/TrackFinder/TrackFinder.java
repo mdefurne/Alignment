@@ -395,7 +395,10 @@ public class TrackFinder {
 		Fitter myfit=new Fitter();
 		int NbFittable=0;
 		for (int i=0;i<Candidates.size();i++) {
-			if (Candidates.get(i+1).IsFittable()) NbFittable++;
+			if (Candidates.get(i+1).IsFittable()) {
+				NbFittable++;
+				//Candidates.get(i+1).Print();
+			}
 			
 		}
 		 if (NbFittable<5||!main.constant.isCosmic) myfit.CVTStraightTrack(BMT_det, BST_det, Candidates);

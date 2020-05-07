@@ -482,7 +482,7 @@ public class TrackCandidate{
 		if (this.size()==0) return chi;
 		 if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("MVT")) {
 			 for (int clus=0;clus<this.size();clus++) {
-	    	  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line.getSlope(),line.getPoint())/this.GetBMTCluster(clus).getErr(),2);
+			  if (this.GetBMTCluster(clus).IsInFit()) chi+=Math.pow(BMT.getGeometry().getResidual_line(this.GetBMTCluster(clus),line.getSlope(),line.getPoint())/this.GetBMTCluster(clus).getErr(),2);
 	      	}
 		 }
 	      if (main.constant.TrackerType.equals("CVT")||main.constant.TrackerType.equals("SVT")) {
@@ -769,7 +769,7 @@ public class TrackCandidate{
 		if (main.constant.isCosmic) {
 			for (int mvt=0; mvt<this.size();mvt++) {
 				if (Math.abs(this.GetBMTCluster(mvt).getTrackPhiAngle())>15&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==1) GoodToGo=false;
-				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>15&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
+				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>30&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
 			}			
 		}
 		

@@ -691,6 +691,7 @@ public class Geometry {
 		double c=ix*ix+iy*iy-clus.getRadius()*clus.getRadius();
 			 
 		double delta=b*b-4*a*c;
+	
 		if (delta==0) {
 		    double lambda=-b/2./a;
 		    point_inter.setXYZ(slope.x()*lambda+point.x(),slope.y()*lambda+point.y(),slope.z()*lambda+point.z());
@@ -738,7 +739,7 @@ public class Geometry {
 		    	}
 		}
 		 
-		  		
+		
 		return distance;
 	}
     

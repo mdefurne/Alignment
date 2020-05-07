@@ -43,7 +43,7 @@ public class Tracker {
 			
 		Events.put(Events.size()+1,TrackList);
 		
-		if (ntarget[0]>nBeamFinder) {
+		if (ntarget[0]>nBeamFinder&&!main.constant.isCosmic) {
 			BeamFinder Beamer=new BeamFinder();
 			StraightLine Beam=Beamer.FindBeam(Events);
 			Vexter.FindCVTVertices(Beam,Events);
