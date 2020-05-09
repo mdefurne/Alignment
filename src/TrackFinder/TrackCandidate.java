@@ -174,7 +174,8 @@ public class TrackCandidate{
 		if (clus.getLayer()==2||clus.getLayer()==3||clus.getLayer()==5) {
 			if (nz==0) {
 				phi_seed=clus.getPhi();
-				if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
+				if (phi_seed<0) phi_seed=phi_seed+Math.PI;
+				if (phi_seed>Math.PI) phi_seed=phi_seed-Math.PI;
 				Phi_track.add(phi_seed);
 				this.setPhiTolerance(Math.toRadians(60));
 			}

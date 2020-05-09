@@ -30,11 +30,11 @@ public class TrackAna {
 				C_residual[lay][sec]=new H1F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" in mm",100,-0.5,0.5);
 				if (main.constant.isCosmic) {
 					Z_res_angle[lay][sec]=new H2F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle",20,-0.5,0.5,20,0,50);
-					C_res_angle[lay][sec]=new H2F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position",40,-0.5,0.5,40,-250,500);
+					C_res_angle[lay][sec]=new H2F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position",40,-0.5,0.5,40,-190,290);
 				}
 				if (!main.constant.isCosmic) {
 					Z_res_angle[lay][sec]=new H2F("Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle","Residuals for Z-tile L"+(lay+1)+" S"+(sec+1)+" vs angle",20,-0.5,0.5,20,0,30);
-					C_res_angle[lay][sec]=new H2F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position",40,-0.5,0.5,40,-250,500);
+					C_res_angle[lay][sec]=new H2F("Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position","Residuals for C-tile L"+(lay+1)+" S"+(sec+1)+" vs z-position",40,-0.5,0.5,40,-190,290);
 				}
 			}
 		}
@@ -58,7 +58,7 @@ public class TrackAna {
 					
 				if (cand.get_Nc()>=3&&(cand.GetBMTCluster(clus).getLayer()==1||cand.GetBMTCluster(clus).getLayer()==4||cand.GetBMTCluster(clus).getLayer()==6)) {
 					C_residual[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus));
-					C_res_angle[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus),Math.abs(cand.GetBMTCluster(clus).getZ()));
+					C_res_angle[(cand.GetBMTCluster(clus).getLayer()-1)/2][cand.GetBMTCluster(clus).getSector()-1].fill(cand.getResidual(clus),cand.GetBMTCluster(clus).getZ());
 
 				}
 				

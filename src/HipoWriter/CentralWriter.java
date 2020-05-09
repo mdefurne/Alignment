@@ -450,7 +450,7 @@ public class CentralWriter {
 					}
 				}
 			}
-			
+			double ztemp=-666;
 			//Intercept with BMT tiles and add info on missing coordinates of the clusters.
 			int sector=BMT.getGeometry().isinsector(candidates.get(track).get_PointTrack());
 			for (int lay=0; lay<6;lay++) {
@@ -468,7 +468,7 @@ public class CentralWriter {
 						
 						if (BMT.getGeometry().getZorC(lay+1)==0) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getCStrip(lay+1, inter.z()));
 						if (BMT.getGeometry().getZorC(lay+1)==1) bank.getNode("CalcCentroidStrip").setFloat(index, (float) BMT.getGeometry().getZStrip(lay+1, Math.atan2(inter.y(), inter.x())));
-						
+						ztemp=inter.z();
 						inter.setZ(0);// er is the vector normal to the tile... use inter to compute the angle between track and tile normal.
 						bank.getNode("trkToMPlnAngl").setFloat(index, (float) Math.toDegrees(candidates.get(track).get_VectorTrack().angle(inter)));
 						Vector3D PhiBMT=new Vector3D();
@@ -504,7 +504,7 @@ public class CentralWriter {
 											}
 											candidates.get(track).GetBMTCluster(clus_track).setTrackPhiAngle(phiTrack);
 											candidates.get(track).GetBMTCluster(clus_track).setTrackThetaAngle(thetaTrack);
-											if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(inter.z());
+											if (BMT.getGeometry().getZorC(lay+1)==1) BMT.getTile(lay, sec-1).getClusters().get(clus+1).setZ(ztemp);
 											BMT.getTile(lay, sec-1).getClusters().get(clus+1).settrkID(track+1);
 											//BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(BMT.getGeometry().getResidual_line(BMT.getTile(lay, sec-1).getClusters().get(clus+1),candidates.get(track).get_VectorTrack(),candidates.get(track).get_PointTrack()));
 											BMT.getTile(lay, sec-1).getClusters().get(clus+1).setCentroidResidual(candidates.get(track).getResidual(clus_track));
