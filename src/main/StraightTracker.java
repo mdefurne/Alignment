@@ -184,8 +184,13 @@ public class StraightTracker {
 						}
 					}
 				}
-		   		   		         
+				if (count%1000000==0) {
+					System.out.println("Cleaning Memory...");
+					System.gc();	   		
+					System.out.println("Memory cleaned ...");
+				}
 			}
+			
 		}
 		Asimov.close();
 		if (main.constant.drawing||main.constant.drawing_mille) {
@@ -236,8 +241,8 @@ public class StraightTracker {
 		}
 		
 		//Need to write down the file
-		File CCDBMVTCst=new File("mvt.txt");
-		File CCDBSVTCst=new File("svt.txt");
+		File CCDBMVTCst=new File("mvt_pede.txt");
+		File CCDBSVTCst=new File("svt_pede.txt");
 		//Writing MVT constant
 		try {
 			if (CCDBMVTCst.exists()) CCDBMVTCst.delete();
