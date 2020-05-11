@@ -106,7 +106,7 @@ public class CVTAlignment {
 		/**********************************************************************************************************************************************************************************************/
 		//We want to align MVT wrt to SVT
 		else {
-			Alignment.DoMVTSVTAlignment(BMT, reader);
+			Alignment.DoMVTSVTAlignment(BMT, BST, reader);
 			File AlignCst=new File(ConstantFileCVT);
 			try {
 				if (!AlignCst.exists()) AlignCst.createNewFile();

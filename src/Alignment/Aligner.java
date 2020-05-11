@@ -108,7 +108,7 @@ public class Aligner {
 	}
 	
 	//For aligning MVT versus SVT all at once
-	public void DoMVTSVTAlignment(Barrel BMT, Hipo3DataSource[] reader) {
+	public void DoMVTSVTAlignment(Barrel BMT, Barrel_SVT BST, Hipo3DataSource[] reader) {
 		//Use minimizer
 								
 			//Create parameters
@@ -145,7 +145,7 @@ public class Aligner {
 		    MVTvsSVT Align=new MVTvsSVT();
 		    
 		    //Give clusters to Chi2 to compute distance
-		    Align.SetDetectorToAlign(BMT,reader);
+		    Align.SetDetectorToAlign(BMT,BST,reader);
 		    
 		 
 		    //Create Minuit (parameters and function to minimize)

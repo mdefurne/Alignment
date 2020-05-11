@@ -58,7 +58,7 @@ public class TrackFinder {
 					
 						if (!noHit_yet_sector) {
 							for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
-							
+								if (BMT_det.getTile(lay,sec).getClusters().get(clus+1).getSize()!=1||BMT_det.getTile(lay,sec).getClusters().get(clus+1).getEdep()>100) {
 								//Here we always test if we have a match by time
 								IsAttributed=false;
 								for (int num_cand=cand_newsec;num_cand<Candidates.size();num_cand++) {
@@ -84,22 +84,26 @@ public class TrackFinder {
 									cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 									Candidates.put(Candidates.size()+1, cand);
 								}
-							
+								
 							}
 							for (int buf=0;buf<BufferLayer.size();buf++) {
 								Candidates.put(Candidates.size()+1, BufferLayer.get(buf));
 							}
 							BufferLayer.clear();
+							}
 						}	
 				
 						//We just enter the sector
 						if (noHit_yet_sector) {
 							//Create a new Track Candidate for each cluster of first layer
 							for (int clus=0;clus<BMT_det.getTile(lay,sec).getClusters().size();clus++) {
+								if (BMT_det.getTile(lay,sec).getClusters().get(clus+1).getSize()!=1||BMT_det.getTile(lay,sec).getClusters().get(clus+1).getEdep()>100) {
+
 								TrackCandidate cand=new TrackCandidate(BMT_det,BST_det);
 								cand.addBMT(BMT_det.getTile(lay,sec).getClusters().get(clus+1));
 								Candidates.put(Candidates.size()+1, cand);
 								noHit_yet_sector=false;
+								}
 							}
 						
 						}
@@ -189,9 +193,9 @@ public class TrackFinder {
 			ArrayList<Integer> index_fittable_sec1=new ArrayList<Integer>();
 			ArrayList<Integer> index_fittable_sec3=new ArrayList<Integer>();
 			for (int track=1;track<Candidates.size()+1;track++) {
-				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==2)	index_fittable_sec2.add(track);
-				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==1)	index_fittable_sec1.add(track);
-				if (Candidates.get(track).get_Nz()>0&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==3)	index_fittable_sec3.add(track);
+				if (Candidates.get(track).get_Nz()>1&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==2)	index_fittable_sec2.add(track);
+				if (Candidates.get(track).get_Nz()>1&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==1)	index_fittable_sec1.add(track);
+				if (Candidates.get(track).get_Nz()>1&&Candidates.get(track).get_Nc()>1&&Candidates.get(track).GetBMTCluster(0).getSector()==3)	index_fittable_sec3.add(track);
 			}
 			int sector_hit=0;
 			if (index_fittable_sec1.size()>0) sector_hit++;
@@ -268,7 +272,7 @@ public class TrackFinder {
 			}
 			
 			//We loop over the track candidates
-			if (sector_hit>1&&index_fittable_sec2.size()<10&&index_fittable_sec1.size()<10&&index_fittable_sec3.size()<10) {
+			if (sector_hit>1&&index_fittable_sec2.size()<3&&index_fittable_sec1.size()<3&&index_fittable_sec3.size()<3) {
 				
 				//Merge sec2 track to sec1 and then sec3
 				for (int track_sec2=0;track_sec2<index_fittable_sec2.size();track_sec2++) {
@@ -355,9 +359,9 @@ public class TrackFinder {
 				Vector3D meas=new Vector3D(ToBuild.getLastX()-clus.getX(),ToBuild.getLastY()-clus.getY(),0);
 				Vector3D tr_phi=new Vector3D(Math.cos(ToBuild.getPhiSeed()),Math.sin(ToBuild.getPhiSeed()),0);
 				double angle_meas=meas.angle(tr_phi);
-				if (angle_meas<ToBuild.getPhiTolerance()
-						||Math.abs(angle_meas-Math.PI)<ToBuild.getPhiTolerance()
-							||Math.abs(angle_meas-2*Math.PI)<ToBuild.getPhiTolerance()) test_val=true;
+				if (angle_meas>Math.PI/2.) angle_meas=Math.abs(angle_meas-Math.PI);
+				if (angle_meas<-Math.PI/2.) angle_meas=Math.abs(angle_meas+Math.PI);
+				if (angle_meas<ToBuild.getPhiTolerance()) test_val=true;
 			}
 		}
 		if (!Double.isNaN(clus.getZ())) {

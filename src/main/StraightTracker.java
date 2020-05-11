@@ -184,11 +184,7 @@ public class StraightTracker {
 						}
 					}
 				}
-				if (count%1000000==0) {
-					System.out.println("Cleaning Memory...");
-					System.gc();	   		
-					System.out.println("Memory cleaned ...");
-				}
+				
 			}
 			
 		}

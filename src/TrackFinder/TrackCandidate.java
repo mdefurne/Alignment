@@ -174,14 +174,15 @@ public class TrackCandidate{
 		if (clus.getLayer()==2||clus.getLayer()==3||clus.getLayer()==5) {
 			if (nz==0) {
 				phi_seed=clus.getPhi();
-				if (phi_seed<0) phi_seed=phi_seed+Math.PI;
-				if (phi_seed>Math.PI) phi_seed=phi_seed-Math.PI;
+				if (phi_seed<-Math.PI) phi_seed=phi_seed+2*Math.PI;
+				if (phi_seed>Math.PI) phi_seed=phi_seed-2*Math.PI;
 				Phi_track.add(phi_seed);
 				this.setPhiTolerance(Math.toRadians(60));
 			}
 			if (nz>0) {
 				phi_seed=Math.atan2(Y_hit.get(Y_hit.size()-1)-clus.getY(),X_hit.get(X_hit.size()-1)-clus.getX());
-				if (phi_seed<0) phi_seed=phi_seed+2*Math.PI;
+				if (phi_seed<-Math.PI) phi_seed=phi_seed+2*Math.PI;
+				if (phi_seed>Math.PI) phi_seed=phi_seed-2*Math.PI;
 				Phi_track.add(phi_seed);
 				this.setPhiTolerance(Math.toRadians(5));
 			}
@@ -505,8 +506,8 @@ public class TrackCandidate{
 			if (nc<2) good=false;
 		}
 		if (main.constant.TrackerType.equals("CVT")) {
-			if ((chi2>200&&!main.constant.isCosmic)||(chi2>1000&&main.constant.isCosmic)) good=false;
-			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<2) good=false;
+			if ((chi2>500&&!main.constant.isCosmic)||(chi2>2000&&main.constant.isCosmic)) good=false;
+			if (nz==0||nc==0||(BSTClus.size()+BMTClus.size())<6||BSTClus.size()<4) good=false;
 		}
 		if (main.constant.TrackerType.equals("SVT")) {
 			if ((chi2>300&&!main.constant.isCosmic)||(chi2>1000&&main.constant.isCosmic)) good=false;
@@ -519,7 +520,7 @@ public class TrackCandidate{
 	public boolean IsVeryGoodCandidate() {
 		boolean good=true;
 		if (main.constant.TrackerType.equals("MVT")) {
-			if (chi2>10) good=false;
+			if (chi2>30) good=false;
 			if (nz<3) good=false;
 			if (nc<3) good=false;
 		}
@@ -758,12 +759,12 @@ public class TrackCandidate{
 		boolean GoodToGo=true;
 		if (main.constant.TrackerType.equals("CVT")) {
 			if (main.constant.isCosmic&&(this.BSTsize()+this.size())<8) GoodToGo=false;
-			if (!main.constant.isCosmic&&(this.BSTsize()+this.size())<6) GoodToGo=false;
+			if (!main.constant.isCosmic&&(this.BSTsize()+this.size())<8) GoodToGo=false;
 		}
 		
 		if (main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT")) {
 			for (int svt=0; svt<this.BSTsize();svt++) {
-				if (Math.abs(this.GetBSTCluster(svt).getTrackPhiAngle())>30) GoodToGo=false;
+				if (Math.abs(this.GetBSTCluster(svt).getTrackPhiAngle())>60) GoodToGo=false;
 			}
 		}
 		
@@ -773,8 +774,8 @@ public class TrackCandidate{
 		
 		if (main.constant.isCosmic) {
 			for (int mvt=0; mvt<this.size();mvt++) {
-				if (Math.abs(this.GetBMTCluster(mvt).getTrackPhiAngle())>15&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==1) GoodToGo=false;
-				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>30&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
+				if (Math.abs(this.GetBMTCluster(mvt).getTrackPhiAngle())>35&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==1) GoodToGo=false;
+				if (Math.abs(this.GetBMTCluster(mvt).getTrackThetaAngle())>35&&BMT.getGeometry().getZorC(this.GetBMTCluster(mvt).getLayer())==0) GoodToGo=false;
 			}			
 		}
 		
