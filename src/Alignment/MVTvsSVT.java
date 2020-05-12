@@ -156,8 +156,7 @@ public class MVTvsSVT implements FCNBase {
 								 }	
 								 //if (raybank.getShort("ID",nray)==Trajbank.getShort("ID",npt)&&Trajbank.getByte("LayerTrackIntersPlane",npt)<=6&&Trajbank.getFloat("PhitrackIntersPlane",npt)>40) good_track=false;
 							 }
-			    		
-			    			//Since the track is supposed to have crossed the tile, let's find the corresponding cluster
+							//Since the track is supposed to have crossed the tile, let's find the corresponding cluster
 							 if (good_track) {
 								 for (int cl=0;cl<BSTLayer.size();cl++) {
 									 for (int clus=0; clus<BSTClusbank.rows(); clus++) {

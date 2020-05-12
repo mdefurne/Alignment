@@ -62,13 +62,13 @@ public class CentralWriter {
 		 event.writeGroup(this.fillCosmicRecBank(candidates));
 		 event.writeGroup(this.fillCosmicTrajBank(BMT,BST,candidates));
 		 event.writeGroup(this.fillBMTCrossesBank(BMT));
-		 event.writeGroup(this.fillBSTCrossesBank(BST));
-		 event.writeGroup(this.fillBSTHitsBank(BST));
-		 event.writeGroup(this.fillBSTClusterBank(BST));
+		 if (BST.getNbHits()!=0) event.writeGroup(this.fillBSTCrossesBank(BST));
+		 if (BST.getNbHits()!=0) event.writeGroup(this.fillBSTHitsBank(BST));
+		 if (BST.getNbHits()!=0) event.writeGroup(this.fillBSTClusterBank(BST));
 		 event.writeGroup(this.fillBMTClusterBank(BMT));
 		 if (main.constant.isMC) event.writeGroup(this.fillMCBank(MCParticles));
 		 event.writeGroup(this.fillRunConfig(eventnb));
-		 event.writeGroup(this.fillBSTADCbank(BST));
+		 if (BST.getNbHits()!=0) event.writeGroup(this.fillBSTADCbank(BST));
 		 event.writeGroup(this.fillBMTADCbank(BMT));
 		 if (main.constant.millepede) this.fillDerivativesBank(BMT,BST,candidates);
 		 writer.writeEvent( event );
