@@ -411,7 +411,7 @@ public class CentralWriter {
 						ProjThetaSVT.setX(candidates.get(track).get_VectorTrack().x());ProjThetaSVT.setY(candidates.get(track).get_VectorTrack().y());ProjThetaSVT.setZ(candidates.get(track).get_VectorTrack().z());
 						ThetaSVT.sub(ProjThetaSVT.projection(eTheta));
 						double phiTrack=Math.toDegrees(PhiSVT.angle(normSVT));
-						double thetaTrack=Math.toDegrees(PhiSVT.angle(normSVT));
+						double thetaTrack=Math.toDegrees(ThetaSVT.angle(normSVT));
 						if (phiTrack>90) phiTrack=Math.abs(phiTrack-180);
 						if (thetaTrack>90) thetaTrack=Math.abs(thetaTrack-180);
 						
@@ -431,8 +431,8 @@ public class CentralWriter {
 						for (int clus_track=0;clus_track<candidates.get(track).BSTsize();clus_track++) {
 							if (candidates.get(track).GetBSTCluster(clus_track).getLayer()==(lay+1)&&candidates.get(track).GetBSTCluster(clus_track).getSector()==sector) {
 								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
-								candidates.get(track).GetBSTCluster(clus_track).setTrackPhiAngle(Math.toDegrees(PhiSVT.angle(normSVT)));
-								candidates.get(track).GetBSTCluster(clus_track).setTrackThetaAngle(Math.toDegrees(ThetaSVT.angle(normSVT)));
+								candidates.get(track).GetBSTCluster(clus_track).setTrackPhiAngle(phiTrack);
+								candidates.get(track).GetBSTCluster(clus_track).setTrackThetaAngle(thetaTrack);
 								if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
 									//Update the cluster X,Y,Z info with track info
 									for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {
