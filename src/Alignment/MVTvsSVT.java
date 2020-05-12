@@ -131,7 +131,7 @@ public class MVTvsSVT implements FCNBase {
 					 StraightLine ray=new StraightLine();
 					 DataBank raybank=event.getBank("CVTRec::Cosmics");
 					 DataBank Trajbank=event.getBank("CVTRec::Trajectory");
-					 DataBank BSTClusbank=event.getBank("BMTRec::Clusters");
+					 DataBank BSTClusbank=event.getBank("BSTRec::Clusters");
 					 for (int nray=0;nray<raybank.rows();nray++) {
 						 BSTLayer.clear();
 						 BSTSector.clear();
