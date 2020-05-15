@@ -433,6 +433,9 @@ public class CentralWriter {
 								clus_id=candidates.get(track).GetBSTCluster(clus_track).getLastEntry();
 								candidates.get(track).GetBSTCluster(clus_track).setTrackPhiAngle(phiTrack);
 								candidates.get(track).GetBSTCluster(clus_track).setTrackThetaAngle(thetaTrack);
+								candidates.get(track).GetBSTCluster(clus_track).setX(inter.x());
+								candidates.get(track).GetBSTCluster(clus_track).setY(inter.y());
+								candidates.get(track).GetBSTCluster(clus_track).setY(inter.z());
 								if (clus_id!=-1) { //&&(main.constant.TrackerType.equals("SVT")||main.constant.TrackerType.equals("CVT"))) {
 									//Update the cluster X,Y,Z info with track info
 									for (int clus=0;clus<BST.getModule(lay+1, sector).getClusters().size();clus++) {

@@ -33,6 +33,7 @@ public class Cluster {
 	private int trkID;
 	private int seed;
 	private int seedE;
+	private double weightE;
 	private double TrackPhiAngle;
 	private double TrackThetaAngle;
 	private double[] LocDerivative;
@@ -49,6 +50,7 @@ public class Cluster {
 		centroid_z=0;
 		size=0;
 		Edep=0;
+		weightE=0;
 		hit_id=new ArrayList<Integer>();
 		hit_list=new ArrayList<BMT_struct.Hit>();
 		Err=0.0;//mm
@@ -111,15 +113,17 @@ public class Cluster {
 		}
 		
 		centroid_r=aHit.getRadius();
-		Err=Edep*Err+aHit.getADC()*aHit.getErr();
-		centroid=Edep*centroid+id_hit*aHit.getADC();
 		
+		double w=Math.sqrt(aHit.getADC());
+		Err=weightE*Err+w*aHit.getErr();
+		centroid=weightE*centroid+id_hit*w;
 		if(!Double.isNaN(aHit.getPhi())) {
-			centroid_x=Edep*centroid_x+centroid_r*aHit.getADC()*Math.cos(aHit.getPhi());
-			centroid_y=Edep*centroid_y+centroid_r*aHit.getADC()*Math.sin(aHit.getPhi());
+			centroid_x=weightE*centroid_x+centroid_r*w*Math.cos(aHit.getPhi());
+			centroid_y=weightE*centroid_y+centroid_r*w*Math.sin(aHit.getPhi());
+			weightE+=w;
 			Edep+=(double) aHit.getADC();
-			centroid_x=centroid_x/Edep;
-			centroid_y=centroid_y/Edep;
+			centroid_x=centroid_x/weightE;
+			centroid_y=centroid_y/weightE;
 			centroid_z=Double.NaN;
 			centroid_phi=Math.atan2(centroid_y, centroid_x);
 			if (centroid_phi<0) centroid_phi+=2*Math.PI;
@@ -128,14 +132,15 @@ public class Cluster {
 			centroid_x=Double.NaN;
 			centroid_y=Double.NaN;
 			centroid_phi=Double.NaN;
-			centroid_z=Edep*centroid_z+aHit.getADC()*aHit.getZ();
+			centroid_z=weightE*centroid_z+w*aHit.getZ();
 			Edep+= (double) aHit.getADC();
-			centroid_z=centroid_z/Edep;
+			weightE+=w;
+			centroid_z=centroid_z/weightE;
 		}
 	
-		centroid=centroid/Edep;
+		centroid=centroid/weightE;
 		
-		Err=Err/Edep;
+		Err=Err/weightE;
 	}
 	
 	public int getSeed() {
