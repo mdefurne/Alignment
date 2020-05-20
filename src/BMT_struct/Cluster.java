@@ -279,10 +279,10 @@ public class Cluster {
 				centroid_phi=hit_list.get(first_tmin).getPhi();
 				centroid_z=Double.NaN;
 				if (first_tmin!=0) {
-					centroid_x=centroid_r*(hit_list.get(first_tmin).getADC()*Math.cos(hit_list.get(first_tmin).getPhi())+hit_list.get(second_tmin).getADC()*Math.cos(hit_list.get(second_tmin).getPhi()))
-							/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
-					centroid_y=centroid_r*(hit_list.get(first_tmin).getADC()*Math.sin(hit_list.get(first_tmin).getPhi())+hit_list.get(second_tmin).getADC()*Math.sin(hit_list.get(second_tmin).getPhi()))
-							/(hit_list.get(second_tmin).getADC()+hit_list.get(first_tmin).getADC());
+					centroid_x=centroid_r*(Math.sqrt(hit_list.get(first_tmin).getADC())*Math.cos(hit_list.get(first_tmin).getPhi())+Math.sqrt(hit_list.get(second_tmin).getADC())*Math.cos(hit_list.get(second_tmin).getPhi()))
+							/(Math.sqrt(hit_list.get(second_tmin).getADC())+Math.sqrt(hit_list.get(first_tmin).getADC()));
+					centroid_y=centroid_r*(Math.sqrt(hit_list.get(first_tmin).getADC())*Math.sin(hit_list.get(first_tmin).getPhi())+Math.sqrt(hit_list.get(second_tmin).getADC())*Math.sin(hit_list.get(second_tmin).getPhi()))
+							/(Math.sqrt(hit_list.get(second_tmin).getADC())+Math.sqrt(hit_list.get(first_tmin).getADC()));
 					centroid_phi=Math.atan2(centroid_y, centroid_x);
 					if (centroid_phi<0) centroid_phi+=2*Math.PI;
 				}

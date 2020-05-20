@@ -22,7 +22,7 @@ public class Barrel {
 		for (int lay=0; lay<6;lay++) {
 			for (int sec=0; sec<3;sec++) {
 				Tiles[lay][sec]=new Tile(lay+1,sec+1);
-				Tiles[lay][sec].setClusteringMode(0);
+				Tiles[lay][sec].setClusteringMode(1);
 			}
 		}
 	}
