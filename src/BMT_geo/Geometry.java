@@ -53,6 +53,8 @@ public class Geometry {
         //double angle=Constants.getCRZEDGE1()[num_region][num_detector]+(0.5+num_strip)*Constants.getCRZWIDTH()[num_region]/Constants.getCRZRADIUS()[num_region];
         //double angle = Constants.getCRZEDGE1()[num_region][num_detector] + ((double) num_strip) * Constants.getCRZWIDTH()[num_region] / Constants.getCRZRADIUS()[num_region];
         double angle = Constants.getCRZEDGE1()[num_region][num_detector] + ((double) num_strip+0.5) * Constants.getCRZWIDTH()[num_region] / Constants.getCRZRADIUS()[num_region];
+        if (angle<0) angle+=2*Math.PI;
+        if (angle>2*Math.PI) angle-=2*Math.PI;
         return angle; //in rad 
     }
 
