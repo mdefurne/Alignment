@@ -5,6 +5,8 @@ import TrackFinder.*;
 import org.jlab.groot.ui.TCanvas;
 import java.lang.Object;
 
+import javax.swing.JFrame;
+
 public class ClusterAna {
 	
 	H1F[] Size=new H1F[6];
@@ -74,8 +76,10 @@ public class ClusterAna {
 	public void draw() {
 		if (true) {
 			cZ_size = new TCanvas("Edep versus Phi for Z", 1100, 700);
+			cZ_size.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			cZ_size.divide(3, 3);
 			cC_size = new TCanvas("Edep versus Phi for C", 1100, 700);
+			cC_size.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			cC_size.divide(3, 3);
 			for (int lay=0;lay<3;lay++) {
 				for (int sec=0;sec<3;sec++) {
@@ -87,21 +91,20 @@ public class ClusterAna {
 			}
 		}
 		TCanvas cTmin = new TCanvas("tmin distribution", 1100, 700);
+		cTmin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		cTmin.divide(2,3);
-		for (int lay=0;lay<3;lay++) {
+		for (int lay=0;lay<6;lay++) {
 			cTmin.cd(lay);
 			cTmin.draw(T_min[lay]);
-			cTmin.cd(lay+1);
-			cTmin.draw(T_min[lay+1]);
+			
 		}
 		
 		TCanvas cWalk = new TCanvas("TimeWalk distribution", 1100, 700);
+		cWalk.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		cWalk.divide(2,3);
-		for (int lay=0;lay<3;lay++) {
+		for (int lay=0;lay<6;lay++) {
 			cWalk.cd(lay);
 			cWalk.draw(Timewalk[lay]);
-			cWalk.cd(lay+1);
-			cWalk.draw(Timewalk[lay+1]);
 		}
 		
 	}
